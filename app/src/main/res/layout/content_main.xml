@@ -14,10 +14,14 @@
 
     <Button
         android:id="@+id/button"
+        android:onClick="examThemesOpenOnClick"
         android:text="@string/exam_btn"
+        android:background="@android:color/holo_blue_bright"
+        android:textColor="@color/primary_material_dark"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
+
 </RelativeLayout>
