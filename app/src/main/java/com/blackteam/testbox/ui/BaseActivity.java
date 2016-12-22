@@ -1,4 +1,4 @@
-package com.blackteam.testbox;
+package com.blackteam.testbox.ui;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -6,6 +6,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import com.blackteam.testbox.AppState;
+import com.blackteam.testbox.R;
 
 /**
  * Базовая активити, содержит общие для всех активити элементы, действия и т.д.
@@ -43,7 +46,7 @@ public class BaseActivity extends AppCompatActivity {
 
         // Переключаем между режимами пользователь/редактор.
         if (id == R.id.mi_userType) {
-            if (item.getTitle() == getResources().getString(R.string.user_type_user)) {
+            if (AppState.sUserType == AppState.UserType.USER) {
                 item.setTitle(R.string.user_type_editor);
                 AppState.sUserType = AppState.UserType.EDITOR;
             }
