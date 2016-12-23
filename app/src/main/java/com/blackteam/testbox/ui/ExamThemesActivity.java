@@ -1,5 +1,6 @@
 package com.blackteam.testbox.ui;
 
+import android.app.FragmentManager;
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.os.Bundle;
@@ -21,6 +22,7 @@ public class ExamThemesActivity extends BaseActivity {
     private FloatingActionButton mCreateExamThemeBtn;
 
     private NavigationTree.Node<String> mExamThemes;
+    private ArrayAdapter<String> mExamThemesListAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +34,7 @@ public class ExamThemesActivity extends BaseActivity {
 
         mExamThemes = (NavigationTree.Node<String>) getIntent().getSerializableExtra("EXAM_DATA");
 
-        ArrayAdapter<String> adapter =
+        mExamThemesListAdapter =
                 new ArrayAdapter<String>(this,
                         R.layout.support_simple_spinner_dropdown_item,
                         mExamThemes.getChildrenNames()
@@ -51,7 +53,7 @@ public class ExamThemesActivity extends BaseActivity {
             }
         });
 
-        mExamThemesListView.setAdapter(adapter);
+        mExamThemesListView.setAdapter(mExamThemesListAdapter);
 
         switch (AppState.sUserType) {
             case USER:
@@ -72,7 +74,15 @@ public class ExamThemesActivity extends BaseActivity {
     }
 
     public void createNewExamThemeOnClick(View view) {
+        FragmentManager fragmentManager = getFragmentManager();
+        CreatingThemeDialogFragment creatingThemeDialogFragment =
+                new CreatingThemeDialogFragment();
+        creatingThemeDialogFragment.show(fragmentManager, "creatingThemeDialog");
+    }
 
+    public void addNewExamTheme(String newExamThemeName) {
+        mExamThemes.addChild(newExamThemeName);
+        mExamThemesListAdapter.notifyDataSetChanged();
     }
 
     @Override
