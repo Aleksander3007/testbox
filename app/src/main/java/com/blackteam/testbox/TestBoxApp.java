@@ -1,9 +1,11 @@
 package com.blackteam.testbox;
 
+import android.app.Application;
+
 /**
- * Абстрактный класс для хранения общих настроек приложения.
+ * Главный класс приложения. Здесь хранятся общие для приложения настройки.
  */
-public abstract class AppState {
+public class TestBoxApp extends Application {
 
     /**
      * Режимы пользователя, которые имеют те или иные возможности в приложении.
@@ -14,5 +16,14 @@ public abstract class AppState {
         /** Редактор, тот кто может изменять состав доступных тестов. */
         EDITOR
     }
-    public static UserType sUserType = UserType.USER;
+    private UserType mUserType = UserType.USER;
+
+
+    public UserType getUserType() {
+        return mUserType;
+    }
+
+    public void setsUserType(UserType userType) {
+        this.mUserType = userType;
+    }
 }

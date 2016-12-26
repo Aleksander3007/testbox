@@ -12,8 +12,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.blackteam.testbox.AppState;
 import com.blackteam.testbox.R;
+import com.blackteam.testbox.TestBoxApp;
 import com.blackteam.testbox.utils.NavigationTree;
 
 public class ExamThemesActivity extends BaseActivity {
@@ -55,7 +55,7 @@ public class ExamThemesActivity extends BaseActivity {
 
         mExamThemesListView.setAdapter(mExamThemesListAdapter);
 
-        switch (AppState.sUserType) {
+        switch (((TestBoxApp)getApplicationContext()).getUserType()) {
             case USER:
                 setModeUser();
                 break;
@@ -90,11 +90,13 @@ public class ExamThemesActivity extends BaseActivity {
         int id = item.getItemId();
 
         if (id == R.id.mi_userType) {
-            if (AppState.sUserType == AppState.UserType.USER) {
-                setModeEditor();
-            }
-            else {
-                setModeUser();
+            switch (((TestBoxApp)getApplicationContext()).getUserType()) {
+                case USER:
+                    setModeEditor();
+                    break;
+                case EDITOR:
+                    setModeUser();
+                    break;
             }
         }
 
