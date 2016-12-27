@@ -6,6 +6,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.blackteam.testbox.R;
+import com.blackteam.testbox.TestBoxApp;
 import com.blackteam.testbox.ui.BaseActivity;
 import com.blackteam.testbox.ui.ExamThemesActivity;
 import com.blackteam.testbox.utils.NavigationTree;
@@ -31,17 +32,18 @@ public class MainActivity extends BaseActivity {
         // TODO: Заглушка на доступные темы экзамена.
         NavigationTree<String> examThemes = new NavigationTree<>("Root element");
         NavigationTree.Node<String> examThemesRoot = examThemes.getRootElement();
-        NavigationTree.Node<String> node11 = examThemesRoot.addChild("node1.1");
-        NavigationTree.Node<String> node12 = examThemesRoot.addChild("node1.2");
-        examThemesRoot.addChild("node1.3");
-        examThemesRoot.addChild("node1.4");
-        node11.addChild("node2.1");
-        node11.addChild("node2.2");
-        node12.addChild("node2.3");
-        node12.addChild("node2.4");
+        NavigationTree.Node<String> node1 = examThemesRoot.addChild("node1");
+        NavigationTree.Node<String> node2 = examThemesRoot.addChild("node2");
+        examThemesRoot.addChild("node3");
+        examThemesRoot.addChild("node4");
+        node1.addChild("node1.1");
+        node1.addChild("node1.2");
+        node2.addChild("node2.1");
+        node2.addChild("node2.2");
+
+        ((TestBoxApp)getApplicationContext()).setExamTree(examThemes);
 
         Intent examThemesActivity = new Intent(this, ExamThemesActivity.class);
-        examThemesActivity.putExtra("EXAM_DATA", examThemes.getRootElement());
         startActivity(examThemesActivity);
     }
 }

@@ -32,7 +32,7 @@ public class ExamThemesActivity extends BaseActivity {
         mExamThemesListView = (ListView) findViewById(R.id.lv_exam_themes);
         mCreateExamThemeBtn = (FloatingActionButton) findViewById(R.id.fab_createNewExamTheme);
 
-        mExamThemes = (NavigationTree.Node<String>) getIntent().getSerializableExtra("EXAM_DATA");
+        mExamThemes = ((TestBoxApp)getApplicationContext()).getExamTree().getCurElem();
 
         mExamThemesListAdapter =
                 new ArrayAdapter<String>(this,
@@ -40,15 +40,14 @@ public class ExamThemesActivity extends BaseActivity {
                         mExamThemes.getChildrenNames()
                 );
 
+        /** Добавляем слушателя нажатий на list. */
         mExamThemesListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View itemClicked, int position, long id) {
-                Toast.makeText(getApplicationContext(), ((TextView) itemClicked).getText(),
-                        Toast.LENGTH_LONG).show();
-
+                /** Навигация вперед. */
+                ((TestBoxApp)getApplicationContext()).getExamTree().next(
+                        (String) ((TextView) itemClicked).getText());
                 Intent examThemesActivity = new Intent(getApplicationContext(), ExamThemesActivity.class);
-                examThemesActivity.putExtra("EXAM_DATA",
-                        mExamThemes.getChild((String) ((TextView) itemClicked).getText()));
                 startActivity(examThemesActivity);
             }
         });
@@ -73,6 +72,10 @@ public class ExamThemesActivity extends BaseActivity {
         mCreateExamThemeBtn.setVisibility(View.VISIBLE);
     }
 
+    /**
+     * Обработка нажатия на кнопку создания новой темы экзамена.
+     * @param view
+     */
     public void createNewExamThemeOnClick(View view) {
         FragmentManager fragmentManager = getFragmentManager();
         CreatingThemeDialogFragment creatingThemeDialogFragment =
@@ -80,6 +83,10 @@ public class ExamThemesActivity extends BaseActivity {
         creatingThemeDialogFragment.show(fragmentManager, "creatingThemeDialog");
     }
 
+    /**
+     * Добавить новую тему экзамена.
+     * @param newExamThemeName Имя новой темы экзамена.
+     */
     public void addNewExamTheme(String newExamThemeName) {
         mExamThemes.addChild(newExamThemeName);
         mExamThemesListAdapter.notifyDataSetChanged();
@@ -101,5 +108,11 @@ public class ExamThemesActivity extends BaseActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        ((TestBoxApp)getApplicationContext()).getExamTree().prev();
+        super.onBackPressed();
     }
 }
