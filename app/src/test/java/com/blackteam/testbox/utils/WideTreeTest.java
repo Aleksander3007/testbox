@@ -91,7 +91,7 @@ public class WideTreeTest {
 
         Assert.assertNotNull(root.getChildren());
         for(WideTree.Node<String> children : root.getChildren()) {
-            Assert.assertFalse(children.getName().equals(""));
+            Assert.assertFalse(children.getData().equals(""));
         }
     }
 
@@ -105,7 +105,7 @@ public class WideTreeTest {
         nodes1.add("node1.2");
         root.addChildren(nodes1);
 
-        List<String> childrenNames = root.getChildrenNames();
+        List<String> childrenNames = root.getChildrenData();
         Assert.assertNotNull(childrenNames);
         for(String childName : childrenNames) {
             Assert.assertFalse(childName.equals(""));

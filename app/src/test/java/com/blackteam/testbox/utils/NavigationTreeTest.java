@@ -35,29 +35,29 @@ public class NavigationTreeTest {
             Assert.fail("Должно было вызваться исключение");
         }
         catch (IllegalArgumentException iaex) {
-            Assert.assertEquals("root", navigationTree.getCurElem().getName());
+            Assert.assertEquals("root", navigationTree.getCurElem().getData());
         }
         // Проверяем prev() из root.
         NavigationTree.Node<String> prevNode = navigationTree.prev();
         Assert.assertNull(prevNode);
-        Assert.assertEquals("root", navigationTree.getCurElem().getName());
+        Assert.assertEquals("root", navigationTree.getCurElem().getData());
     }
 
     public void testNext(NavigationTree<String> navigationTree, String nextNodeName) {
         NavigationTree.Node<String> currentNode =  navigationTree.next(nextNodeName);
         Assert.assertNotNull("Проверка навигации вперед (от root)", currentNode);
-        Assert.assertEquals(nextNodeName, currentNode.getName());
+        Assert.assertEquals(nextNodeName, currentNode.getData());
         currentNode =  navigationTree.getCurElem();
         Assert.assertNotNull("Проверка получения текущего элемента после next()", currentNode);
-        Assert.assertEquals(nextNodeName, currentNode.getName());
+        Assert.assertEquals(nextNodeName, currentNode.getData());
     }
 
     public void testPrev(NavigationTree<String> navigationTree, String prevNodeName) {
         NavigationTree.Node<String> currentNode =  navigationTree.prev();
         Assert.assertNotNull("Проверка навигации назад (к root)", currentNode);
-        Assert.assertEquals(prevNodeName, currentNode.getName());
+        Assert.assertEquals(prevNodeName, currentNode.getData());
         currentNode =  navigationTree.getCurElem();
         Assert.assertNotNull("Проверка получения текущего элемента после prev()", currentNode);
-        Assert.assertEquals(prevNodeName, currentNode.getName());
+        Assert.assertEquals(prevNodeName, currentNode.getData());
     }
 }

@@ -1,9 +1,7 @@
 package com.blackteam.testbox.utils;
 
 import java.io.Serializable;
-import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Deque;
 import java.util.List;
 
 /**
@@ -26,10 +24,10 @@ public class WideTree<E>  implements Serializable {
 
     /**
      * Создать дерево с одним элементом.
-     * @param name данные элемента.
+     * @param data данные корневого элемента.
      */
-    public WideTree(E name) {
-        createRootElement(name);
+    public WideTree(E data) {
+        createRootElement(data);
     }
 
     public WideTree.Node<E> getRootElement() {
@@ -38,47 +36,47 @@ public class WideTree<E>  implements Serializable {
 
     /**
      * Создать корневой элемент.
-     * @param name Имя корневого элемента.
+     * @param data данные корневого элемента.
      */
-    public void createRootElement(E name) {
-        mRoot = new Node<>(name);
+    public void createRootElement(E data) {
+        mRoot = new Node<>(data);
     }
 
     /**
      * Узел навигационного дерева. Имена узлов на одном уровне должны быть разными.
      */
     public static class Node<E> implements Serializable {
-        private E mName;
+        private E mData;
         private List<Node<E>> mChildren = new ArrayList<>();
 
         /**
          * Создание навигационнго узла без детей.
-         * @param name Имя узла.
+         * @param data данные узла.
          */
-        public Node(E name) {
-            mName = name;
+        public Node(E data) {
+            mData = data;
         }
 
-        public E getName() { return mName; }
+        public E getData() { return mData; }
 
         /**
          * Добавить подузел.
-         * @param name имя узла.
+         * @param data данные узла.
          */
-        public Node<E> addChild(E name) {
-            Node<E> childNode = new Node(name);
+        public Node<E> addChild(E data) {
+            Node<E> childNode = new Node(data);
             mChildren.add(childNode);
             return childNode;
         }
 
         /**
          * Получить узел по имени.
-         * @param name имя требуемого узла.
+         * @param data данные требуемого узла.
          * @return требуемый узел, либо null - если не найден.
          */
-        public Node<E> getChild(E name) {
+        public Node<E> getChild(E data) {
             for (Node<E> child : mChildren) {
-                if (child.getName().equals(name)) {
+                if (child.getData().equals(data)) {
                     return child;
                 }
             }
@@ -87,11 +85,11 @@ public class WideTree<E>  implements Serializable {
 
         /**
          * Добавить подузлы.
-         * @param childrenName имена подузлов.
+         * @param childrenData данные подузлов.
          */
-        public void addChildren(List<E> childrenName) {
-            for (E childName : childrenName) {
-                mChildren.add(new Node<E>(childName));
+        public void addChildren(List<E> childrenData) {
+            for (E childData : childrenData) {
+                mChildren.add(new Node<E>(childData));
             }
         }
 
@@ -103,17 +101,17 @@ public class WideTree<E>  implements Serializable {
             return mChildren;
         }
 
-        public List<E> getChildrenNames() {
-            List<E> childrenNames = new ArrayList<>(mChildren.size());
+        public List<E> getChildrenData() {
+            List<E> childrenData = new ArrayList<>(mChildren.size());
             for (Node<E> child : mChildren) {
-                childrenNames.add(child.getName());
+                childrenData.add(child.getData());
             }
-            return childrenNames;
+            return childrenData;
         }
 
         @Override
         public String toString() {
-            return mName.toString();
+            return mData.toString();
         }
     }
 }

@@ -29,35 +29,35 @@ public class NavigationTree<E> extends WideTree<E> implements Serializable {
 
     /**
      * Создать дерево с одним элементом.
-     * @param name данные элемента.
+     * @param data данные элемента.
      */
-    public NavigationTree(E name) {
-        createRootElement(name);
+    public NavigationTree(E data) {
+        createRootElement(data);
     }
 
     /**
      * Создать корневой элемент.
-     * @param name Имя корневого элемента.
+     * @param data Имя корневого элемента.
      */
-    public void createRootElement(E name) {
-        super.createRootElement(name);
+    public void createRootElement(E data) {
+        super.createRootElement(data);
         mBreadCrumbs.push(mRoot);
     }
 
     /**
      * Сделать следующий узел текущим.
-     * @param name Имя узла (на следующем уровне).
+     * @param data Имя узла (на следующем уровне).
      * @return следующий узел, null - если  дерево пустое.
      * @throws IllegalArgumentException - указанный узел не существует (возможно текущий узел - конечный).
      */
-    public WideTree.Node<E> next(E name) throws IllegalArgumentException  {
+    public WideTree.Node<E> next(E data) throws IllegalArgumentException  {
         if (mRoot == null)
             return null;
 
         Node<E> currentNode = mBreadCrumbs.peek();
-        Node<E> nextNode = mBreadCrumbs.peek().getChild(name);
+        Node<E> nextNode = mBreadCrumbs.peek().getChild(data);
         if (nextNode == null)
-            throw new IllegalArgumentException("Node '" + name.toString() +  "' doesn't exist.");
+            throw new IllegalArgumentException("Node '" + data.toString() +  "' doesn't exist.");
 
         mBreadCrumbs.push(nextNode);
 
