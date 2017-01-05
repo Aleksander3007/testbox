@@ -28,7 +28,7 @@ public class NavigationTreeTest {
         // Поднимаеся еще на один уровень вверх.
         testPrev(navigationTree, "root");
 
-        // TODO: Надо проверить еще next из конечного, и prev из root.
+        // Проверяем next() из конечного.
         navigationTree = new NavigationTree<>("root");
         try {
             NavigationTree.Node<String> nextNode = navigationTree.next("nodeNull");

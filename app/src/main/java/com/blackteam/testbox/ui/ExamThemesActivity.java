@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.blackteam.testbox.R;
 import com.blackteam.testbox.TestBoxApp;
 import com.blackteam.testbox.utils.NavigationTree;
+import com.blackteam.testbox.utils.WideTree;
 
 public class ExamThemesActivity extends BaseActivity {
 
@@ -22,7 +23,7 @@ public class ExamThemesActivity extends BaseActivity {
     private FloatingActionButton mCreateExamThemeBtn;
 
     private NavigationTree.Node<String> mExamThemes;
-    private ArrayAdapter<String> mExamThemesListAdapter;
+    private ArrayAdapter<WideTree.Node<String>> mExamThemesListAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,9 +36,9 @@ public class ExamThemesActivity extends BaseActivity {
         mExamThemes = ((TestBoxApp)getApplicationContext()).getExamTree().getCurElem();
 
         mExamThemesListAdapter =
-                new ArrayAdapter<String>(this,
+                new ArrayAdapter<>(this,
                         R.layout.support_simple_spinner_dropdown_item,
-                        mExamThemes.getChildrenNames()
+                        mExamThemes.getChildren()
                 );
 
         /** Добавляем слушателя нажатий на list. */
@@ -112,6 +113,7 @@ public class ExamThemesActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
+        NavigationTree<String> nt = ((TestBoxApp)getApplicationContext()).getExamTree();
         ((TestBoxApp)getApplicationContext()).getExamTree().prev();
         super.onBackPressed();
     }

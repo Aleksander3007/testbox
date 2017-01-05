@@ -49,7 +49,7 @@ public class WideTree<E>  implements Serializable {
      */
     public static class Node<E> implements Serializable {
         private E mName;
-        private List<Node> mChildren = new ArrayList<>();
+        private List<Node<E>> mChildren = new ArrayList<>();
 
         /**
          * Создание навигационнго узла без детей.
@@ -99,7 +99,7 @@ public class WideTree<E>  implements Serializable {
          * Получить подузлы.
          * @return подузлы.
          */
-        public List<Node> getChildren() {
+        public List<Node<E>> getChildren() {
             return mChildren;
         }
 
@@ -109,6 +109,11 @@ public class WideTree<E>  implements Serializable {
                 childrenNames.add(child.getName());
             }
             return childrenNames;
+        }
+
+        @Override
+        public String toString() {
+            return mName.toString();
         }
     }
 }
