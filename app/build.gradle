@@ -10,6 +10,7 @@ android {
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
@@ -22,9 +23,16 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
-    testCompile 'junit:junit:4.12'
-    testCompile 'org.mockito:mockito-core:2.+'
-
+    // Android
     compile 'com.android.support:appcompat-v7:25.1.0'
     compile 'com.android.support:design:25.1.0'
+
+    // Unit Tests
+    testCompile 'junit:junit:4.12'
+
+    // Integration Tests
+    // Set this dependency to use JUnit 4 rules
+    androidTestCompile 'com.android.support.test:runner:0.4'
+    androidTestCompile 'com.android.support.test:rules:0.4'
+    androidTestCompile 'com.android.support:support-annotations:25.1.0'
 }

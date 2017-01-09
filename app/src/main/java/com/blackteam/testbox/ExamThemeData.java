@@ -17,6 +17,11 @@ public class ExamThemeData {
         this.mName = name;
     }
 
+    public ExamThemeData(String name, String source) {
+        this.mName = name;
+        this.mSource = source;
+    }
+
     public String getName() { return mName; }
     public String getSource() { return mSource; }
 

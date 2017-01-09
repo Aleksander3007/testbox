@@ -129,6 +129,8 @@ public class ExamLoader {
                     // Остальные типы тегов нас не интересуют.
                     break;
             }
+
+            eventType = xmlParser.next();
         }
 
         return examTree;
