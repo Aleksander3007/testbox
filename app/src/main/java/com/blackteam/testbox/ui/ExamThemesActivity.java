@@ -93,7 +93,7 @@ public class ExamThemesActivity extends BaseActivity {
      * @param newExamThemeName Имя новой темы экзамена.
      */
     public void addNewExamTheme(String newExamThemeName) {
-        mExamThemes.addChild(new ExamThemeData(newExamThemeName));
+        mExamThemes.addChild(new ExamThemeData(newExamThemeName, generateExamThemeId()));
         mExamThemesListAdapter.notifyDataSetChanged();
     }
 
@@ -119,5 +119,9 @@ public class ExamThemesActivity extends BaseActivity {
     public void onBackPressed() {
         ((TestBoxApp)getApplicationContext()).getExamTree().prev();
         super.onBackPressed();
+    }
+
+    private String generateExamThemeId() {
+        return  mExamThemes.getData().getId() + mExamThemes.getChildren().size();
     }
 }

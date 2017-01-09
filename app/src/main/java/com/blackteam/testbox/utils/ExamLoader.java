@@ -28,7 +28,7 @@ public class ExamLoader {
     public static final String THEME_TAG = "theme";
 
     public static final String NAME_ATTR = "name";
-    public static final String SOURCE_ATTR = "src";
+    public static final String ID_ATTR = "id";
 
     /**
      * Загрузить данные об экзаменах.
@@ -108,8 +108,11 @@ public class ExamLoader {
             switch (eventType) {
                 // Движемся вперед, пока не дойдем до конечной темы.
                 case XmlPullParser.START_TAG:
+                    // Считываем все данные по экзамеционной теме.
                     String examName = xmlParser.getAttributeValue(null, NAME_ATTR);
-                    ExamThemeData examThemeData = new ExamThemeData(examName);
+                    String examId = xmlParser.getAttributeValue(null, ID_ATTR);
+                    ExamThemeData examThemeData = new ExamThemeData(examName, examId);
+
                     if (examTree.getRootElement() != null) {
                         examTree.getCurElem().addChild(examThemeData);
                         examTree.next(examThemeData);
@@ -119,9 +122,6 @@ public class ExamLoader {
                     }
                     break;
                 case XmlPullParser.END_TAG:
-                    String examSrc = xmlParser.getAttributeValue(null, SOURCE_ATTR);
-                    examThemeData = examTree.getCurElem().getData();
-                    examThemeData.setSource(examSrc);
                     // Возращаемся на уровень назад.
                     examTree.prev();
                     break;
@@ -176,10 +176,7 @@ public class ExamLoader {
 
         xmlSerializer.startTag(null, THEME_TAG);
         xmlSerializer.attribute(null, NAME_ATTR, parentExamTheme.getData().getName());
-
-        // Если нет детей, то значит конечная тема.
-        if (parentExamTheme.getChildren().isEmpty())
-            xmlSerializer.attribute(null, SOURCE_ATTR, parentExamTheme.getData().getSource());
+        xmlSerializer.attribute(null, ID_ATTR, parentExamTheme.getData().getId());
 
         // Рекурсия по составным темам входящей темы.
         for (NavigationTree.Node<ExamThemeData> examTheme : parentExamTheme.getChildren()) {

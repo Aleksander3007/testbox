@@ -22,6 +22,7 @@ import java.io.Serializable;
 public class MainActivity extends BaseActivity {
 
     private static final String sExamRootStr = "Экзамен";
+    private static final String sExamRootId = "0";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +41,7 @@ public class MainActivity extends BaseActivity {
             }
 
             if (examThemes.getRootElement() == null) {
-                examThemes.createRootElement(new ExamThemeData(sExamRootStr));
+                examThemes.createRootElement(new ExamThemeData(sExamRootStr, sExamRootId));
             }
         } catch (IOException ioex) {
             Log.e("MainActivity", ioex.getMessage());

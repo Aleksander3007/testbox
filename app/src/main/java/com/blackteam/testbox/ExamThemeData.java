@@ -5,27 +5,24 @@ package com.blackteam.testbox;
  */
 public class ExamThemeData {
 
-    /** Тема содержит в себе другие темы (т.е. данная тема не является конечной). */
-    public static final String COMPOSITE_THEME = null;
-
     /** Название темы. */
     private String mName;
-    /** Имя файла, где хранятся данные по экзамеционной теме. */
-    private String mSource = COMPOSITE_THEME;
+    /** Идентификатор темы. */
+    private String mId;
 
     public ExamThemeData(String name) {
         this.mName = name;
     }
 
-    public ExamThemeData(String name, String source) {
+    public ExamThemeData(String name, String id) {
         this.mName = name;
-        this.mSource = source;
+        this.mId = id;
     }
 
     public String getName() { return mName; }
-    public String getSource() { return mSource; }
+    public String getId() { return mId; }
 
-    public void setSource(String src) { mSource = src; }
+    public void setId(String id) { mId = id; }
 
     @Override
     public String toString() {
