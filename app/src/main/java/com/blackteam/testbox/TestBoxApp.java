@@ -20,7 +20,7 @@ public class TestBoxApp extends Application {
     }
     private UserType mUserType = UserType.USER;
 
-    private NavigationTree<String> mExamTree;
+    private NavigationTree<ExamThemeData> mExamTree;
 
     public UserType getUserType() {
         return mUserType;
@@ -30,11 +30,11 @@ public class TestBoxApp extends Application {
         this.mUserType = userType;
     }
 
-    public NavigationTree<String> getExamTree() {
+    public NavigationTree<ExamThemeData> getExamTree() {
         return mExamTree;
     }
 
-    public void setExamTree(NavigationTree<String> examTree) {
+    public void setExamTree(NavigationTree<ExamThemeData> examTree) {
         this.mExamTree = examTree;
     }
 }

@@ -12,6 +12,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.blackteam.testbox.ExamThemeData;
 import com.blackteam.testbox.R;
 import com.blackteam.testbox.TestBoxApp;
 import com.blackteam.testbox.utils.NavigationTree;
@@ -22,8 +23,8 @@ public class ExamThemesActivity extends BaseActivity {
     private ListView mExamThemesListView;
     private FloatingActionButton mCreateExamThemeBtn;
 
-    private NavigationTree.Node<String> mExamThemes;
-    private ArrayAdapter<WideTree.Node<String>> mExamThemesListAdapter;
+    private NavigationTree.Node<ExamThemeData> mExamThemes;
+    private ArrayAdapter<WideTree.Node<ExamThemeData>> mExamThemesListAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,9 +46,12 @@ public class ExamThemesActivity extends BaseActivity {
         mExamThemesListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View itemClicked, int position, long id) {
+
+                String theme = ((TextView) itemClicked).getText().toString();
+
                 /** Навигация вперед. */
-                ((TestBoxApp)getApplicationContext()).getExamTree().next(
-                        (String) ((TextView) itemClicked).getText());
+                ((TestBoxApp)getApplicationContext()).getExamTree().next(new ExamThemeData(theme));
+
                 Intent examThemesActivity = new Intent(getApplicationContext(), ExamThemesActivity.class);
                 startActivity(examThemesActivity);
             }
@@ -89,7 +93,7 @@ public class ExamThemesActivity extends BaseActivity {
      * @param newExamThemeName Имя новой темы экзамена.
      */
     public void addNewExamTheme(String newExamThemeName) {
-        mExamThemes.addChild(newExamThemeName);
+        mExamThemes.addChild(new ExamThemeData(newExamThemeName));
         mExamThemesListAdapter.notifyDataSetChanged();
     }
 
@@ -113,7 +117,6 @@ public class ExamThemesActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        NavigationTree<String> nt = ((TestBoxApp)getApplicationContext()).getExamTree();
         ((TestBoxApp)getApplicationContext()).getExamTree().prev();
         super.onBackPressed();
     }
