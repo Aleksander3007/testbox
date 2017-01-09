@@ -28,6 +28,10 @@ public class NavigationTreeTest {
         // Поднимаеся еще на один уровень вверх.
         testPrev(navigationTree, "root");
 
+        // Пробуем еще раз вверх.
+        Assert.assertNull("Проверка навигации из root вверх", navigationTree.prev());
+        Assert.assertEquals("root", navigationTree.getCurElem().getData());
+
         // Проверяем next() из конечного.
         navigationTree = new NavigationTree<>("root");
         try {
@@ -45,7 +49,7 @@ public class NavigationTreeTest {
 
     public void testNext(NavigationTree<String> navigationTree, String nextNodeName) {
         NavigationTree.Node<String> currentNode =  navigationTree.next(nextNodeName);
-        Assert.assertNotNull("Проверка навигации вперед (от root)", currentNode);
+        Assert.assertNotNull("Проверка навигации вниз (от root)", currentNode);
         Assert.assertEquals(nextNodeName, currentNode.getData());
         currentNode =  navigationTree.getCurElem();
         Assert.assertNotNull("Проверка получения текущего элемента после next()", currentNode);
@@ -54,7 +58,7 @@ public class NavigationTreeTest {
 
     public void testPrev(NavigationTree<String> navigationTree, String prevNodeName) {
         NavigationTree.Node<String> currentNode =  navigationTree.prev();
-        Assert.assertNotNull("Проверка навигации назад (к root)", currentNode);
+        Assert.assertNotNull("Проверка навигации вверх (к root)", currentNode);
         Assert.assertEquals(prevNodeName, currentNode.getData());
         currentNode =  navigationTree.getCurElem();
         Assert.assertNotNull("Проверка получения текущего элемента после prev()", currentNode);

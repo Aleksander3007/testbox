@@ -54,7 +54,6 @@ public class NavigationTree<E> extends WideTree<E> implements Serializable {
         if (mRoot == null)
             return null;
 
-        Node<E> currentNode = mBreadCrumbs.peek();
         Node<E> nextNode = mBreadCrumbs.peek().getChild(data);
         if (nextNode == null)
             throw new IllegalArgumentException("Node '" + data.toString() +  "' doesn't exist.");
@@ -66,18 +65,15 @@ public class NavigationTree<E> extends WideTree<E> implements Serializable {
 
     /**
      * Сделать предыдущий узел текущим.
-     * @return узел, null - если текущий узел root или дерево пустое.
+     * @return предыдущий узел, null - если текущий узел root или дерево пустое.
      */
     public WideTree.Node<E> prev() {
         if ((mRoot == null) || (mBreadCrumbs.size() == 1))
             return null;
 
         mBreadCrumbs.pop();
-        WideTree.Node<E> prevNode = mBreadCrumbs.peek();
 
-        mBreadCrumbs.add(prevNode);
-
-        return prevNode;
+        return mBreadCrumbs.peek();
     }
 
     /**
