@@ -136,4 +136,15 @@ public class WideTreeTest {
             e.printStackTrace();
         }
     }
+
+    @Test
+    public void testHasChildren() {
+        WideTree<String> wideTree = new WideTree<>("Root element");
+        WideTree.Node<String> root = wideTree.getRootElement();
+
+        root.addChild("node1.1");
+        root.addChild("node1.2");
+
+        Assert.assertTrue(root.hasChildren());
+    }
 }

@@ -101,6 +101,14 @@ public class WideTree<E>  implements Serializable {
             return mChildren;
         }
 
+        /**
+         * Существуют ли подузлы данного узла?
+         * @return true - существуют.
+         */
+        public boolean hasChildren() {
+            return mChildren.size() > 0;
+        }
+
         public List<E> getChildrenData() {
             List<E> childrenData = new ArrayList<>(mChildren.size());
             for (Node<E> child : mChildren) {
