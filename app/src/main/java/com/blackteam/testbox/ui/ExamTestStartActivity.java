@@ -42,6 +42,12 @@ public class ExamTestStartActivity extends BaseActivity {
     }
 
     @Override
+    public void onBackPressed() {
+        ((TestBoxApp)getApplicationContext()).getExamTree().prev();
+        super.onBackPressed();
+    }
+
+    @Override
     protected void setModeUser() {
         super.setModeUser();
         UIHelper.disableEditText(mTestDescriptionEditText);
@@ -57,7 +63,17 @@ public class ExamTestStartActivity extends BaseActivity {
         mCreateQuestionsButton.setVisibility(View.VISIBLE);
     }
 
+    public void startTestOnClick(View v) {
+        startTestQuestionActivity();
+    }
+
     public void createQuestionsOnClick(View v) {
-        // TODO: Обработка нажатия на кнопку содать вопросы.
+        startTestQuestionActivity();
+    }
+
+    private void startTestQuestionActivity() {
+        Intent examTestQuestionAcitivity =
+                new Intent(getApplicationContext(), ExamTestQuestionActivity.class);
+        startActivity(examTestQuestionAcitivity);
     }
 }
