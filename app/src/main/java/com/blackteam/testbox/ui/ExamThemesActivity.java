@@ -22,6 +22,7 @@ public class ExamThemesActivity extends BaseActivity {
 
     private ListView mExamThemesListView;
     private FloatingActionButton mCreateExamThemeBtn;
+    private FloatingActionButton mCreateTestBtn;
 
     private NavigationTree.Node<ExamThemeData> mExamThemes;
     private ArrayAdapter<WideTree.Node<ExamThemeData>> mExamThemesListAdapter;
@@ -33,6 +34,7 @@ public class ExamThemesActivity extends BaseActivity {
 
         mExamThemesListView = (ListView) findViewById(R.id.lv_exam_themes);
         mCreateExamThemeBtn = (FloatingActionButton) findViewById(R.id.fab_createNewExamTheme);
+        mCreateTestBtn = (FloatingActionButton) findViewById(R.id.fab_createNewTest);
 
         mExamThemes = ((TestBoxApp)getApplicationContext()).getExamTree().getCurElem();
 
@@ -70,11 +72,14 @@ public class ExamThemesActivity extends BaseActivity {
     }
 
     private void setModeUser() {
-        mCreateExamThemeBtn.setVisibility(View.INVISIBLE);
+        mCreateExamThemeBtn.hide();
+        mCreateTestBtn.hide();
     }
 
     private void setModeEditor() {
-        mCreateExamThemeBtn.setVisibility(View.VISIBLE);
+        mCreateExamThemeBtn.show();
+        if (mExamThemes.getChildren().size() == 0)
+            mCreateTestBtn.show();
     }
 
     /**
@@ -97,10 +102,16 @@ public class ExamThemesActivity extends BaseActivity {
         mExamThemesListAdapter.notifyDataSetChanged();
     }
 
+    /**
+     * Обработка нажатия на элемент меню.
+     * @param item Выбранынй элемент меню.
+     * @return
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
+        // Выбор режима пользователя.
         if (id == R.id.mi_userType) {
             switch (((TestBoxApp)getApplicationContext()).getUserType()) {
                 case USER:

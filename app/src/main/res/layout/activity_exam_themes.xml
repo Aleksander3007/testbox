@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
@@ -19,11 +20,26 @@
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_createNewExamTheme"
         android:onClick="createNewExamThemeOnClick"
-        android:visibility="invisible"
+        android:visibility="visible"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
-        android:src="@android:drawable/ic_input_add" />
+        android:layout_marginLeft="10dp"
+        android:src="@android:drawable/ic_input_add"
+        app:backgroundTint="#808080" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_createNewTest"
+        android:onClick="createNewTestOnClick"
+        android:visibility="visible"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@+id/fab_createNewExamTheme"
+        android:layout_toStartOf="@+id/fab_createNewExamTheme"
+        android:layout_alignTop="@+id/fab_createNewExamTheme"
+        android:layout_marginLeft="10dp"
+        app:backgroundTint="#808080"
+        android:src="@android:drawable/ic_menu_edit" />
 
 </RelativeLayout>
