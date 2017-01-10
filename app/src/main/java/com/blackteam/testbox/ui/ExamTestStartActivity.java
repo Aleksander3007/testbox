@@ -1,10 +1,8 @@
 package com.blackteam.testbox.ui;
 
-import android.graphics.Color;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.text.InputType;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -24,7 +22,7 @@ public class ExamTestStartActivity extends BaseActivity {
     private TextView mTestNameTextView;
     private EditText mTestDescriptionEditText;
     private Button mStartTestButton;
-    private Button mAddQuestionButton;
+    private Button mCreateQuestionsButton;
 
     private NavigationTree.Node<ExamThemeData> mExamTheme;
 
@@ -38,7 +36,7 @@ public class ExamTestStartActivity extends BaseActivity {
         mTestNameTextView = (TextView) findViewById(R.id.tv_testName);
         mTestDescriptionEditText = (EditText) findViewById(R.id.et_testDescription);
         mStartTestButton = (Button) findViewById(R.id.btn_startTest);
-        mAddQuestionButton = (Button) findViewById(R.id.btn_addQuestion);
+        mCreateQuestionsButton = (Button) findViewById(R.id.btn_createQuestions);
 
         mTestNameTextView.setText(mExamTheme.getData().getName());
     }
@@ -48,7 +46,7 @@ public class ExamTestStartActivity extends BaseActivity {
         super.setModeUser();
         UIHelper.disableEditText(mTestDescriptionEditText);
         mStartTestButton.setVisibility(View.VISIBLE);
-        mAddQuestionButton.setVisibility(View.INVISIBLE);
+        mCreateQuestionsButton.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -56,6 +54,10 @@ public class ExamTestStartActivity extends BaseActivity {
         super.setModeEditor();
         UIHelper.enableEditText(mTestDescriptionEditText);
         mStartTestButton.setVisibility(View.INVISIBLE);
-        mAddQuestionButton.setVisibility(View.VISIBLE);
+        mCreateQuestionsButton.setVisibility(View.VISIBLE);
+    }
+
+    public void createQuestionsOnClick(View v) {
+        // TODO: Обработка нажатия на кнопку содать вопросы.
     }
 }

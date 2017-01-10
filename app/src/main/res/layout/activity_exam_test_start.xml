@@ -31,9 +31,9 @@
         android:layout_gravity="center" />
 
     <Button
-        android:id="@+id/btn_addQuestion"
-        android:onClick="startQuestionOnClick"
-        android:text="@string/btn_addQuestion"
+        android:id="@+id/btn_createQuestions"
+        android:onClick="createQuestionsOnClick"
+        android:text="@string/btn_createQuestions"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="right" />
