@@ -59,12 +59,26 @@ public class BaseActivity extends AppCompatActivity {
     private void setViewByUserType() {
         switch (((TestBoxApp)getApplicationContext()).getUserType()) {
             case USER:
-                mUserTypeMenuItem.setTitle(R.string.user_type_user);
+                setModeUser();
                 break;
             case EDITOR:
-                mUserTypeMenuItem.setTitle(R.string.user_type_editor);
+                setModeEditor();
                 break;
         }
+    }
+
+    /**
+     * Устанавливаем режим отображения для пользователя.
+     */
+    protected void setModeUser() {
+        mUserTypeMenuItem.setTitle(R.string.user_type_user);
+    }
+
+    /**
+     * Устанавливаем режим отображения для редактора.
+     */
+    protected void setModeEditor() {
+        mUserTypeMenuItem.setTitle(R.string.user_type_editor);
     }
 
     @Override

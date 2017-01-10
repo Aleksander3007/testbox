@@ -10,7 +10,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.blackteam.testbox.ExamThemeData;
 import com.blackteam.testbox.R;
@@ -24,7 +23,7 @@ public class ExamThemesActivity extends BaseActivity {
     private FloatingActionButton mCreateExamThemeBtn;
     private FloatingActionButton mCreateTestBtn;
 
-    private NavigationTree.Node<ExamThemeData> mExamThemes;
+    private NavigationTree.Node<ExamThemeData> mExamTheme;
     private ArrayAdapter<WideTree.Node<ExamThemeData>> mExamThemesListAdapter;
 
     @Override
@@ -36,12 +35,12 @@ public class ExamThemesActivity extends BaseActivity {
         mCreateExamThemeBtn = (FloatingActionButton) findViewById(R.id.fab_createNewExamTheme);
         mCreateTestBtn = (FloatingActionButton) findViewById(R.id.fab_createNewTest);
 
-        mExamThemes = ((TestBoxApp)getApplicationContext()).getExamTree().getCurElem();
+        mExamTheme = ((TestBoxApp)getApplicationContext()).getExamTree().getCurElem();
 
         mExamThemesListAdapter =
                 new ArrayAdapter<>(this,
                         R.layout.support_simple_spinner_dropdown_item,
-                        mExamThemes.getChildren()
+                        mExamTheme.getChildren()
                 );
 
         /** Добавляем слушателя нажатий на list. */
@@ -49,32 +48,28 @@ public class ExamThemesActivity extends BaseActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View itemClicked, int position, long id) {
 
+                // Определяем выбранную экз. тему.
                 String theme = ((TextView) itemClicked).getText().toString();
+                ExamThemeData examThemeData = new ExamThemeData(theme);
 
-                /** Навигация вперед. */
-                ((TestBoxApp)getApplicationContext()).getExamTree().next(new ExamThemeData(theme));
+                NavigationTree<ExamThemeData>  examTree =
+                        ((TestBoxApp)getApplicationContext()).getExamTree();
+                examTree.next(examThemeData);
 
-                Intent examThemesActivity = new Intent(getApplicationContext(), ExamThemesActivity.class);
-                startActivity(examThemesActivity);
+                if (examTree.getCurElem().hasChildren()) {
+                    Intent examThemesActivity =
+                            new Intent(getApplicationContext(), ExamThemesActivity.class);
+                    startActivity(examThemesActivity);
+                }
+                else {
+                    Intent examTestStartActivity =
+                            new Intent(getApplicationContext(), ExamTestStartActivity.class);
+                    startActivity(examTestStartActivity);
+                }
             }
         });
 
         mExamThemesListView.setAdapter(mExamThemesListAdapter);
-    }
-
-    @Override
-    protected void onStart() {
-
-        switch (((TestBoxApp)getApplicationContext()).getUserType()) {
-            case USER:
-                setModeUser();
-                break;
-            case EDITOR:
-                setModeEditor();
-                break;
-        }
-
-        super.onStart();
     }
 
     @Override
@@ -84,17 +79,21 @@ public class ExamThemesActivity extends BaseActivity {
         super.onStop();
     }
 
-    private void setModeUser() {
+    @Override
+    protected void setModeUser() {
+        super.setModeUser();
         mCreateExamThemeBtn.hide();
         mCreateTestBtn.hide();
     }
 
-    private void setModeEditor() {
+    @Override
+    protected void setModeEditor() {
+        super.setModeEditor();
         mCreateExamThemeBtn.show();
-        if (mExamThemes.getChildren().size() == 0)
-            mCreateTestBtn.show();
-        else
+        if (mExamTheme.hasChildren())
             mCreateTestBtn.hide();
+        else
+            mCreateTestBtn.show();
     }
 
     /**
@@ -113,32 +112,8 @@ public class ExamThemesActivity extends BaseActivity {
      * @param newExamThemeName Имя новой темы экзамена.
      */
     public void addNewExamTheme(String newExamThemeName) {
-        mExamThemes.addChild(new ExamThemeData(newExamThemeName, generateExamThemeId()));
+        mExamTheme.addChild(new ExamThemeData(newExamThemeName, generateExamThemeId()));
         mExamThemesListAdapter.notifyDataSetChanged();
-    }
-
-    /**
-     * Обработка нажатия на элемент меню.
-     * @param item Выбранынй элемент меню.
-     * @return
-     */
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        // Выбор режима пользователя.
-        if (id == R.id.mi_userType) {
-            switch (((TestBoxApp)getApplicationContext()).getUserType()) {
-                case USER:
-                    setModeEditor();
-                    break;
-                case EDITOR:
-                    setModeUser();
-                    break;
-            }
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -148,6 +123,6 @@ public class ExamThemesActivity extends BaseActivity {
     }
 
     private String generateExamThemeId() {
-        return  mExamThemes.getData().getId() + mExamThemes.getChildren().size();
+        return  mExamTheme.getData().getId() + mExamTheme.getChildren().size();
     }
 }

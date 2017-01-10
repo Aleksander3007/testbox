@@ -20,7 +20,7 @@
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_createNewExamTheme"
         android:onClick="createNewExamThemeOnClick"
-        android:visibility="visible"
+        android:visibility="invisible"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
@@ -32,7 +32,7 @@
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_createNewTest"
         android:onClick="createNewTestOnClick"
-        android:visibility="visible"
+        android:visibility="invisible"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toLeftOf="@+id/fab_createNewExamTheme"
