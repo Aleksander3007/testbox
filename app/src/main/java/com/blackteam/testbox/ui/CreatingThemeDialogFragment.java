@@ -31,6 +31,14 @@ public class CreatingThemeDialogFragment extends DialogFragment {
             }
         });
 
+        Button btnCancel = (Button) creatingThemeDialogView.findViewById(R.id.btn_cancel);
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dismiss();
+            }
+        });
+
         return creatingThemeDialogView;
     }
 }

@@ -60,6 +60,10 @@ public class ExamThemesActivity extends BaseActivity {
         });
 
         mExamThemesListView.setAdapter(mExamThemesListAdapter);
+    }
+
+    @Override
+    protected void onStart() {
 
         switch (((TestBoxApp)getApplicationContext()).getUserType()) {
             case USER:
@@ -69,6 +73,15 @@ public class ExamThemesActivity extends BaseActivity {
                 setModeEditor();
                 break;
         }
+
+        super.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        // При остановки Activity возращаем её в режим пользователя.
+        setModeUser();
+        super.onStop();
     }
 
     private void setModeUser() {
@@ -80,6 +93,8 @@ public class ExamThemesActivity extends BaseActivity {
         mCreateExamThemeBtn.show();
         if (mExamThemes.getChildren().size() == 0)
             mCreateTestBtn.show();
+        else
+            mCreateTestBtn.hide();
     }
 
     /**
