@@ -29,17 +29,4 @@
         android:src="@android:drawable/ic_input_add"
         app:backgroundTint="#808080" />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_createNewTest"
-        android:onClick="createNewTestOnClick"
-        android:visibility="invisible"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toLeftOf="@+id/fab_createNewExamTheme"
-        android:layout_toStartOf="@+id/fab_createNewExamTheme"
-        android:layout_alignTop="@+id/fab_createNewExamTheme"
-        android:layout_marginLeft="10dp"
-        app:backgroundTint="#808080"
-        android:src="@android:drawable/ic_menu_edit" />
-
 </RelativeLayout>

@@ -4,7 +4,6 @@ import android.app.FragmentManager;
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.os.Bundle;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -21,7 +20,6 @@ public class ExamThemesActivity extends BaseActivity {
 
     private ListView mExamThemesListView;
     private FloatingActionButton mCreateExamThemeBtn;
-    private FloatingActionButton mCreateTestBtn;
 
     private NavigationTree.Node<ExamThemeData> mExamTheme;
     private ArrayAdapter<WideTree.Node<ExamThemeData>> mExamThemesListAdapter;
@@ -33,7 +31,6 @@ public class ExamThemesActivity extends BaseActivity {
 
         mExamThemesListView = (ListView) findViewById(R.id.lv_exam_themes);
         mCreateExamThemeBtn = (FloatingActionButton) findViewById(R.id.fab_createNewExamTheme);
-        mCreateTestBtn = (FloatingActionButton) findViewById(R.id.fab_createNewTest);
 
         mExamTheme = ((TestBoxApp)getApplicationContext()).getExamTree().getCurElem();
 
@@ -83,17 +80,12 @@ public class ExamThemesActivity extends BaseActivity {
     protected void setModeUser() {
         super.setModeUser();
         mCreateExamThemeBtn.hide();
-        mCreateTestBtn.hide();
     }
 
     @Override
     protected void setModeEditor() {
         super.setModeEditor();
         mCreateExamThemeBtn.show();
-        if (mExamTheme.hasChildren())
-            mCreateTestBtn.hide();
-        else
-            mCreateTestBtn.show();
     }
 
     /**
