@@ -12,6 +12,9 @@ import android.widget.TextView;
 
 import com.blackteam.testbox.R;
 
+/**
+ * Диалоговое окно для создания экзамеционной темы.
+ */
 public class CreatingThemeDialogFragment extends DialogFragment {
     @Nullable
     @Override

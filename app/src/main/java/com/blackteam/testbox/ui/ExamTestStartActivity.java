@@ -39,6 +39,12 @@ public class ExamTestStartActivity extends BaseActivity {
         mCreateQuestionsButton = (Button) findViewById(R.id.btn_createQuestions);
 
         mTestNameTextView.setText(mExamTheme.getData().getName());
+
+        // TODO: тут необходимо считать файл.
+        // и если он пустой или его не существует, то
+        // mTestDescriptionEditText.setText(R.string.test_isnt_existed);
+        // mStartTestButton.setVisibility(View.INVISIBLE);
+        // в противном случае выводим description.
     }
 
     @Override
