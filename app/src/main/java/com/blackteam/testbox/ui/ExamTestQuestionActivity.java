@@ -8,7 +8,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.blackteam.testbox.R;
 import com.blackteam.testbox.TestBoxApp;
@@ -25,7 +27,7 @@ import java.util.List;
  */
 public class ExamTestQuestionActivity extends BaseActivity {
 
-    private ListView mAnswersListView;
+    private LinearLayout mAnswersLinearLayout;
     private EditText mQuestionEditText;
     private FloatingActionButton mCreateAnswerFab;
 
@@ -37,7 +39,7 @@ public class ExamTestQuestionActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_exam_test_question);
 
-        mAnswersListView = (ListView) findViewById(R.id.lv_answers);
+        mAnswersLinearLayout = (LinearLayout) findViewById(R.id.ll_answers);
         mQuestionEditText = (EditText) findViewById(R.id.et_question);
         mCreateAnswerFab = (FloatingActionButton) findViewById(R.id.fab_createNewAnswer);
 
@@ -53,17 +55,23 @@ public class ExamTestQuestionActivity extends BaseActivity {
         switch (((TestBoxApp)getApplicationContext()).getUserType()) {
             case USER:
                 UIHelper.disableEditText(mQuestionEditText);
-                mAnswersListAdapter = new ArrayAdapter<>(this, R.layout.listview_elem_answer,
-                        R.id.tv_answerText, answers);
+                for (String answer : answers) {
+                    final View answerView = getLayoutInflater().inflate(R.layout.listview_elem_answer, null);
+                    TextView answerTextView = (TextView) answerView.findViewById(R.id.tv_answerText);
+                    answerTextView.setText(answer);
+                    mAnswersLinearLayout.addView(answerView);
+                }
                 break;
             case EDITOR:
                 UIHelper.enableEditText(mQuestionEditText);
-                mAnswersListAdapter = new ArrayAdapter<>(this, R.layout.listview_elem_edit_answer,
-                        R.id.et_answerText, answers);
+                for (String answer : answers) {
+                    final View answerView = getLayoutInflater().inflate(R.layout.listview_elem_edit_answer, null);
+                    EditText answerEditText = (EditText) answerView.findViewById(R.id.et_answerText);
+                    answerEditText.setText(answer);
+                    mAnswersLinearLayout.addView(answerView);
+                }
                 break;
         }
-
-        mAnswersListView.setAdapter(mAnswersListAdapter);
     }
 
     @Override

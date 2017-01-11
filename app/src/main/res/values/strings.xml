@@ -9,6 +9,8 @@
     <string name="btn_startTest">Начать тест</string>
     <string name="btn_createQuestions">Добавить вопрос</string>
     <string name="create_new_answer">Вариант ответа</string>
+    <string name="btn_nextQuestion">Следующий</string>
+    <string name="btn_finish">Завершить</string>
 
     <string name="test_isnt_existed">Тест не доступен</string>
 
