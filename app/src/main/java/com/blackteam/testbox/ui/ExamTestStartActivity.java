@@ -3,16 +3,23 @@ package com.blackteam.testbox.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.blackteam.testbox.ExamTest;
 import com.blackteam.testbox.ExamThemeData;
 import com.blackteam.testbox.R;
 import com.blackteam.testbox.TestBoxApp;
 import com.blackteam.testbox.utils.NavigationTree;
 import com.blackteam.testbox.utils.UIHelper;
+
+import org.xmlpull.v1.XmlPullParserException;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 /**
  * Стартовая страница для экзамеционного текста.
@@ -25,6 +32,10 @@ public class ExamTestStartActivity extends BaseActivity {
     private Button mCreateQuestionsButton;
 
     private NavigationTree.Node<ExamThemeData> mExamTheme;
+    private ExamTest examTest;
+
+    /** Существует ли тест вообще (Был ли он создан ранее). */
+    private boolean mIsExistedTest = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -40,11 +51,25 @@ public class ExamTestStartActivity extends BaseActivity {
 
         mTestNameTextView.setText(mExamTheme.getData().getName());
 
-        // TODO: тут необходимо считать файл.
-        // и если он пустой или его не существует, то
-        // mTestDescriptionEditText.setText(R.string.test_isnt_existed);
-        // mStartTestButton.setVisibility(View.INVISIBLE);
-        // в противном случае выводим description.
+        // Загружаем данные о тесте.
+        examTest = new ExamTest(mExamTheme.getData().getId());
+        try {
+            examTest.load(getApplicationContext());
+            mTestDescriptionEditText.setText(examTest.getDescription());
+            mIsExistedTest = true;
+
+        } catch (FileNotFoundException fnfex) {
+            // Если файл не найден значит он еще не был создан.
+            mTestDescriptionEditText.setText(R.string.test_isnt_existed);
+            mStartTestButton.setVisibility(View.INVISIBLE);
+            mIsExistedTest = false;
+        } catch (IOException ioex) {
+            Log.e("ExamTestQuestionA", ioex.getMessage());
+            ioex.printStackTrace();
+        } catch (XmlPullParserException xppex) {
+            Log.e("ExamTestQuestionA", xppex.getMessage());
+            xppex.printStackTrace();
+        }
     }
 
     @Override
@@ -57,7 +82,7 @@ public class ExamTestStartActivity extends BaseActivity {
     protected void setModeUser() {
         super.setModeUser();
         UIHelper.disableEditText(mTestDescriptionEditText);
-        mStartTestButton.setVisibility(View.VISIBLE);
+        if (mIsExistedTest) mStartTestButton.setVisibility(View.VISIBLE);
         mCreateQuestionsButton.setVisibility(View.INVISIBLE);
     }
 
