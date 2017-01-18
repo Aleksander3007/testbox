@@ -14,6 +14,10 @@
 
     <string name="test_isnt_existed">Тест не доступен</string>
     <string name="question_text_empty">Необходимо указать вопрос</string>
+    <string name="btn_save">Сохранить</string>
+    
+    <string name="msg_successful_saving">Изменения успешно сохранены</string>
+    <string name="msg_error_saving">Не удалось сохранить изменения</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

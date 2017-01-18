@@ -27,9 +27,11 @@ public class ExamTest {
     /** Формат имени файла. Для получения имени файла использовать функции {@link #getFileName()}*/
     public static final String FILE_NAME_FORMAT = "et%s.xml";
 
+    private static final String sDescriptionTag = "description";
     private static final String sQuestionTag = "question";
     private static final String sAnswerTag = "answer";
 
+    private static final String sDescriptionAttr = "text";
     private static final String sQuestionTextAttr = "text";
     private static final String sAnswerTextAttr = "text";
     private static final String sIsRightAnswerAttr = "isRight";
@@ -93,6 +95,9 @@ public class ExamTest {
                         TestAnswer answer = new TestAnswer(answerText, isRightAnswer);
                         answers.add(answer);
                     }
+                    else if (xmlParser.getName().equals(sDescriptionTag)) {
+                        mDescription = xmlParser.getAttributeValue(null, sDescriptionAttr);
+                    }
                     break;
                 case XmlPullParser.END_TAG:
                     // Если закрывается тег вопрос, то добавляем к нему все ответы,
@@ -141,6 +146,12 @@ public class ExamTest {
         StringWriter stringWriter = new StringWriter();
         xmlSerializer.setOutput(stringWriter);
         xmlSerializer.startDocument("UTF-8", true);
+
+        if (mDescription != null) {
+            xmlSerializer.startTag(null, sDescriptionTag);
+            xmlSerializer.attribute(null, sDescriptionAttr, mDescription);
+            xmlSerializer.endTag(null, sDescriptionTag);
+        }
 
         // Записываем все вопросы в тесте.
         for (TestQuestion testQuestion : questions) {

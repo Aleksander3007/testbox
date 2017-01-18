@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.blackteam.testbox.ExamTest;
 import com.blackteam.testbox.ExamThemeData;
@@ -30,6 +31,7 @@ public class ExamTestStartActivity extends BaseActivity {
     private EditText mTestDescriptionEditText;
     private Button mStartTestButton;
     private Button mCreateQuestionsButton;
+    private Button mSaveButton;
 
     private NavigationTree.Node<ExamThemeData> mExamTheme;
     private ExamTest examTest;
@@ -48,6 +50,7 @@ public class ExamTestStartActivity extends BaseActivity {
         mTestDescriptionEditText = (EditText) findViewById(R.id.et_testDescription);
         mStartTestButton = (Button) findViewById(R.id.btn_startTest);
         mCreateQuestionsButton = (Button) findViewById(R.id.btn_createQuestions);
+        mSaveButton = (Button) findViewById(R.id.btn_save);
 
         mTestNameTextView.setText(mExamTheme.getData().getName());
 
@@ -84,6 +87,7 @@ public class ExamTestStartActivity extends BaseActivity {
         UIHelper.disableEditText(mTestDescriptionEditText);
         if (mIsExistedTest) mStartTestButton.setVisibility(View.VISIBLE);
         mCreateQuestionsButton.setVisibility(View.INVISIBLE);
+        mSaveButton.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -92,14 +96,31 @@ public class ExamTestStartActivity extends BaseActivity {
         UIHelper.enableEditText(mTestDescriptionEditText);
         mStartTestButton.setVisibility(View.INVISIBLE);
         mCreateQuestionsButton.setVisibility(View.VISIBLE);
+        mSaveButton.setVisibility(View.VISIBLE);
     }
 
-    public void startTestOnClick(View v) {
+    public void startTestOnClick(View view) {
         startTestQuestionActivity();
     }
 
-    public void createQuestionsOnClick(View v) {
+    public void createQuestionsOnClick(View view) {
         startTestQuestionActivity();
+    }
+
+    /**
+     * Обработка нажатия кнопки сохранить.
+     * @param view
+     */
+    public void saveOnClick(View view) {
+        try {
+            examTest.setDescription(mTestDescriptionEditText.getText().toString());
+            examTest.save(getApplicationContext());
+            Toast.makeText(this, R.string.msg_successful_saving, Toast.LENGTH_SHORT).show();
+        } catch (IOException ioex) {
+            Log.e("ExamTestQuestionA", ioex.getMessage());
+            ioex.printStackTrace();
+            Toast.makeText(this, R.string.msg_error_saving, Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void startTestQuestionActivity() {
