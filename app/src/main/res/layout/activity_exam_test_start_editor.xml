@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <EditText
+        android:id="@+id/et_testDescription"
+        android:inputType="textMultiLine"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/element_vertical_margin"
+        android:layout_marginBottom="@dimen/element_vertical_margin"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/element_vertical_margin"
+        android:layout_marginBottom="@dimen/element_vertical_margin" >
+
+        <Button
+            android:id="@+id/btn_save"
+            android:onClick="saveOnClick"
+            android:text="@string/btn_save"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/btn_createQuestions"
+            android:onClick="createQuestionsOnClick"
+            android:text="@string/btn_createQuestions"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"/>
+
+    </RelativeLayout>
+</LinearLayout>

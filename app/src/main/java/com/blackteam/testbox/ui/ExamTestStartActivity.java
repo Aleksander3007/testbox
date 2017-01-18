@@ -1,5 +1,6 @@
 package com.blackteam.testbox.ui;
 
+import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -7,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,9 +31,10 @@ public class ExamTestStartActivity extends BaseActivity {
 
     private TextView mTestNameTextView;
     private EditText mTestDescriptionEditText;
+    private TextView mTestDescriptionTextView;
     private Button mStartTestButton;
-    private Button mCreateQuestionsButton;
-    private Button mSaveButton;
+    private LinearLayout mUserViewLinearLayout;
+    private LinearLayout mEditorViewLinearLayout;
 
     private NavigationTree.Node<ExamThemeData> mExamTheme;
     private ExamTest examTest;
@@ -48,9 +51,10 @@ public class ExamTestStartActivity extends BaseActivity {
 
         mTestNameTextView = (TextView) findViewById(R.id.tv_testName);
         mTestDescriptionEditText = (EditText) findViewById(R.id.et_testDescription);
+        mTestDescriptionTextView = (TextView) findViewById(R.id.tv_testDescription);
         mStartTestButton = (Button) findViewById(R.id.btn_startTest);
-        mCreateQuestionsButton = (Button) findViewById(R.id.btn_createQuestions);
-        mSaveButton = (Button) findViewById(R.id.btn_save);
+        mUserViewLinearLayout = (LinearLayout) findViewById(R.id.ll_exam_test_start_user);
+        mEditorViewLinearLayout = (LinearLayout) findViewById(R.id.ll_exam_test_start_editor);
 
         mTestNameTextView.setText(mExamTheme.getData().getName());
 
@@ -58,7 +62,7 @@ public class ExamTestStartActivity extends BaseActivity {
         examTest = new ExamTest(mExamTheme.getData().getId());
         try {
             examTest.load(getApplicationContext());
-            mTestDescriptionEditText.setText(examTest.getDescription());
+            displayDescription(examTest.getDescription());
             mIsExistedTest = true;
 
         } catch (FileNotFoundException fnfex) {
@@ -84,19 +88,19 @@ public class ExamTestStartActivity extends BaseActivity {
     @Override
     protected void setModeUser() {
         super.setModeUser();
+        // При переходе из режима "Редактор", остается фокус на редактируемом поле (хотя его уже не видно).
         UIHelper.disableEditText(mTestDescriptionEditText);
-        if (mIsExistedTest) mStartTestButton.setVisibility(View.VISIBLE);
-        mCreateQuestionsButton.setVisibility(View.INVISIBLE);
-        mSaveButton.setVisibility(View.INVISIBLE);
+        mUserViewLinearLayout.setVisibility(View.VISIBLE);
+        mEditorViewLinearLayout.setVisibility(View.INVISIBLE);
     }
 
     @Override
     protected void setModeEditor() {
         super.setModeEditor();
+        // При переходе в режим "Редактор", должно быть доступно редактируемое поле.
         UIHelper.enableEditText(mTestDescriptionEditText);
-        mStartTestButton.setVisibility(View.INVISIBLE);
-        mCreateQuestionsButton.setVisibility(View.VISIBLE);
-        mSaveButton.setVisibility(View.VISIBLE);
+        mUserViewLinearLayout.setVisibility(View.INVISIBLE);
+        mEditorViewLinearLayout.setVisibility(View.VISIBLE);
     }
 
     public void startTestOnClick(View view) {
@@ -115,6 +119,7 @@ public class ExamTestStartActivity extends BaseActivity {
         try {
             examTest.setDescription(mTestDescriptionEditText.getText().toString());
             examTest.save(getApplicationContext());
+            displayDescription(examTest.getDescription());
             Toast.makeText(this, R.string.msg_successful_saving, Toast.LENGTH_SHORT).show();
         } catch (IOException ioex) {
             Log.e("ExamTestQuestionA", ioex.getMessage());
@@ -127,5 +132,14 @@ public class ExamTestStartActivity extends BaseActivity {
         Intent examTestQuestionAcitivity =
                 new Intent(getApplicationContext(), ExamTestQuestionActivity.class);
         startActivity(examTestQuestionAcitivity);
+    }
+
+    /**
+     * Отображение описания теста на экране.
+     * @param description Описание теста.
+     */
+    private void displayDescription(String description) {
+        mTestDescriptionEditText.setText(description);
+        mTestDescriptionTextView.setText(description);
     }
 }
