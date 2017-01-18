@@ -67,8 +67,6 @@ public class ExamTestStartActivity extends BaseActivity {
 
         } catch (FileNotFoundException fnfex) {
             // Если файл не найден значит он еще не был создан.
-            mTestDescriptionEditText.setText(R.string.test_isnt_existed);
-            mStartTestButton.setVisibility(View.INVISIBLE);
             mIsExistedTest = false;
         } catch (IOException ioex) {
             Log.e("ExamTestQuestionA", ioex.getMessage());
@@ -103,16 +101,27 @@ public class ExamTestStartActivity extends BaseActivity {
         mEditorViewLinearLayout.setVisibility(View.VISIBLE);
     }
 
+    /**
+     * Обработка нажатия на кнопку "Начать тест".
+     * @param view
+     */
     public void startTestOnClick(View view) {
-        startTestQuestionActivity();
+        if (mIsExistedTest)
+            startTestQuestionActivity();
+        else
+            Toast.makeText(this, R.string.test_isnt_existed, Toast.LENGTH_SHORT).show();
     }
 
+    /**
+     * Обработка нажатия на кнопку "Создать вопрос".
+     * @param view
+     */
     public void createQuestionsOnClick(View view) {
         startTestQuestionActivity();
     }
 
     /**
-     * Обработка нажатия кнопки сохранить.
+     * Обработка нажатия на кнопку сохранить.
      * @param view
      */
     public void saveOnClick(View view) {
