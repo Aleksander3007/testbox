@@ -27,6 +27,7 @@ public class MainActivity extends BaseActivity {
 
     private static final String sExamRootStr = "Экзамен";
     private static final String sExamRootId = "0";
+    private static final boolean sIsExamRootTest = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +47,8 @@ public class MainActivity extends BaseActivity {
             }
 
             if (examThemes.getRootElement() == null) {
-                examThemes.createRootElement(new ExamThemeData(sExamRootStr, sExamRootId));
+                examThemes.createRootElement(
+                        new ExamThemeData(sExamRootStr, sExamRootId, sIsExamRootTest));
             }
         } catch (IOException ioex) {
             Log.e("MainActivity", ioex.getMessage());

@@ -33,27 +33,29 @@ public class ExamLoaderTest {
         NavigationTree<ExamThemeData> examTree = ExamLoader.loadExam(context);
         Assert.assertEquals("root", examTree.getRootElement().getData().getName());
 
-        examTree.next(new ExamThemeData("node1", "id1"));
+        examTree.next(new ExamThemeData("node1", "id1", false));
         Assert.assertEquals("node1", examTree.getCurElem().getData().getName());
 
-        examTree.next(new ExamThemeData("node1.1", "id1.1"));
+        examTree.next(new ExamThemeData("node1.1", "id1.1", false));
         Assert.assertEquals("node1.1", examTree.getCurElem().getData().getName());
         Assert.assertEquals("id1.1", examTree.getCurElem().getData().getId());
 
         examTree.prev();
-        examTree.next(new ExamThemeData("node1.2", "id1.2"));
+        examTree.next(new ExamThemeData("node1.2", "id1.2", false));
         Assert.assertEquals("node1.2", examTree.getCurElem().getData().getName());
         Assert.assertEquals("id1.2", examTree.getCurElem().getData().getId());
     }
 
     private NavigationTree<ExamThemeData> createExamTree() {
-        NavigationTree<ExamThemeData> examTree = new NavigationTree<>(new ExamThemeData("root", "id0"));
+        NavigationTree<ExamThemeData> examTree =
+                new NavigationTree<>(new ExamThemeData("root", "id0", false));
         NavigationTree.Node<ExamThemeData> root = examTree.getRootElement();
 
-        NavigationTree.Node<ExamThemeData> node1 = root.addChild(new ExamThemeData("node1", "id1"));
-        root.addChild(new ExamThemeData("node2", "id2"));
-        node1.addChild(new ExamThemeData("node1.1", "id1.1"));
-        node1.addChild(new ExamThemeData("node1.2", "id1.2"));
+        NavigationTree.Node<ExamThemeData> node1 =
+                root.addChild(new ExamThemeData("node1", "id1", false));
+        root.addChild(new ExamThemeData("node2", "id2", false));
+        node1.addChild(new ExamThemeData("node1.1", "id1.1", false));
+        node1.addChild(new ExamThemeData("node1.2", "id1.2", false));
 
         return examTree;
     }

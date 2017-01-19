@@ -9,18 +9,22 @@ public class ExamThemeData {
     private String mName;
     /** Идентификатор темы. */
     private String mId;
+    /** Содержит ли тема тест. */
+    private boolean mContainsTest;
 
     public ExamThemeData(String name) {
         this.mName = name;
     }
 
-    public ExamThemeData(String name, String id) {
+    public ExamThemeData(String name, String id, boolean containsTest) {
         this.mName = name;
         this.mId = id;
+        this.mContainsTest = containsTest;
     }
 
     public String getName() { return mName; }
     public String getId() { return mId; }
+    public boolean containsTest() { return mContainsTest; }
 
     public void setId(String id) { mId = id; }
 

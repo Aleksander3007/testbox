@@ -56,13 +56,12 @@ public class ExamThemesActivity extends BaseActivity {
                         ((TestBoxApp)getApplicationContext()).getExamTree();
                 examTree.next(examThemeData);
 
-                if (examTree.getCurElem().hasChildren()) {
+                if (!examTree.getCurElem().getData().containsTest()) {
                     Intent examThemesActivity =
                             new Intent(getApplicationContext(), ExamThemesActivity.class);
                     startActivity(examThemesActivity);
                 }
-                // Если подтем не существует, то переход на стартовую страницу теста.
-                // TODO: Прочитай для начала комент выше. По идеи мы должны как-то указывать конечный элемент это или нет.
+                // Если данная тема содержит тест, то переход на стартовую страницу теста.
                 else {
                     Intent examTestStartActivity =
                             new Intent(getApplicationContext(), ExamTestStartActivity.class);
@@ -108,9 +107,10 @@ public class ExamThemesActivity extends BaseActivity {
     /**
      * Добавить новую тему экзамена.
      * @param newExamThemeName Имя новой темы экзамена.
+     * @param isTest Содержит ли данная тема тест.
      */
-    public void addNewExamTheme(String newExamThemeName) {
-        mExamTheme.addChild(new ExamThemeData(newExamThemeName, generateExamThemeId()));
+    public void addNewExamTheme(String newExamThemeName, boolean isTest) {
+        mExamTheme.addChild(new ExamThemeData(newExamThemeName, generateExamThemeId(), isTest));
         mExamThemesListAdapter.notifyDataSetChanged();
     }
 

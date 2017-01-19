@@ -29,6 +29,7 @@ public class ExamLoader {
 
     public static final String NAME_ATTR = "name";
     public static final String ID_ATTR = "id";
+    public static final String IS_TEST_ATTR = "isTest";
 
     /**
      * Загрузить данные об экзаменах.
@@ -111,7 +112,8 @@ public class ExamLoader {
                     // Считываем все данные по экзамеционной теме.
                     String examName = xmlParser.getAttributeValue(null, NAME_ATTR);
                     String examId = xmlParser.getAttributeValue(null, ID_ATTR);
-                    ExamThemeData examThemeData = new ExamThemeData(examName, examId);
+                    boolean isExamTest = Boolean.parseBoolean(xmlParser.getAttributeValue(null, IS_TEST_ATTR));
+                    ExamThemeData examThemeData = new ExamThemeData(examName, examId, isExamTest);
 
                     if (examTree.getRootElement() != null) {
                         examTree.getCurElem().addChild(examThemeData);
@@ -177,6 +179,8 @@ public class ExamLoader {
         xmlSerializer.startTag(null, THEME_TAG);
         xmlSerializer.attribute(null, NAME_ATTR, parentExamTheme.getData().getName());
         xmlSerializer.attribute(null, ID_ATTR, parentExamTheme.getData().getId());
+        xmlSerializer.attribute(null, IS_TEST_ATTR,
+                String.valueOf(parentExamTheme.getData().containsTest()));
 
         // Рекурсия по составным темам входящей темы.
         for (NavigationTree.Node<ExamThemeData> examTheme : parentExamTheme.getChildren()) {

@@ -14,6 +14,14 @@
         android:layout_height="wrap_content"
         android:maxLines="1" />
 
+    <CheckBox
+        android:id="@+id/cb_contains_test"
+        android:text="@string/bc_exam_theme_contains_test"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/element_vertical_margin"
+        android:layout_marginBottom="@dimen/element_vertical_margin"/>
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

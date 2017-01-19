@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -23,6 +24,7 @@ import butterknife.Unbinder;
 public class CreatingThemeDialogFragment extends DialogFragment {
 
     @BindView(R.id.et_newThemeName) EditText newThemeNameEditText;
+    @BindView(R.id.cb_contains_test) CheckBox mContainsTestCheckBox;
     private Unbinder binder;
 
     @Nullable
@@ -40,8 +42,9 @@ public class CreatingThemeDialogFragment extends DialogFragment {
      */
     @OnClick(R.id.btn_ok)
     public void confirmOnClick(View view) {
-        ((ExamThemesActivity)getActivity()).
-                addNewExamTheme(newThemeNameEditText.getText().toString());
+        ((ExamThemesActivity)getActivity())
+                .addNewExamTheme(newThemeNameEditText.getText().toString(),
+                        mContainsTestCheckBox.isChecked());
         dismiss();
     }
 
