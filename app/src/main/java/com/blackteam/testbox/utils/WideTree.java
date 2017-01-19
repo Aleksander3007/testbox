@@ -103,10 +103,19 @@ public class WideTree<E>  implements Serializable {
 
         /**
          * Существуют ли подузлы данного узла?
-         * @return true - существуют.
+         * @return true - если существуют.
          */
         public boolean hasChildren() {
             return mChildren.size() > 0;
+        }
+
+        /**
+         * Содержит ли узел подузел с запрашиваемыми данными?
+         * @param data данные подузла.
+         * @return true - если содержит.
+         */
+        public boolean containsChild(E data) {
+            return (getChild(data) != null);
         }
 
         public List<E> getChildrenData() {

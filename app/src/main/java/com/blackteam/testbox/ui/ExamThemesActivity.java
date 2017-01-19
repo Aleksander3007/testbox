@@ -106,12 +106,20 @@ public class ExamThemesActivity extends BaseActivity {
 
     /**
      * Добавить новую тему экзамена.
-     * @param newExamThemeName Имя новой темы экзамена.
-     * @param isTest Содержит ли данная тема тест.
+     * @param newExamThemeName имя новой темы экзамена.
+     * @param isTest содержит ли данная тема тест.
+     * @return удалось ли добавить новую тему (true - да, удалось).
      */
-    public void addNewExamTheme(String newExamThemeName, boolean isTest) {
-        mExamTheme.addChild(new ExamThemeData(newExamThemeName, generateExamThemeId(), isTest));
-        mExamThemesListAdapter.notifyDataSetChanged();
+    public boolean addNewExamTheme(String newExamThemeName, boolean isTest) {
+        ExamThemeData newExamThemeData =
+                new ExamThemeData(newExamThemeName, generateExamThemeId(), isTest);
+        // Если темы с текущем именем не существует, то добавляем.
+        if (!mExamTheme.containsChild(newExamThemeData)) {
+            mExamTheme.addChild(newExamThemeData);
+            mExamThemesListAdapter.notifyDataSetChanged();
+            return true;
+        }
+        return false;
     }
 
     @Override

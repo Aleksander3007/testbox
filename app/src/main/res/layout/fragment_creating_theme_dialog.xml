@@ -12,7 +12,8 @@
         android:maxLength="32"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:maxLines="1" />
+        android:maxLines="1"
+        android:textColorLink="#42aaff" />
 
     <CheckBox
         android:id="@+id/cb_contains_test"

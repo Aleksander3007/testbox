@@ -17,6 +17,7 @@
     <string name="bc_exam_theme_contains_test">Тест</string>
     <string name="msg_successful_saving">Изменения успешно сохранены</string>
     <string name="msg_error_saving">Не удалось сохранить изменения</string>
+    <string name="msg_eror_add_new_exam_theme">Не удалось создать тему. Возможно такая тема уже существует</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.blackteam.testbox.R;
 
@@ -23,7 +24,7 @@ import butterknife.Unbinder;
  */
 public class CreatingThemeDialogFragment extends DialogFragment {
 
-    @BindView(R.id.et_newThemeName) EditText newThemeNameEditText;
+    @BindView(R.id.et_newThemeName) EditText mNewThemeNameEditText;
     @BindView(R.id.cb_contains_test) CheckBox mContainsTestCheckBox;
     private Unbinder unbinder;
 
@@ -48,10 +49,17 @@ public class CreatingThemeDialogFragment extends DialogFragment {
      */
     @OnClick(R.id.btn_ok)
     public void confirmOnClick(View view) {
-        ((ExamThemesActivity)getActivity())
-                .addNewExamTheme(newThemeNameEditText.getText().toString(),
+        boolean isExamThemeCreated = ((ExamThemesActivity)getActivity())
+                .addNewExamTheme(mNewThemeNameEditText.getText().toString(),
                         mContainsTestCheckBox.isChecked());
-        dismiss();
+        if (isExamThemeCreated) {
+            dismiss();
+        }
+        // Если не удалось создать тему.
+        else {
+            mNewThemeNameEditText.setError(
+                    getResources().getString(R.string.msg_eror_add_new_exam_theme));
+        }
     }
 
     /**
