@@ -19,6 +19,10 @@ import org.xmlpull.v1.XmlPullParserException;
 import java.io.IOException;
 import java.io.Serializable;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 public class MainActivity extends BaseActivity {
 
     private static final String sExamRootStr = "Экзамен";
@@ -28,6 +32,7 @@ public class MainActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -58,7 +63,8 @@ public class MainActivity extends BaseActivity {
      * Открыть окно с доступными темами для экзамена.
      * @param view
      */
-    public void examThemesOpenOnClick(View view) {
+    @OnClick(R.id.btn_examOpen)
+    public void examOpenOnClick(View view) {
         Intent examThemesActivity = new Intent(this, ExamThemesActivity.class);
         startActivity(examThemesActivity);
     }

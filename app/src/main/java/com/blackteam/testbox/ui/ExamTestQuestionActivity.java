@@ -30,6 +30,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 // TODO: Сделать возможность менять уже сущетсвующие вопросы.
 
 /**
@@ -37,9 +41,9 @@ import java.util.Map;
  */
 public class ExamTestQuestionActivity extends BaseActivity {
 
-    private LinearLayout mAnswersLinearLayout;
-    private EditText mQuestionEditText;
-    private FloatingActionButton mCreateAnswerFab;
+    @BindView(R.id.ll_answers) LinearLayout mAnswersLinearLayout;
+    @BindView(R.id.et_question) EditText mQuestionEditText;
+    @BindView(R.id.fab_createNewAnswer) FloatingActionButton mCreateAnswerFab;
 
     private ExamTest examTest;
     private List<String> answers = new ArrayList<>();
@@ -48,10 +52,7 @@ public class ExamTestQuestionActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_exam_test_question);
-
-        mAnswersLinearLayout = (LinearLayout) findViewById(R.id.ll_answers);
-        mQuestionEditText = (EditText) findViewById(R.id.et_question);
-        mCreateAnswerFab = (FloatingActionButton) findViewById(R.id.fab_createNewAnswer);
+        ButterKnife.bind(this);
 
         WideTree.Node<ExamThemeData> examTheme =
                 ((TestBoxApp) getApplicationContext()).getExamTree().getCurElem();
@@ -104,6 +105,7 @@ public class ExamTestQuestionActivity extends BaseActivity {
      * Обработка нажатия на кнопку создать новый ответ.
      * @param view
      */
+    @OnClick(R.id.fab_createNewAnswer)
     public void createNewAnswerOnClick(View view) {
         FragmentManager fragmentManager = getFragmentManager();
         CreatingAnswerDialogFragment creatingAnswerDialogFragment =
@@ -115,6 +117,7 @@ public class ExamTestQuestionActivity extends BaseActivity {
      * Обработка нажатия на кнопку "завершить".
      * @param view
      */
+    @OnClick(R.id.btn_finish)
     public void finishOnClick(View view) {
         switch (((TestBoxApp)getApplicationContext()).getUserType()) {
             case USER:
@@ -130,6 +133,7 @@ public class ExamTestQuestionActivity extends BaseActivity {
      * Обработка нажатия на кнопку "следующий вопрос".
      * @param view
      */
+    @OnClick(R.id.btn_nextQuestion)
     public void nextQuestionOnClick(View view) {
         switch (((TestBoxApp)getApplicationContext()).getUserType()) {
             case USER:

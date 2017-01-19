@@ -12,36 +12,45 @@ import android.widget.TextView;
 
 import com.blackteam.testbox.R;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.Unbinder;
+
 /**
  * Диалоговое окно для создания экзамеционной темы.
  */
 public class CreatingThemeDialogFragment extends DialogFragment {
+
+    @BindView(R.id.et_newThemeName) EditText newThemeNameEditText;
+    private Unbinder binder;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View creatingThemeDialogView =
                 inflater.inflate(R.layout.fragment_creating_theme_dialog, container, false);
-
-        Button btnOk = (Button) creatingThemeDialogView.findViewById(R.id.btn_ok);
-        btnOk.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                EditText newThemeNameEditText =
-                        (EditText) creatingThemeDialogView.findViewById(R.id.et_newThemeName);
-                ((ExamThemesActivity)getActivity()).
-                        addNewExamTheme(newThemeNameEditText.getText().toString());
-                dismiss();
-            }
-        });
-
-        Button btnCancel = (Button) creatingThemeDialogView.findViewById(R.id.btn_cancel);
-        btnCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dismiss();
-            }
-        });
-
+        binder = ButterKnife.bind(this, creatingThemeDialogView);
         return creatingThemeDialogView;
+    }
+
+    /**
+     * Нажатие на кнопку подтверждения введенных данных.
+     * @param view
+     */
+    @OnClick(R.id.btn_ok)
+    public void confirmOnClick(View view) {
+        ((ExamThemesActivity)getActivity()).
+                addNewExamTheme(newThemeNameEditText.getText().toString());
+        dismiss();
+    }
+
+    /**
+     * Нажатие на кнопку отмены введенных данных.
+     * @param view
+     */
+    @OnClick(R.id.btn_cancel)
+    public void cancelOnClick(View view) {
+        dismiss();
     }
 }

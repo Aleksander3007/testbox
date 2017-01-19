@@ -42,14 +42,12 @@
                 <Button
                     android:id="@+id/btn_finish"
                     android:text="@string/btn_finish"
-                    android:onClick="finishOnClick"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
 
                 <Button
                     android:id="@+id/btn_nextQuestion"
                     android:text="@string/btn_nextQuestion"
-                    android:onClick="nextQuestionOnClick"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true" />
@@ -63,7 +61,6 @@
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_createNewAnswer"
-        android:onClick="createNewAnswerOnClick"
         android:visibility="invisible"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

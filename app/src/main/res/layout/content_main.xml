@@ -13,8 +13,7 @@
     tools:showIn="@layout/activity_main">
 
     <Button
-        android:id="@+id/button"
-        android:onClick="examThemesOpenOnClick"
+        android:id="@+id/btn_examOpen"
         android:text="@string/exam_btn"
         android:background="@android:color/holo_blue_bright"
         android:textColor="@color/primary_material_dark"

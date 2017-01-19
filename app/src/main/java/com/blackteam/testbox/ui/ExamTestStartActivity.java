@@ -24,17 +24,21 @@ import org.xmlpull.v1.XmlPullParserException;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 /**
  * Стартовая страница для экзамеционного текста.
  */
 public class ExamTestStartActivity extends BaseActivity {
 
-    private TextView mTestNameTextView;
-    private EditText mTestDescriptionEditText;
-    private TextView mTestDescriptionTextView;
-    private Button mStartTestButton;
-    private LinearLayout mUserViewLinearLayout;
-    private LinearLayout mEditorViewLinearLayout;
+    @BindView(R.id.tv_testName) TextView mTestNameTextView;
+    @BindView(R.id.et_testDescription) EditText mTestDescriptionEditText;
+    @BindView(R.id.tv_testDescription) TextView mTestDescriptionTextView;
+    @BindView(R.id.btn_startTest) Button mStartTestButton;
+    @BindView(R.id.ll_exam_test_start_user) LinearLayout mUserViewLinearLayout;
+    @BindView(R.id.ll_exam_test_start_editor) LinearLayout mEditorViewLinearLayout;
 
     private NavigationTree.Node<ExamThemeData> mExamTheme;
     private ExamTest examTest;
@@ -46,15 +50,9 @@ public class ExamTestStartActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_exam_test_start);
+        ButterKnife.bind(this);
 
         mExamTheme = ((TestBoxApp)getApplicationContext()).getExamTree().getCurElem();
-
-        mTestNameTextView = (TextView) findViewById(R.id.tv_testName);
-        mTestDescriptionEditText = (EditText) findViewById(R.id.et_testDescription);
-        mTestDescriptionTextView = (TextView) findViewById(R.id.tv_testDescription);
-        mStartTestButton = (Button) findViewById(R.id.btn_startTest);
-        mUserViewLinearLayout = (LinearLayout) findViewById(R.id.ll_exam_test_start_user);
-        mEditorViewLinearLayout = (LinearLayout) findViewById(R.id.ll_exam_test_start_editor);
 
         mTestNameTextView.setText(mExamTheme.getData().getName());
 
@@ -105,6 +103,7 @@ public class ExamTestStartActivity extends BaseActivity {
      * Обработка нажатия на кнопку "Начать тест".
      * @param view
      */
+    @OnClick(R.id.btn_startTest)
     public void startTestOnClick(View view) {
         if (mIsExistedTest)
             startTestQuestionActivity();
@@ -116,6 +115,7 @@ public class ExamTestStartActivity extends BaseActivity {
      * Обработка нажатия на кнопку "Создать вопрос".
      * @param view
      */
+    @OnClick(R.id.btn_createQuestions)
     public void createQuestionsOnClick(View view) {
         startTestQuestionActivity();
     }
@@ -124,6 +124,7 @@ public class ExamTestStartActivity extends BaseActivity {
      * Обработка нажатия на кнопку сохранить.
      * @param view
      */
+    @OnClick(R.id.btn_save)
     public void saveOnClick(View view) {
         try {
             examTest.setDescription(mTestDescriptionEditText.getText().toString());

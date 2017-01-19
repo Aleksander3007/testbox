@@ -16,10 +16,14 @@ import com.blackteam.testbox.TestBoxApp;
 import com.blackteam.testbox.utils.NavigationTree;
 import com.blackteam.testbox.utils.WideTree;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 public class ExamThemesActivity extends BaseActivity {
 
-    private ListView mExamThemesListView;
-    private FloatingActionButton mCreateExamThemeBtn;
+    @BindView(R.id.lv_exam_themes) ListView mExamThemesListView;
+    @BindView(R.id.fab_createNewExamTheme) FloatingActionButton mCreateExamThemeBtn;
 
     private NavigationTree.Node<ExamThemeData> mExamTheme;
     private ArrayAdapter<WideTree.Node<ExamThemeData>> mExamThemesListAdapter;
@@ -28,9 +32,7 @@ public class ExamThemesActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_exam_themes);
-
-        mExamThemesListView = (ListView) findViewById(R.id.lv_exam_themes);
-        mCreateExamThemeBtn = (FloatingActionButton) findViewById(R.id.fab_createNewExamTheme);
+        ButterKnife.bind(this);
 
         mExamTheme = ((TestBoxApp)getApplicationContext()).getExamTree().getCurElem();
 
@@ -42,6 +44,7 @@ public class ExamThemesActivity extends BaseActivity {
 
         /** Добавляем слушателя нажатий на list. */
         mExamThemesListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            // По нажатию на экз. тему выполняется переход к подтемам выбранной темы.
             @Override
             public void onItemClick(AdapterView<?> parent, View itemClicked, int position, long id) {
 
@@ -58,6 +61,8 @@ public class ExamThemesActivity extends BaseActivity {
                             new Intent(getApplicationContext(), ExamThemesActivity.class);
                     startActivity(examThemesActivity);
                 }
+                // Если подтем не существует, то переход на стартовую страницу теста.
+                // TODO: Прочитай для начала комент выше. По идеи мы должны как-то указывать конечный элемент это или нет.
                 else {
                     Intent examTestStartActivity =
                             new Intent(getApplicationContext(), ExamTestStartActivity.class);
@@ -92,6 +97,7 @@ public class ExamThemesActivity extends BaseActivity {
      * Обработка нажатия на кнопку создания новой темы экзамена.
      * @param view
      */
+    @OnClick(R.id.fab_createNewExamTheme)
     public void createNewExamThemeOnClick(View view) {
         FragmentManager fragmentManager = getFragmentManager();
         CreatingThemeDialogFragment creatingThemeDialogFragment =
