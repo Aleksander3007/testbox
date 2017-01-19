@@ -25,15 +25,21 @@ public class CreatingThemeDialogFragment extends DialogFragment {
 
     @BindView(R.id.et_newThemeName) EditText newThemeNameEditText;
     @BindView(R.id.cb_contains_test) CheckBox mContainsTestCheckBox;
-    private Unbinder binder;
+    private Unbinder unbinder;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View creatingThemeDialogView =
                 inflater.inflate(R.layout.fragment_creating_theme_dialog, container, false);
-        binder = ButterKnife.bind(this, creatingThemeDialogView);
+        unbinder = ButterKnife.bind(this, creatingThemeDialogView);
         return creatingThemeDialogView;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
     }
 
     /**
