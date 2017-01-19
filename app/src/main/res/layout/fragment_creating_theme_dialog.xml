@@ -10,9 +10,9 @@
         android:id="@+id/et_newThemeName"
         android:hint="@string/create_new_theme"
         android:maxLength="32"
-        android:singleLine="true"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:maxLines="1" />
 
     <RelativeLayout
         android:layout_width="match_parent"
