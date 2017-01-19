@@ -15,6 +15,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ import java.util.List;
 /**
  * Описывает данные связанные с экзамеционным тестом.
  */
-public class ExamTest {
+public class ExamTest implements Serializable {
     /** Формат имени файла. Для получения имени файла использовать функции {@link #getFileName()}*/
     public static final String FILE_NAME_FORMAT = "et%s.xml";
 
@@ -46,6 +47,8 @@ public class ExamTest {
 
     public void setDescription(String description) { mDescription = description; }
     public String getDescription() { return mDescription; }
+
+    public List<TestQuestion> getQuestions() { return questions; }
 
     public void addQuestion(TestQuestion question) {
         questions.add(question);

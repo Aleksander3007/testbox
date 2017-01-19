@@ -7,6 +7,7 @@
     <EditText
         android:id="@+id/et_testDescription"
         android:inputType="textMultiLine"
+        android:hint="@string/etHint_testDescription"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/element_vertical_margin"

@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.blackteam.testbox.ExamTest;
 import com.blackteam.testbox.ExamThemeData;
 import com.blackteam.testbox.R;
+import com.blackteam.testbox.TestAnswer;
 import com.blackteam.testbox.TestBoxApp;
 import com.blackteam.testbox.TestQuestion;
 import com.blackteam.testbox.utils.UIHelper;
@@ -27,6 +28,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -46,7 +48,7 @@ public class ExamTestQuestionActivity extends BaseActivity {
     @BindView(R.id.fab_createNewAnswer) FloatingActionButton mCreateAnswerFab;
 
     private ExamTest examTest;
-    private List<String> answers = new ArrayList<>();
+    private Iterator<TestQuestion> currentQuestion;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -54,49 +56,36 @@ public class ExamTestQuestionActivity extends BaseActivity {
         setContentView(R.layout.activity_exam_test_question);
         ButterKnife.bind(this);
 
-        WideTree.Node<ExamThemeData> examTheme =
-                ((TestBoxApp) getApplicationContext()).getExamTree().getCurElem();
-
-        //
-        // int testId = mExamTheme.getData().getId();
-        // Грузим файл по адресу "et" + String.valueOf(testId) + ".xml";
-        // Из него и считываем данные.
-        // Перемешиваем ответы.
-
-        answers.addAll(Arrays.asList("Android", "iPhone", "WindowsMobile"));
+        examTest = (ExamTest) getIntent().getExtras().getSerializable("ExamTest");
 
         switch (((TestBoxApp)getApplicationContext()).getUserType()) {
             case USER:
                 UIHelper.disableEditText(mQuestionEditText);
-                for (String answer : answers) {
+                currentQuestion = examTest.getQuestions().listIterator();
+                for (TestAnswer answer : currentQuestion.next().getAnswers()) {
                     addAnswerView(answer);
                 }
                 break;
             case EDITOR:
                 UIHelper.enableEditText(mQuestionEditText);
-                for (String answer : answers) {
-                    addEditableAnswerView(answer);
-                }
                 break;
         }
     }
 
     @Override
     protected void onStop() {
-        // Сохраняем данные в файл.
+        // Сохраняем состояние потом востанавливаем.
         super.onStop();
     }
 
     @Override
     protected void setModeUser() {
-        // TODO: Спрашивать: Завершить редактирование тестов?
         super.setModeUser();
         mCreateAnswerFab.hide();
     }
 
     @Override
     protected void setModeEditor() {
-        // TODO: Спрашивать: Завершить тест и перейти к редактированию?
         super.setModeEditor();
         mCreateAnswerFab.show();
     }
@@ -124,8 +113,8 @@ public class ExamTestQuestionActivity extends BaseActivity {
                 // TODO: Закончить тестирование и вывести результаты.
                 break;
             case EDITOR:
-                // TODO: Закончить редактирование и перейти в меню (какое-то).
-                break;
+                // Добавляем последний созданный вопрос и всё сохраняем.
+                if (addQuestion()) saveAllQuestions();
         }
     }
 
@@ -140,20 +129,11 @@ public class ExamTestQuestionActivity extends BaseActivity {
                 // TODO: Перейти на следующий вопрос.
                 break;
             case EDITOR:
-                // TODO: Перейти к созданию следующего вопроса.
-                // 1. Проверяем введен ли вопрос? Pattern RegEx, как выводить собщение над EditText.
-                // 2. Если нет, то сообщаем об этом и не переходим.
-                // 3. Если да, то
-
-                // Проверяем, что правильно заполнены все необходимые поля.
-                if (mQuestionEditText.getText().length() == 0) {
-                    Toast.makeText(this, getResources().getText(R.string.question_text_empty),
-                            Toast.LENGTH_SHORT).show();
+                boolean hasQuestionBeenAdded = addQuestion();
+                if (hasQuestionBeenAdded) {
+                    mQuestionEditText.setText("");
+                    mAnswersLinearLayout.removeAllViews();
                 }
-                else {
-                    addQuestion();
-                }
-
                 break;
         }
     }
@@ -161,32 +141,47 @@ public class ExamTestQuestionActivity extends BaseActivity {
     /**
      * Добавить вопрос в список.
      */
-    private void addQuestion() {
+    private boolean addQuestion() {
         String questionText = mQuestionEditText.getText().toString();
-
-        Map<String, Boolean> answers = new HashMap<>();
-        // Считываем возможные ответы.
-        int nAnswerViews = mAnswersLinearLayout.getChildCount();
-        for (int iAnswerView = 0; iAnswerView < nAnswerViews; iAnswerView++) {
-            final View answerView = mAnswersLinearLayout.getChildAt(iAnswerView);
-            TextView answerTextView = (TextView) answerView.findViewById(R.id.et_answerText);
-            CheckBox isRightAnswerCheckBox = (CheckBox) answerView.findViewById(R.id.cb_isRightAnswer);
-            answers.put(answerTextView.getText().toString(), isRightAnswerCheckBox.isChecked());
+        if (!isQuestionTextValid()) {
+            mQuestionEditText.setError(getResources().getText(R.string.question_text_empty));
+            return false;
         }
-        // TODO: Заглушка null вместо ответов.
-        examTest.addQuestion(new TestQuestion(questionText, null));
+
+        List<TestAnswer> answers = new ArrayList<>();
+
+        int nAnswerViews = mAnswersLinearLayout.getChildCount();
+        if (nAnswerViews > 0) {
+            // Считываем возможные ответы.
+            for (int iAnswerView = 0; iAnswerView < nAnswerViews; iAnswerView++) {
+                final View answerView = mAnswersLinearLayout.getChildAt(iAnswerView);
+                TextView answerTextView = (TextView) answerView.findViewById(R.id.et_answerText);
+                CheckBox isRightAnswerCheckBox = (CheckBox) answerView.findViewById(R.id.cb_isRightAnswer);
+                answers.add(new TestAnswer(answerTextView.getText().toString(),
+                        isRightAnswerCheckBox.isChecked()));
+            }
+            examTest.addQuestion(new TestQuestion(questionText, answers));
+            return true;
+        }
+        else {
+            Toast.makeText(this, R.string.msg_zero_answers, Toast.LENGTH_SHORT).show();
+            return false;
+        }
     }
 
     /**
      * Проверка, что данные для вопроса заполнены правильно.
      * @return true - правильно.
      */
-    private boolean isValidNewQuestion() {
+    private boolean isQuestionTextValid() {
         if (mQuestionEditText.getText().length() == 0) return false;
-
         return true;
     }
 
+    private boolean isAnswerValid(TextView answerTextView) {
+        if (answerTextView.getText().length() == 0) return false;
+        return true;
+    }
     /**
      * Добавить элемент, отображающий редактируемый возможный вариант ответа в Activity.
      * @param answer Текст ответа.
@@ -202,19 +197,39 @@ public class ExamTestQuestionActivity extends BaseActivity {
      * Добавить элемент, отображающий возможный вариант ответа в Activity.
      * @param answer Текст ответа.
      */
-    private void addAnswerView(String answer) {
+    private void addAnswerView(TestAnswer answer) {
         final View answerView = getLayoutInflater().inflate(R.layout.listview_elem_answer, null);
         TextView answerTextView = (TextView) answerView.findViewById(R.id.tv_answerText);
-        answerTextView.setText(answer);
+        CheckBox answerCheckBox = (CheckBox) answerView.findViewById(R.id.cb_isRightAnswer);
+        answerTextView.setText(answer.getText());
+        answerCheckBox.setChecked(answer.isRight());
         mAnswersLinearLayout.addView(answerView);
     }
 
+    /**
+     * Добавить новый ответ в список.
+     * @param answer текст ответа.
+     */
     public void addNewAnswer(String answer) {
         try {
             addEditableAnswerView(answer);
         }
         catch (Exception ex) {
             Log.d("ExamTestQuestionActiv", ex.getMessage());
+        }
+    }
+
+    /**
+     * Сохранить все вопросы для теста.
+     */
+    public void saveAllQuestions() {
+        try {
+            examTest.save(getApplicationContext());
+            Toast.makeText(this, R.string.msg_successful_saving, Toast.LENGTH_SHORT).show();
+        } catch (IOException ioex) {
+            Log.e("ExamTestQuestionA", ioex.getMessage());
+            ioex.printStackTrace();
+            Toast.makeText(this, R.string.msg_error_saving, Toast.LENGTH_SHORT).show();
         }
     }
 }

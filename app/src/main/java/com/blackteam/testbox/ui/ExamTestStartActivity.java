@@ -108,7 +108,7 @@ public class ExamTestStartActivity extends BaseActivity {
         if (mIsExistedTest)
             startTestQuestionActivity();
         else
-            Toast.makeText(this, R.string.test_isnt_existed, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.msg_test_isnt_existed, Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -141,6 +141,7 @@ public class ExamTestStartActivity extends BaseActivity {
     private void startTestQuestionActivity() {
         Intent examTestQuestionAcitivity =
                 new Intent(getApplicationContext(), ExamTestQuestionActivity.class);
+        examTestQuestionAcitivity.putExtra("ExamTest", examTest);
         startActivity(examTestQuestionAcitivity);
     }
 
