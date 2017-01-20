@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -23,7 +24,7 @@ import butterknife.OnClick;
 public class ExamThemesActivity extends BaseActivity {
 
     @BindView(R.id.lv_exam_themes) ListView mExamThemesListView;
-    @BindView(R.id.fab_createNewExamTheme) FloatingActionButton mCreateExamThemeBtn;
+    @BindView(R.id.bottom_editing_bar) LinearLayout mBottomEditingBar;
 
     private NavigationTree.Node<ExamThemeData> mExamTheme;
     private ArrayAdapter<WideTree.Node<ExamThemeData>> mExamThemesListAdapter;
@@ -83,20 +84,20 @@ public class ExamThemesActivity extends BaseActivity {
     @Override
     protected void setModeUser() {
         super.setModeUser();
-        mCreateExamThemeBtn.hide();
+        mBottomEditingBar.setVisibility(View.INVISIBLE);
     }
 
     @Override
     protected void setModeEditor() {
         super.setModeEditor();
-        mCreateExamThemeBtn.show();
+        mBottomEditingBar.setVisibility(View.VISIBLE);
     }
 
     /**
      * Обработка нажатия на кнопку создания новой темы экзамена.
      * @param view
      */
-    @OnClick(R.id.fab_createNewExamTheme)
+    @OnClick(R.id.fab_createNewItem)
     public void createNewExamThemeOnClick(View view) {
         FragmentManager fragmentManager = getFragmentManager();
         CreatingThemeDialogFragment creatingThemeDialogFragment =
