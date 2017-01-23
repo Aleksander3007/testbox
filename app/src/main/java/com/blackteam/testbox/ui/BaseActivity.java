@@ -71,6 +71,7 @@ public class BaseActivity extends AppCompatActivity {
      * Устанавливаем режим отображения для пользователя.
      */
     protected void setModeUser() {
+        ((TestBoxApp)getApplicationContext()).setsUserType(TestBoxApp.UserType.USER);
         mUserTypeMenuItem.setTitle(R.string.user_type_user);
     }
 
@@ -78,6 +79,7 @@ public class BaseActivity extends AppCompatActivity {
      * Устанавливаем режим отображения для редактора.
      */
     protected void setModeEditor() {
+        ((TestBoxApp)getApplicationContext()).setsUserType(TestBoxApp.UserType.EDITOR);
         mUserTypeMenuItem.setTitle(R.string.user_type_editor);
     }
 
