@@ -1,12 +1,8 @@
 package com.blackteam.testbox.utils;
 
-import com.blackteam.testbox.ExamThemeData;
-
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 
 /**
  * Представляет иерархичное дерево с одним родителем и неограниченном количеством детей.
@@ -137,12 +133,19 @@ public class WideTree<E>  implements Serializable {
          * @param deletingChild удаляемый подузел.
          */
         public void removeChild(Node<E> deletingChild) {
-            Iterator<Node<E>> iterator = deletingChild.getChildren().iterator();
-            while (iterator.hasNext()) {
-                removeChild(iterator.next());
-                iterator.remove();
-            }
+            removeChildren(deletingChild);
             mChildren.remove(deletingChild);
+        }
+
+        /**
+         * Удалить подузлы указанного узла.
+         * @param rootChild узёл, подузлы которого необходимо удалить.
+         */
+        public void removeChildren(Node<E> rootChild) {
+            for (Node<E> child : rootChild.getChildren()) {
+                child.removeChildren(child);
+            }
+            rootChild.getChildren().clear();
         }
 
         public List<E> getChildrenData() {
