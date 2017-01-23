@@ -147,4 +147,38 @@ public class WideTreeTest {
 
         Assert.assertTrue(root.hasChildren());
     }
+
+    @Test
+    public void testRemoveChildNode() {
+        WideTree<String> wideTree = new WideTree<>("Root element");
+        WideTree.Node<String> root = wideTree.getRootElement();
+
+        WideTree.Node<String> node1 = root.addChild("node1");
+        WideTree.Node<String> node11 = node1.addChild("node1.1");
+        WideTree.Node<String> node12 = node1.addChild("node1.2");
+        WideTree.Node<String> node111 = node11.addChild("node1.1.1");
+
+        root.removeChild(node1);
+
+        Assert.assertTrue(root.getChildren().isEmpty());
+        Assert.assertTrue(node1.getChildren().isEmpty());
+        Assert.assertTrue(node11.getChildren().isEmpty());
+    }
+
+    @Test
+    public void testRemoveChildData() {
+        WideTree<String> wideTree = new WideTree<>("Root element");
+        WideTree.Node<String> root = wideTree.getRootElement();
+
+        WideTree.Node<String> node1 = root.addChild("node1");
+        WideTree.Node<String> node11 = node1.addChild("node1.1");
+        WideTree.Node<String> node12 = node1.addChild("node1.2");
+        WideTree.Node<String> node111 = node11.addChild("node1.1.1");
+
+        root.removeChild("node1");
+
+        Assert.assertTrue(root.getChildren().isEmpty());
+        Assert.assertTrue(node1.getChildren().isEmpty());
+        Assert.assertTrue(node11.getChildren().isEmpty());
+    }
 }
