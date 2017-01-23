@@ -17,31 +17,40 @@
 
     <LinearLayout
         android:orientation="horizontal"
+        style="?android:attr/buttonBarStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorBottomEditingBar"
         android:padding="16dp">
 
         <Button
+            android:id="@+id/btn_prevPage"
             android:text="Prev"
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0.25" />
 
         <Button
+            android:id="@+id/btn_finish"
             android:text="Finish"
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0.25" />
 
         <Button
+            android:id="@+id/btn_save"
             android:text="Save"
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0.25" />
 
         <Button
+            android:id="@+id/btn_nextPage"
             android:text="Next"
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0.25" />
