@@ -9,7 +9,6 @@ import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 import org.xmlpull.v1.XmlSerializer;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -26,7 +25,7 @@ import java.util.List;
  */
 public class ExamTest implements Serializable {
     /** Формат имени файла. Для получения имени файла использовать функции {@link #getFileName()}*/
-    public static final String FILE_NAME_FORMAT = "et%s.xml";
+    private static final String sFileNameFormat = "et%s.xml";
 
     private static final String sDescriptionTag = "description";
     private static final String sQuestionTag = "question";
@@ -41,6 +40,10 @@ public class ExamTest implements Serializable {
     private String mDescription;
     private List<TestQuestion> questions = new ArrayList<>();
 
+    /**
+     * Конструктор.
+     * @param name Имя экзамеционного теста.
+     */
     public ExamTest(String name) {
         this.mName = name;
     }
@@ -54,6 +57,13 @@ public class ExamTest implements Serializable {
         questions.add(question);
     }
 
+    /**
+     * Загрузка данных об экзамеционном тесте.
+     * @param context {@link Context}.
+     * @return список экзамеционных вопросов.
+     * @throws IOException
+     * @throws XmlPullParserException
+     */
     public List<TestQuestion> load(Context context)
             throws IOException, XmlPullParserException {
 
@@ -63,6 +73,12 @@ public class ExamTest implements Serializable {
         return questions;
     }
 
+    /**
+     * Чтение файла, содержащего данные о экзам. тесте.
+     * @param fileInputStream Поток файла, содержащего данные о экзам. тесте.
+     * @throws IOException
+     * @throws XmlPullParserException
+     */
     private void readExamTestFile(FileInputStream fileInputStream)
             throws IOException, XmlPullParserException {
 
@@ -118,6 +134,11 @@ public class ExamTest implements Serializable {
         }
     }
 
+    /**
+     * Сохранение данных об экзамеционном тесте.
+     * @param context {@link Context}.
+     * @throws IOException
+     */
     public void save(Context context) throws IOException {
         writeExamTestFile(context);
     }
@@ -127,7 +148,7 @@ public class ExamTest implements Serializable {
      * @return Имя файла.
      */
     public String getFileName() {
-        return String.format(FILE_NAME_FORMAT, mName);
+        return String.format(sFileNameFormat, mName);
     }
 
     private void writeExamTestFile(Context context) throws IOException {
@@ -144,6 +165,11 @@ public class ExamTest implements Serializable {
         }
     }
 
+    /**
+     * Создать строку в формате xml, содержащию данные об экзамеционном тесте.
+     * @return Строка в формате xml.
+     * @throws IOException
+     */
     private String createXmlData() throws IOException {
         XmlSerializer xmlSerializer = Xml.newSerializer();
         StringWriter stringWriter = new StringWriter();
@@ -173,8 +199,7 @@ public class ExamTest implements Serializable {
         }
 
         xmlSerializer.flush();
-        String dataXml = stringWriter.toString();
 
-        return dataXml;
+        return stringWriter.toString();
     }
 }
