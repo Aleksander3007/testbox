@@ -5,6 +5,7 @@
     <string name="exam_btn">Экзамен</string>
     <string name="create_new_theme">Название темы</string>
     <string name="cancel_btn">Отмена</string>
+    <string name="delete_btn">Удалить</string>
     <string name="ok_btn">ОК</string>
     <string name="btn_startTest">Начать тест</string>
     <string name="btn_createQuestions">Добавить вопрос</string>
@@ -19,7 +20,10 @@
     <string name="msg_error_saving">Не удалось сохранить изменения</string>
     <string name="msg_eror_add_new_exam_theme">Не удалось создать тему. Возможно такая тема уже существует</string>
     <string name="msg_zero_answers">Вопрос теста должен содержать хотя бы один ответ</string>
+    <string name="msg_delete_exam_theme">При удалении выбранной темы, удаляться и его подтемы</string>
+    <string name="msg_fail_delete_exam_theme">Не удалось удалить тест %s</string>
     <string name="etHint_testDescription">Описание</string>
+    <string name="title_delete_exam_theme">Удаление темы</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

@@ -202,4 +202,13 @@ public class ExamTest implements Serializable {
 
         return stringWriter.toString();
     }
+
+    /**
+     * Удаление данных об экзамеционном тесте.
+     * @param context {@link Context}
+     * @return true если файл был успешно удалён.
+     */
+    public boolean delete(Context context) {
+        return context.deleteFile(getFileName());
+    }
 }

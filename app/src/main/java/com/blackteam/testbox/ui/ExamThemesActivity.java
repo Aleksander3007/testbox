@@ -1,6 +1,8 @@
 package com.blackteam.testbox.ui;
 
+import android.app.AlertDialog;
 import android.app.FragmentManager;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.os.Bundle;
@@ -14,6 +16,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.blackteam.testbox.ExamTest;
 import com.blackteam.testbox.ExamThemeData;
 import com.blackteam.testbox.R;
 import com.blackteam.testbox.TestBoxApp;
@@ -22,12 +25,14 @@ import com.blackteam.testbox.utils.NavigationTree;
 import com.blackteam.testbox.utils.WideTree;
 
 import java.io.IOException;
+import java.util.Iterator;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class ExamThemesActivity extends BaseActivity implements AdapterView.OnItemClickListener {
+public class ExamThemesActivity extends BaseActivity
+        implements AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener {
 
     @BindView(R.id.lv_exam_themes) ListView mExamThemesListView;
     @BindView(R.id.bottom_editing_bar) LinearLayout mBottomEditingBar;
@@ -39,6 +44,8 @@ public class ExamThemesActivity extends BaseActivity implements AdapterView.OnIt
 
     /** Были изменения в экзамеционных темах. */
     private boolean hasExamThemeChanged = false;
+    /** Редактируемая экзамеционная тема. */
+    private ExamThemeData editingExamTheme;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +68,7 @@ public class ExamThemesActivity extends BaseActivity implements AdapterView.OnIt
 
         /** Добавляем слушателя нажатий на list. */
         mExamThemesListView.setOnItemClickListener(this);
+        mExamThemesListView.setOnItemLongClickListener(this);
 
         mExamThemesListView.setAdapter(mExamThemesListAdapter);
     }
@@ -111,6 +119,7 @@ public class ExamThemesActivity extends BaseActivity implements AdapterView.OnIt
         if (hasExamThemeChanged) {
             // TODO: Спрашиваем, сохранить ли изменения.
             // Если нет, то надо загружать из файла. и возратить всё на начальную позицию.
+            // hasExamThemeChanged = false;
         }
         setModeUser();
     }
@@ -125,6 +134,7 @@ public class ExamThemesActivity extends BaseActivity implements AdapterView.OnIt
             ExamLoader.saveExam(getApplicationContext(),
                     ((TestBoxApp)getApplicationContext()).getExamTree());
             Toast.makeText(this, R.string.msg_successful_saving, Toast.LENGTH_SHORT).show();
+            hasExamThemeChanged = false;
         } catch (IOException ioex) {
             Log.e("ExamThemesA", ioex.getMessage());
             ioex.printStackTrace();
@@ -155,6 +165,23 @@ public class ExamThemesActivity extends BaseActivity implements AdapterView.OnIt
         }
     }
 
+    @Override
+    public boolean onItemLongClick(AdapterView<?> parent, View itemClicked, int position, long id) {
+        // Работает только в режиме "Редактор".
+        if (((TestBoxApp)getApplicationContext()).getUserType() == TestBoxApp.UserType.EDITOR) {
+            // Определяем выбранную экз. тему.
+            String theme = ((TextView) itemClicked).getText().toString();
+            editingExamTheme = mExamTheme.getChild(new ExamThemeData(theme)).getData();
+
+            EditingThemeDialogFragment editingThemeDialogFragment =
+                    EditingThemeDialogFragment.newInstance(editingExamTheme);
+            editingThemeDialogFragment.show(getFragmentManager(), "editingThemeDialog");
+
+            return true;
+        }
+        return false;
+    }
+
     private void goToParent() {
         ((TestBoxApp)getApplicationContext()).getExamTree().prev();
     }
@@ -178,7 +205,90 @@ public class ExamThemesActivity extends BaseActivity implements AdapterView.OnIt
         return false;
     }
 
+    /**
+     * Изменить выбранную тему экзамена.
+     * @param examThemeNewName новое имя темы экзамена.
+     * @param isTest содержит ли данная тема тест.
+     */
+    public void editExamTheme(String examThemeNewName, boolean isTest) {
+        ExamThemeData newExamThemeData =
+                new ExamThemeData(examThemeNewName, editingExamTheme.getId(), isTest);
+        mExamTheme.getChild(editingExamTheme).setData(newExamThemeData);
+        mExamThemesListAdapter.notifyDataSetChanged();
+        hasExamThemeChanged = true;
+    }
+
+    /**
+     * Удалить выбранную тему и все его подтемы.
+     */
+    public void deleteExamTheme() {
+        AlertDialog.Builder confirmDeletionDialog = new AlertDialog.Builder(this);
+        confirmDeletionDialog.setTitle(R.string.title_delete_exam_theme)
+                .setMessage(R.string.msg_delete_exam_theme)
+                .setPositiveButton(R.string.ok_btn, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int i) {
+                        // Удаляем тему и все его подтемы.
+                        deleteExamTheme(editingExamTheme);
+                        dialog.cancel();
+                    }
+                })
+                .setNegativeButton(R.string.cancel_btn, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int i) {
+                        // Открываем окно редактирования по новой, т.к. оно закрылось.
+                        EditingThemeDialogFragment editingThemeDialogFragment =
+                                EditingThemeDialogFragment.newInstance(editingExamTheme);
+                        editingThemeDialogFragment.show(getFragmentManager(), "editingThemeDialog");
+                        dialog.cancel();
+                    }
+                });
+        confirmDeletionDialog.create().show();
+    }
+
+    /**
+     * Удаление указанной экзам. темы и её подтем.
+     * @param examTheme экзам. тема, которая надо удалить.
+     */
+    private void deleteExamTheme(ExamThemeData examTheme) {
+        deleteSubExamThemes(mExamTheme.getChild(examTheme));
+        mExamTheme.removeChild(examTheme);
+        deleteExamTest(examTheme);
+        mExamThemesListAdapter.notifyDataSetChanged();
+        hasExamThemeChanged = true;
+    }
+
+    /**
+     * Удаление подтем указанной экзам. темы.
+     * @param examTheme экзам. тема, подтемы которой надо удалить.
+     */
+    private void deleteSubExamThemes(WideTree.Node<ExamThemeData> examTheme) {
+        for (WideTree.Node<ExamThemeData> child : examTheme.getChildren()) {
+            child.removeChildren(child);
+            deleteExamTest(child.getData());
+        }
+        examTheme.getChildren().clear();
+    }
+
+    /**
+     * Удалить экзамеционный тест.
+     * @param examTheme экзам. тест, который необходимо удалить.
+     */
+    private void deleteExamTest(ExamThemeData examTheme) {
+        // Если подтема содержала тест то необходимо его удалить.
+        if (examTheme.containsTest()) {
+            ExamTest examTest = new ExamTest(examTheme.getId());
+            boolean successDelete = examTest.delete(getApplicationContext());
+            if (!successDelete) {
+                Toast.makeText(getApplicationContext(),
+                        String.format(getString(R.string.msg_fail_delete_exam_theme), examTheme.getName()),
+                        Toast.LENGTH_SHORT);
+            }
+        }
+    }
+
     private String generateExamThemeId() {
         return  mExamTheme.getData().getId() + mExamTheme.getChildren().size();
     }
+
 }
