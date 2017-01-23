@@ -4,18 +4,24 @@ import android.app.FragmentManager;
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.blackteam.testbox.ExamThemeData;
 import com.blackteam.testbox.R;
 import com.blackteam.testbox.TestBoxApp;
+import com.blackteam.testbox.utils.ExamLoader;
 import com.blackteam.testbox.utils.NavigationTree;
 import com.blackteam.testbox.utils.WideTree;
+
+import java.io.IOException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -25,15 +31,25 @@ public class ExamThemesActivity extends BaseActivity {
 
     @BindView(R.id.lv_exam_themes) ListView mExamThemesListView;
     @BindView(R.id.bottom_editing_bar) LinearLayout mBottomEditingBar;
+    @BindView(R.id.btn_prevPage) Button mPrevPageButton;
+    @BindView(R.id.btn_nextPage) Button mNextPageButton;
 
     private NavigationTree.Node<ExamThemeData> mExamTheme;
     private ArrayAdapter<WideTree.Node<ExamThemeData>> mExamThemesListAdapter;
+
+    /** Были изменения в экзамеционных темах. */
+    private boolean hasExamThemeChanged = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_exam_themes);
         ButterKnife.bind(this);
+
+        // Для того, чтобы вернутся есть стандартная кнопка Android (Back).
+        mPrevPageButton.setVisibility(View.INVISIBLE);
+        // Если отображено несколько тем, для кого из них отображать детей по нажатию кнопки.
+        mNextPageButton.setVisibility(View.INVISIBLE);
 
         mExamTheme = ((TestBoxApp)getApplicationContext()).getExamTree().getCurElem();
 
@@ -106,6 +122,40 @@ public class ExamThemesActivity extends BaseActivity {
     }
 
     /**
+     * Завершить редактирование.
+     * @param view
+     */
+    @OnClick(R.id.btn_finish)
+    public void finishEditingOnClick(View view) {
+        if (hasExamThemeChanged) {
+            // TODO: Спрашиваем, сохранить ли изменения.
+            // Если нет, то надо загружать из файла. и возратить всё на начальную позицию.
+        }
+        setModeUser();
+    }
+
+    /**
+     * Сохранить изменения.
+     * @param view
+     */
+    @OnClick(R.id.btn_save)
+    public void saveOnClick(View view) {
+        try {
+            ExamLoader.saveExam(getApplicationContext(),
+                    ((TestBoxApp)getApplicationContext()).getExamTree());
+            Toast.makeText(this, R.string.msg_successful_saving, Toast.LENGTH_SHORT).show();
+        } catch (IOException ioex) {
+            Log.e("ExamThemesA", ioex.getMessage());
+            ioex.printStackTrace();
+            Toast.makeText(this, R.string.msg_error_saving, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void goToParent() {
+        ((TestBoxApp)getApplicationContext()).getExamTree().prev();
+    }
+
+    /**
      * Добавить новую тему экзамена.
      * @param newExamThemeName имя новой темы экзамена.
      * @param isTest содержит ли данная тема тест.
@@ -118,6 +168,7 @@ public class ExamThemesActivity extends BaseActivity {
         if (!mExamTheme.containsChild(newExamThemeData)) {
             mExamTheme.addChild(newExamThemeData);
             mExamThemesListAdapter.notifyDataSetChanged();
+            hasExamThemeChanged = true;
             return true;
         }
         return false;
@@ -125,7 +176,7 @@ public class ExamThemesActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        ((TestBoxApp)getApplicationContext()).getExamTree().prev();
+        goToParent();
         super.onBackPressed();
     }
 
