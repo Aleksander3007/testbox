@@ -27,7 +27,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class ExamThemesActivity extends BaseActivity {
+public class ExamThemesActivity extends BaseActivity implements AdapterView.OnItemClickListener {
 
     @BindView(R.id.lv_exam_themes) ListView mExamThemesListView;
     @BindView(R.id.bottom_editing_bar) LinearLayout mBottomEditingBar;
@@ -60,32 +60,7 @@ public class ExamThemesActivity extends BaseActivity {
                 );
 
         /** Добавляем слушателя нажатий на list. */
-        mExamThemesListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            // По нажатию на экз. тему выполняется переход к подтемам выбранной темы.
-            @Override
-            public void onItemClick(AdapterView<?> parent, View itemClicked, int position, long id) {
-
-                // Определяем выбранную экз. тему.
-                String theme = ((TextView) itemClicked).getText().toString();
-                ExamThemeData examThemeData = new ExamThemeData(theme);
-
-                NavigationTree<ExamThemeData>  examTree =
-                        ((TestBoxApp)getApplicationContext()).getExamTree();
-                examTree.next(examThemeData);
-
-                if (!examTree.getCurElem().getData().containsTest()) {
-                    Intent examThemesActivity =
-                            new Intent(getApplicationContext(), ExamThemesActivity.class);
-                    startActivity(examThemesActivity);
-                }
-                // Если данная тема содержит тест, то переход на стартовую страницу теста.
-                else {
-                    Intent examTestStartActivity =
-                            new Intent(getApplicationContext(), ExamTestStartActivity.class);
-                    startActivity(examTestStartActivity);
-                }
-            }
-        });
+        mExamThemesListView.setOnItemClickListener(this);
 
         mExamThemesListView.setAdapter(mExamThemesListAdapter);
     }
@@ -95,6 +70,12 @@ public class ExamThemesActivity extends BaseActivity {
         // При остановки Activity возращаем её в режим пользователя.
         setModeUser();
         super.onStop();
+    }
+
+    @Override
+    public void onBackPressed() {
+        goToParent();
+        super.onBackPressed();
     }
 
     @Override
@@ -151,6 +132,29 @@ public class ExamThemesActivity extends BaseActivity {
         }
     }
 
+    @Override
+    public void onItemClick(AdapterView<?> parent, View itemClicked, int position, long id) {
+        // Определяем выбранную экз. тему.
+        String theme = ((TextView) itemClicked).getText().toString();
+        ExamThemeData examThemeData = new ExamThemeData(theme);
+
+        NavigationTree<ExamThemeData>  examTree =
+                ((TestBoxApp)getApplicationContext()).getExamTree();
+        examTree.next(examThemeData);
+
+        if (!examTree.getCurElem().getData().containsTest()) {
+            Intent examThemesActivity =
+                    new Intent(getApplicationContext(), ExamThemesActivity.class);
+            startActivity(examThemesActivity);
+        }
+        // Если данная тема содержит тест, то переход на стартовую страницу теста.
+        else {
+            Intent examTestStartActivity =
+                    new Intent(getApplicationContext(), ExamTestStartActivity.class);
+            startActivity(examTestStartActivity);
+        }
+    }
+
     private void goToParent() {
         ((TestBoxApp)getApplicationContext()).getExamTree().prev();
     }
@@ -172,12 +176,6 @@ public class ExamThemesActivity extends BaseActivity {
             return true;
         }
         return false;
-    }
-
-    @Override
-    public void onBackPressed() {
-        goToParent();
-        super.onBackPressed();
     }
 
     private String generateExamThemeId() {
