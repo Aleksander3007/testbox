@@ -62,8 +62,10 @@ public class ExamTestQuestionActivity extends BaseActivity {
             case USER:
                 UIHelper.disableEditText(mQuestionEditText);
                 currentQuestion = examTest.getQuestions().listIterator();
-                for (TestAnswer answer : currentQuestion.next().getAnswers()) {
-                    addAnswerView(answer);
+                if (currentQuestion.hasNext()) {
+                    for (TestAnswer answer : currentQuestion.next().getAnswers()) {
+                        addAnswerView(answer);
+                    }
                 }
                 break;
             case EDITOR:
