@@ -74,13 +74,6 @@ public class ExamThemesActivity extends BaseActivity
     }
 
     @Override
-    protected void onStop() {
-        // При остановки Activity возращаем её в режим пользователя.
-        setModeUser();
-        super.onStop();
-    }
-
-    @Override
     public void onBackPressed() {
         goToParent();
         super.onBackPressed();
