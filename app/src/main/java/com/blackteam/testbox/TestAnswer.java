@@ -1,9 +1,11 @@
 package com.blackteam.testbox;
 
+import java.io.Serializable;
+
 /**
  * Вариант ответа на вопрос.
  */
-public class TestAnswer {
+public class TestAnswer implements Serializable {
     private String mAnswerText;
     private boolean mIsRight;
 

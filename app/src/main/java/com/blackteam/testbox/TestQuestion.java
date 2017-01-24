@@ -1,5 +1,6 @@
 package com.blackteam.testbox;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,7 +9,7 @@ import java.util.Map;
 /**
  * Экзамеционный вопрос из теста с вариантами ответа.
  */
-public class TestQuestion {
+public class TestQuestion implements Serializable {
     private String mQuestion;
     private List<TestAnswer> mAnswers = new ArrayList<>();
 
