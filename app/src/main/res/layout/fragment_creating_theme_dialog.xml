@@ -2,47 +2,56 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="10dp"
-    android:orientation="vertical"
-    tools:context="com.blackteam.testbox.ui.CreatingThemeDialogFragment">
+    android:paddingTop="@dimen/dialog_top_padding"
+    android:paddingLeft="@dimen/dialog_horizontal_padding"
+    android:paddingRight="@dimen/dialog_horizontal_padding"
+    tools:context="com.blackteam.testbox.ui.CreatingThemeDialogFragment"
+    android:minWidth="@dimen/dialog_minWidth"
+    android:orientation="vertical">
 
     <EditText
         android:id="@+id/et_newThemeName"
         android:hint="@string/create_new_theme"
         android:maxLength="32"
+        android:maxLines="1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:maxLines="1"
-        android:textColorLink="#42aaff" />
+        android:layout_marginLeft="@dimen/dialog_content_horizontal_margin"
+        android:layout_marginRight="@dimen/dialog_content_horizontal_margin"
+        android:layout_marginBottom="@dimen/dialog_content_bottom_margin" />
 
     <CheckBox
         android:id="@+id/cb_contains_test"
         android:text="@string/bc_exam_theme_contains_test"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/element_vertical_margin"
-        android:layout_marginBottom="@dimen/element_vertical_margin"/>
+        android:layout_marginLeft="@dimen/dialog_content_horizontal_margin"
+        android:layout_marginRight="@dimen/dialog_content_horizontal_margin"
+        android:layout_marginBottom="@dimen/dialog_content_bottom_margin"/>
 
-    <RelativeLayout
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:orientation="horizontal"
+        style="?android:attr/buttonBarStyle"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingTop="15dp"
-        android:orientation="horizontal">
+        android:layout_marginTop="@dimen/dialog_btn_bar_top_margin"
+        android:layout_marginBottom="@dimen/dialog_btn_margin"
+        android:layout_gravity="right">
 
         <Button
             android:id="@+id/btn_cancel"
             android:text="@string/cancel_btn"
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
         <Button
             android:id="@+id/btn_ok"
             android:text="@string/ok_btn"
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:clickable="false"
-            android:layout_alignParentEnd="true" />
+            android:layout_height="wrap_content" />
 
-    </RelativeLayout>
+    </LinearLayout>
 
 </LinearLayout>
