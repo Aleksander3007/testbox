@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -13,24 +14,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.blackteam.testbox.ExamTest;
-import com.blackteam.testbox.ExamThemeData;
 import com.blackteam.testbox.R;
 import com.blackteam.testbox.TestAnswer;
 import com.blackteam.testbox.TestBoxApp;
 import com.blackteam.testbox.TestQuestion;
+import com.blackteam.testbox.utils.ListCursor;
 import com.blackteam.testbox.utils.UIHelper;
-import com.blackteam.testbox.utils.WideTree;
 
-import org.xmlpull.v1.XmlPullParserException;
-
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -45,10 +38,14 @@ public class ExamTestQuestionActivity extends BaseActivity {
 
     @BindView(R.id.ll_answers) LinearLayout mAnswersLinearLayout;
     @BindView(R.id.et_question) EditText mQuestionEditText;
-    @BindView(R.id.fab_createNewAnswer) FloatingActionButton mCreateAnswerFab;
+    @BindView(R.id.fab_createNewItem) FloatingActionButton mCreateAnswerFab;
+    @BindView(R.id.bottom_editing_bar) LinearLayout mBottomEditingBar;
+    @BindView(R.id.btn_prevPage) Button mPreviousQuestionBtn;
 
-    private ExamTest examTest;
-    private Iterator<TestQuestion> currentQuestion;
+    private ExamTest mExamTest;
+    private ListCursor<TestQuestion> mQuestionCursor;
+    /** Отображаемый в текущий момент вопрос новый, т.е. еще не был добавлен в экзамен. тест. */
+    private boolean mIsNewQuestion;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -56,20 +53,19 @@ public class ExamTestQuestionActivity extends BaseActivity {
         setContentView(R.layout.activity_exam_test_question);
         ButterKnife.bind(this);
 
-        examTest = (ExamTest) getIntent().getExtras().getSerializable("ExamTest");
+        mExamTest = (ExamTest) getIntent().getExtras().getSerializable("ExamTest");
+
+        mQuestionCursor = new ListCursor<>(mExamTest.getQuestions());
 
         switch (((TestBoxApp)getApplicationContext()).getUserType()) {
             case USER:
                 UIHelper.disableEditText(mQuestionEditText);
-                currentQuestion = examTest.getQuestions().listIterator();
-                if (currentQuestion.hasNext()) {
-                    for (TestAnswer answer : currentQuestion.next().getAnswers()) {
-                        addAnswerView(answer);
-                    }
-                }
                 break;
             case EDITOR:
                 UIHelper.enableEditText(mQuestionEditText);
+                if (!mQuestionCursor.isEmpty()) displayQuestion(mQuestionCursor.getCurrent());
+                if (!mQuestionCursor.hasPrevious()) mPreviousQuestionBtn.setVisibility(View.INVISIBLE);
+                mIsNewQuestion = mQuestionCursor.isEmpty();
                 break;
         }
     }
@@ -83,20 +79,20 @@ public class ExamTestQuestionActivity extends BaseActivity {
     @Override
     protected void setModeUser() {
         super.setModeUser();
-        mCreateAnswerFab.hide();
+        mBottomEditingBar.setVisibility(View.INVISIBLE);
     }
 
     @Override
     protected void setModeEditor() {
         super.setModeEditor();
-        mCreateAnswerFab.show();
+        mBottomEditingBar.setVisibility(View.VISIBLE);
     }
 
     /**
      * Обработка нажатия на кнопку создать новый ответ.
      * @param view
      */
-    @OnClick(R.id.fab_createNewAnswer)
+    @OnClick(R.id.fab_createNewItem)
     public void createNewAnswerOnClick(View view) {
         FragmentManager fragmentManager = getFragmentManager();
         CreatingAnswerDialogFragment creatingAnswerDialogFragment =
@@ -105,49 +101,149 @@ public class ExamTestQuestionActivity extends BaseActivity {
     }
 
     /**
-     * Обработка нажатия на кнопку "завершить".
+     * Нажатие на кнопку "Сохранить".
+     * @param view
+     */
+    @OnClick(R.id.btn_save)
+    public void saveOnClick(View view) {
+        boolean success = makeExamTestChanges();
+        if (success) saveAllQuestions();
+    }
+
+    /**
+     * Нажатие на кнопку "Завершить".
      * @param view
      */
     @OnClick(R.id.btn_finish)
     public void finishOnClick(View view) {
-        switch (((TestBoxApp)getApplicationContext()).getUserType()) {
-            case USER:
-                // TODO: Закончить тестирование и вывести результаты.
-                break;
-            case EDITOR:
-                // Добавляем последний созданный вопрос и всё сохраняем.
-                if (addQuestion()) saveAllQuestions();
+        // TODO: Здесь необходимо спрашивать, сохранить ли изменения, если они были.
+    }
+
+    /**
+     * Нажатие на кнопку "Предыдущий вопрос".
+     * @param view
+     */
+    @OnClick(R.id.btn_prevPage)
+    public void prevQuestionOnClick(View view) {
+        // Если вызвана данная функция, значит кнопка перехода на предыдущий доступна.
+
+        boolean success = makeExamTestChanges();
+        // Если предыдущий вопрос существует, то отображаем его.
+        if (mQuestionCursor.hasPrevious()) {
+            if (success) displayQuestion(mQuestionCursor.previous());
         }
     }
 
     /**
-     * Обработка нажатия на кнопку "следующий вопрос".
+     * Нажатие на кнопку "Следующий вопрос".
      * @param view
      */
-    @OnClick(R.id.btn_nextQuestion)
+    @OnClick(R.id.btn_nextPage)
     public void nextQuestionOnClick(View view) {
+        boolean success = makeExamTestChanges();
+        if (!success) return;
+
+        // Если этот вопрос не последний, то ...
+        if (mQuestionCursor.hasNext()) {
+            // ... то переходим к следующему.
+            displayQuestion(mQuestionCursor.next());
+            mPreviousQuestionBtn.setVisibility(View.VISIBLE);
+        }
+        else {
+            clearDisplay();
+            mPreviousQuestionBtn.setVisibility(View.VISIBLE);
+            mIsNewQuestion = true;
+        }
+    }
+
+    /**
+     * Очищаем все редактируемые поля.
+     */
+    private void clearDisplay() {
+        mQuestionEditText.setText("");
+        mAnswersLinearLayout.removeAllViews();
+    }
+
+    /**
+     * Внести изменения в экзамеционный тест.
+     * @return true- если измения успешно внесены.
+     */
+    private boolean makeExamTestChanges() {
+        boolean success;
+        if (mIsNewQuestion) {
+            success = addQuestion();
+            // Переходим к только что добавленному (он уже отображен на экране).
+            mQuestionCursor.next();
+        }
+        else {
+            success = editCurrentQuestion();
+        }
+
+        mIsNewQuestion = false;
+
+        return success;
+    }
+
+    /**
+     * Отобразить указанный экзамеционный вопрос.
+     * @param question экзамеционный вопрос, который необходимо отобразить.
+     */
+    private void displayQuestion(TestQuestion question) {
+        mQuestionEditText.setText(question.getText());
+        displayAnswer(question.getAnswers());
+        // не отображать кнопка "предыдущий вопрос", если его не существует.
+        if (!mQuestionCursor.hasPrevious())
+            mPreviousQuestionBtn.setVisibility(View.INVISIBLE);
+    }
+
+    /**
+     * Отобразить указанные ответы.
+     * @param answers ответы, которые необходимо отобразить.
+     */
+    private void displayAnswer(List<TestAnswer> answers) {
+        mAnswersLinearLayout.removeAllViews();
         switch (((TestBoxApp)getApplicationContext()).getUserType()) {
             case USER:
-                // TODO: Перейти на следующий вопрос.
+                for (TestAnswer answer : answers) addAnswerView(answer);
                 break;
             case EDITOR:
-                boolean hasQuestionBeenAdded = addQuestion();
-                if (hasQuestionBeenAdded) {
-                    mQuestionEditText.setText("");
-                    mAnswersLinearLayout.removeAllViews();
-                }
+                for (TestAnswer answer : answers) addEditableAnswerView(answer);
                 break;
         }
+
+    }
+
+    /**
+     * Внести изменения в текущей вопрос.
+     * @return true - если успешно отредактирован.
+     */
+    private boolean editCurrentQuestion() {
+        TestQuestion question = packQuestionData();
+        if (question != null)
+            mQuestionCursor.set(question);
+        return (question != null);
     }
 
     /**
      * Добавить вопрос в список.
+     * @return true - если успешно добавлен.
      */
     private boolean addQuestion() {
+        TestQuestion question = packQuestionData();
+        if (question != null)
+            mQuestionCursor.add(question);
+        return (question != null);
+    }
+
+    /**
+     * Собрать введенные данные для экзамеционного вопроса.
+     * @return экзамеционный вопрос, null - если были введены неккоректные данные.
+     */
+    private TestQuestion packQuestionData() {
         String questionText = mQuestionEditText.getText().toString();
         if (!isQuestionTextValid()) {
             mQuestionEditText.setError(getResources().getText(R.string.question_text_empty));
-            return false;
+            return null;
         }
 
         List<TestAnswer> answers = new ArrayList<>();
@@ -162,12 +258,11 @@ public class ExamTestQuestionActivity extends BaseActivity {
                 answers.add(new TestAnswer(answerTextView.getText().toString(),
                         isRightAnswerCheckBox.isChecked()));
             }
-            examTest.addQuestion(new TestQuestion(questionText, answers));
-            return true;
+            return new TestQuestion(questionText, answers);
         }
         else {
             Toast.makeText(this, R.string.msg_zero_answers, Toast.LENGTH_SHORT).show();
-            return false;
+            return null;
         }
     }
 
@@ -188,10 +283,12 @@ public class ExamTestQuestionActivity extends BaseActivity {
      * Добавить элемент, отображающий редактируемый возможный вариант ответа в Activity.
      * @param answer Текст ответа.
      */
-    private void addEditableAnswerView(String answer) {
+    private void addEditableAnswerView(TestAnswer answer) {
         final View answerView = getLayoutInflater().inflate(R.layout.listview_elem_edit_answer, null);
         EditText answerEditText = (EditText) answerView.findViewById(R.id.et_answerText);
-        answerEditText.setText(answer);
+        CheckBox answerCheckBox = (CheckBox) answerView.findViewById(R.id.cb_isRightAnswer);
+        answerEditText.setText(answer.getText());
+        answerCheckBox.setChecked(answer.isRight());
         mAnswersLinearLayout.addView(answerView);
     }
 
@@ -214,7 +311,7 @@ public class ExamTestQuestionActivity extends BaseActivity {
      */
     public void addNewAnswer(String answer) {
         try {
-            addEditableAnswerView(answer);
+            addEditableAnswerView(new TestAnswer(answer, false));
         }
         catch (Exception ex) {
             Log.d("ExamTestQuestionActiv", ex.getMessage());
@@ -226,7 +323,7 @@ public class ExamTestQuestionActivity extends BaseActivity {
      */
     public void saveAllQuestions() {
         try {
-            examTest.save(getApplicationContext());
+            mExamTest.save(getApplicationContext());
             Toast.makeText(this, R.string.msg_successful_saving, Toast.LENGTH_SHORT).show();
         } catch (IOException ioex) {
             Log.e("ExamTestQuestionA", ioex.getMessage());

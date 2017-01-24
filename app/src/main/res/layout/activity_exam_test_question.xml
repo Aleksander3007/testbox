@@ -3,14 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin">
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin">
 
         <LinearLayout
             android:orientation="vertical"
@@ -29,45 +28,15 @@
                 android:id="@+id/ll_answers"
                 android:orientation="vertical"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-            </LinearLayout>
-
-            <RelativeLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp">
-
-                <Button
-                    android:id="@+id/btn_finish"
-                    android:text="@string/btn_finish"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-
-                <Button
-                    android:id="@+id/btn_nextQuestion"
-                    android:text="@string/btn_nextQuestion"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true" />
-
-            </RelativeLayout>
-
+                android:layout_height="wrap_content" />
         </LinearLayout>
-
     </ScrollView>
 
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_createNewAnswer"
-        android:visibility="invisible"
-        android:layout_width="wrap_content"
+    <include
+        layout="@layout/bottom_editing_bar"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginLeft="10dp"
-        android:src="@android:drawable/ic_input_add"
-        app:backgroundTint="#808080" />
+        android:layout_alignParentBottom="true" />
 
 </RelativeLayout>
