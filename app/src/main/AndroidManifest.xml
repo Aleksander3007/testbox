@@ -22,6 +22,7 @@
         <activity android:name=".ui.ExamThemesActivity"/>
         <activity android:name=".ui.ExamTestStartActivity"/>
         <activity android:name=".ui.ExamTestQuestionActivity"/>
+        <activity android:name=".ui.ErrorActivity"/>
     </application>
 
 </manifest>

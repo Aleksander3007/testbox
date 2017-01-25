@@ -2,6 +2,7 @@ package com.blackteam.testbox;
 
 import android.app.Application;
 
+import com.blackteam.testbox.utils.ExceptionHandler;
 import com.blackteam.testbox.utils.NavigationTree;
 
 /**
@@ -36,5 +37,12 @@ public class TestBoxApp extends Application {
 
     public void setExamTree(NavigationTree<ExamThemeData> examTree) {
         this.mExamTree = examTree;
+    }
+
+    @Override
+    public void onCreate() {
+        // Обработка неотловленных исключений.
+        Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));
+        super.onCreate();
     }
 }
