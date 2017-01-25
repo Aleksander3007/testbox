@@ -9,12 +9,19 @@ import com.blackteam.testbox.ui.MainActivity;
 
 import junit.framework.Assert;
 
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(AndroidJUnit4.class)
 public class ExamLoaderTest {
+
+    @Before
+    public void setUp() {
+        ExamLoader.setUnitTestMode();
+    }
+
 
     @Rule
     public ActivityTestRule<MainActivity> mActivityRule =

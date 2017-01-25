@@ -23,13 +23,13 @@ import java.io.StringWriter;
  * Управляет загрузкой и сохранением данных об экзаменах.
  */
 public class ExamLoader {
-    public static final String EXAM_FILE_NAME = "exam.xml";
+    private static String sExamFileName = "exam.xml";
 
-    public static final String THEME_TAG = "theme";
+    private static final String sThemeTag = "theme";
 
-    public static final String NAME_ATTR = "name";
-    public static final String ID_ATTR = "id";
-    public static final String IS_TEST_ATTR = "isTest";
+    private static final String sNameAttr = "name";
+    private static final String sIdAttr = "id";
+    private static final String IS_TEST_ATTR = "isTest";
 
     /**
      * Загрузить данные об экзаменах.
@@ -39,7 +39,7 @@ public class ExamLoader {
     public static NavigationTree<ExamThemeData> loadExam(Context context)
             throws IOException, XmlPullParserException {
         try {
-            FileInputStream fileInputStream = context.openFileInput(EXAM_FILE_NAME);
+            FileInputStream fileInputStream = context.openFileInput(sExamFileName);
             NavigationTree<ExamThemeData> examTree = readExamFile(fileInputStream);
             fileInputStream.close();
             return examTree;
@@ -60,6 +60,13 @@ public class ExamLoader {
     }
 
     /**
+     * Установка режима unit-тестирования данного класса, чтобы не перезаписывался основной файл.
+     */
+    public static void setUnitTestMode() {
+        sExamFileName = "examUnitTest.xml";
+    }
+
+    /**
      * Записать данные об экзаменах в в файл.
      * @param context контекст приложения.
      * @param examTree дерево с данными об экзаменах.
@@ -69,7 +76,7 @@ public class ExamLoader {
         throws IOException {
         try {
             String dataWrite = createXmlData(examTree);
-            FileOutputStream fileOutputStream = context.openFileOutput(EXAM_FILE_NAME, Context.MODE_PRIVATE);
+            FileOutputStream fileOutputStream = context.openFileOutput(sExamFileName, Context.MODE_PRIVATE);
             fileOutputStream.write(dataWrite.getBytes());
             fileOutputStream.close();
 
@@ -110,8 +117,8 @@ public class ExamLoader {
                 // Движемся вперед, пока не дойдем до конечной темы.
                 case XmlPullParser.START_TAG:
                     // Считываем все данные по экзамеционной теме.
-                    String examName = xmlParser.getAttributeValue(null, NAME_ATTR);
-                    String examId = xmlParser.getAttributeValue(null, ID_ATTR);
+                    String examName = xmlParser.getAttributeValue(null, sNameAttr);
+                    String examId = xmlParser.getAttributeValue(null, sIdAttr);
                     boolean isExamTest = Boolean.parseBoolean(xmlParser.getAttributeValue(null, IS_TEST_ATTR));
                     ExamThemeData examThemeData = new ExamThemeData(examName, examId, isExamTest);
 
@@ -176,9 +183,9 @@ public class ExamLoader {
                                       NavigationTree.Node<ExamThemeData> parentExamTheme)
             throws IOException {
 
-        xmlSerializer.startTag(null, THEME_TAG);
-        xmlSerializer.attribute(null, NAME_ATTR, parentExamTheme.getData().getName());
-        xmlSerializer.attribute(null, ID_ATTR, parentExamTheme.getData().getId());
+        xmlSerializer.startTag(null, sThemeTag);
+        xmlSerializer.attribute(null, sNameAttr, parentExamTheme.getData().getName());
+        xmlSerializer.attribute(null, sIdAttr, parentExamTheme.getData().getId());
         xmlSerializer.attribute(null, IS_TEST_ATTR,
                 String.valueOf(parentExamTheme.getData().containsTest()));
 
@@ -187,6 +194,6 @@ public class ExamLoader {
             createXmlExamTheme(xmlSerializer, examTheme);
         }
 
-        xmlSerializer.endTag(null, THEME_TAG);
+        xmlSerializer.endTag(null, sThemeTag);
     }
 }
