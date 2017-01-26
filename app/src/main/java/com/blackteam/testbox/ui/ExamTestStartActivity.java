@@ -1,6 +1,5 @@
 package com.blackteam.testbox.ui;
 
-import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -139,8 +138,19 @@ public class ExamTestStartActivity extends BaseActivity {
     }
 
     private void startTestQuestionActivity() {
-        Intent examTestQuestionAcitivity =
-                new Intent(getApplicationContext(), ExamTestQuestionActivity.class);
+        Intent examTestQuestionAcitivity = null;
+        switch (((TestBoxApp)getApplicationContext()).getUserType()) {
+            case USER:
+                examTestQuestionAcitivity =
+                        new Intent(getApplicationContext(), TestQuestionActivity.class);
+                break;
+            case EDITOR:
+                examTestQuestionAcitivity =
+                        new Intent(getApplicationContext(), EditableQuestionActivity.class);
+
+                break;
+        }
+
         examTestQuestionAcitivity.putExtra("ExamTest", examTest);
         startActivity(examTestQuestionAcitivity);
     }

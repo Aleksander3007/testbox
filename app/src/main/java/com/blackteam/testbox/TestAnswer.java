@@ -7,7 +7,10 @@ import java.io.Serializable;
  */
 public class TestAnswer implements Serializable {
     private String mAnswerText;
+    /** Данный ответ является верным. */
     private boolean mIsRight;
+    /** Данный ответ был помечен (например, пользователем) как правильный. */
+    private boolean mMarked;
 
     /**
      * Конструктор.
@@ -21,4 +24,8 @@ public class TestAnswer implements Serializable {
 
     public String getText() { return mAnswerText; }
     public boolean isRight() { return mIsRight; }
+
+    public void mark() { mMarked = true; }
+    public void removeMark() { mMarked = false; }
+    public boolean isMarked() { return mMarked; }
 }

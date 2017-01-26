@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 
 import com.blackteam.testbox.R;
@@ -45,7 +44,7 @@ public class CreatingAnswerDialogFragment extends DialogFragment {
      */
     @OnClick(R.id.btn_ok)
     public void confirmOnClick(View view) {
-        ((ExamTestQuestionActivity)getActivity())
+        ((EditableQuestionActivity)getActivity())
                 .addNewAnswer(newAnswerEditText.getText().toString());
         dismiss();
     }

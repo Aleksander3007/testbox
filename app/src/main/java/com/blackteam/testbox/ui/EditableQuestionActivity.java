@@ -29,12 +29,10 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-// TODO: Сделать возможность менять уже сущетсвующие вопросы.
-
 /**
- * Страница с экзамеционными вопросами.
+ * Страница с вопросами, которые разрешено редактировать.
  */
-public class ExamTestQuestionActivity extends BaseActivity {
+public class EditableQuestionActivity extends BaseActivity {
 
     @BindView(R.id.ll_answers) LinearLayout mAnswersLinearLayout;
     @BindView(R.id.et_question) EditText mQuestionEditText;
@@ -50,7 +48,7 @@ public class ExamTestQuestionActivity extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_exam_test_question);
+        setContentView(R.layout.activity_editable_question);
         ButterKnife.bind(this);
 
         mExamTest = (ExamTest) getIntent().getExtras().getSerializable("ExamTest");
@@ -202,15 +200,7 @@ public class ExamTestQuestionActivity extends BaseActivity {
      */
     private void displayAnswer(List<TestAnswer> answers) {
         mAnswersLinearLayout.removeAllViews();
-        switch (((TestBoxApp)getApplicationContext()).getUserType()) {
-            case USER:
-                for (TestAnswer answer : answers) addAnswerView(answer);
-                break;
-            case EDITOR:
-                for (TestAnswer answer : answers) addEditableAnswerView(answer);
-                break;
-        }
-
+        for (TestAnswer answer : answers) addEditableAnswerView(answer);
     }
 
     /**
@@ -288,19 +278,6 @@ public class ExamTestQuestionActivity extends BaseActivity {
         EditText answerEditText = (EditText) answerView.findViewById(R.id.et_answerText);
         CheckBox answerCheckBox = (CheckBox) answerView.findViewById(R.id.cb_isRightAnswer);
         answerEditText.setText(answer.getText());
-        answerCheckBox.setChecked(answer.isRight());
-        mAnswersLinearLayout.addView(answerView);
-    }
-
-    /**
-     * Добавить элемент, отображающий возможный вариант ответа в Activity.
-     * @param answer Текст ответа.
-     */
-    private void addAnswerView(TestAnswer answer) {
-        final View answerView = getLayoutInflater().inflate(R.layout.listview_elem_answer, null);
-        TextView answerTextView = (TextView) answerView.findViewById(R.id.tv_answerText);
-        CheckBox answerCheckBox = (CheckBox) answerView.findViewById(R.id.cb_isRightAnswer);
-        answerTextView.setText(answer.getText());
         answerCheckBox.setChecked(answer.isRight());
         mAnswersLinearLayout.addView(answerView);
     }
