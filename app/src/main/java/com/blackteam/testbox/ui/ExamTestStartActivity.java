@@ -138,21 +138,21 @@ public class ExamTestStartActivity extends BaseActivity {
     }
 
     private void startTestQuestionActivity() {
-        Intent examTestQuestionAcitivity = null;
+        Intent examTestQuestionIntent = null;
         switch (((TestBoxApp)getApplicationContext()).getUserType()) {
             case USER:
-                examTestQuestionAcitivity =
+                examTestQuestionIntent =
                         new Intent(getApplicationContext(), TestQuestionActivity.class);
                 break;
             case EDITOR:
-                examTestQuestionAcitivity =
+                examTestQuestionIntent =
                         new Intent(getApplicationContext(), EditableQuestionActivity.class);
 
                 break;
         }
 
-        examTestQuestionAcitivity.putExtra("ExamTest", examTest);
-        startActivity(examTestQuestionAcitivity);
+        examTestQuestionIntent.putExtra("ExamTest", examTest);
+        startActivity(examTestQuestionIntent);
     }
 
     /**
