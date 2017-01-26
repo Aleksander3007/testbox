@@ -24,6 +24,7 @@
         <activity android:name=".ui.TestQuestionActivity"/>
         <activity android:name=".ui.EditableQuestionActivity"/>
         <activity android:name=".ui.ErrorActivity"/>
+        <activity android:name=".ui.TrainingQuestionActivity"/>
     </application>
 
 </manifest>

@@ -28,4 +28,12 @@ public class TestAnswer implements Serializable {
     public void mark() { mMarked = true; }
     public void removeMark() { mMarked = false; }
     public boolean isMarked() { return mMarked; }
+
+    /**
+     * Совпадает ли данный ответ пользователем с правильным ответом.
+     * @return true - если совпадает.
+     */
+    public boolean verify() {
+        return (mMarked == mIsRight);
+    }
 }

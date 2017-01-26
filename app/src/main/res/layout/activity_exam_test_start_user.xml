@@ -20,4 +20,13 @@
         android:layout_marginBottom="@dimen/element_vertical_margin"
         android:layout_gravity="center" />
 
+    <Button
+        android:id="@+id/btn_startTraining"
+        android:text="@string/btn_startTraining"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/element_vertical_margin"
+        android:layout_marginBottom="@dimen/element_vertical_margin"
+        android:layout_gravity="center" />
+
 </LinearLayout>

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingTop="@dimen/activity_vertical_margin"
+            android:paddingBottom="@dimen/activity_vertical_margin"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tv_question"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/activity_content_bottom_margin"
+            android:layout_marginLeft="@dimen/activity_content_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_content_horizontal_margin"
+            android:textAppearance="@android:style/TextAppearance.Holo.Large"/>
+
+        <!-- Список возможных ответов. -->
+        <LinearLayout
+            android:id="@+id/ll_answers"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/activity_content_bottom_margin"
+            android:layout_marginLeft="@dimen/activity_content_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_content_horizontal_margin" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            style="?android:attr/buttonBarStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/activity_btn_bar_vertical_margin"
+            android:layout_marginBottom="@dimen/activity_btn_bar_vertical_margin">
+
+            <Button
+                android:id="@+id/btn_finish"
+                android:text="@string/btn_finish"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5" />
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_weight="0.5">
+
+                <Button
+                    android:id="@+id/btn_submit"
+                    android:text="@string/btn_submit"
+                    android:visibility="visible"
+                    style="?android:attr/buttonBarButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <Button
+                    android:id="@+id/btn_nextQuestion"
+                    android:text="@string/btn_nextQuestion"
+                    android:visibility="invisible"
+                    style="?android:attr/buttonBarButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <Button
+                    android:id="@+id/btn_goToResult"
+                    android:text="@string/btn_goToResult"
+                    android:visibility="invisible"
+                    style="?android:attr/buttonBarButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+            </RelativeLayout>
+
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+</ScrollView>

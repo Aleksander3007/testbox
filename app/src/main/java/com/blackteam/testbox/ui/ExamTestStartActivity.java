@@ -110,6 +110,17 @@ public class ExamTestStartActivity extends BaseActivity {
             Toast.makeText(this, R.string.msg_test_isnt_existed, Toast.LENGTH_SHORT).show();
     }
 
+    @OnClick(R.id.btn_startTraining)
+    public void startTrainingOnClick(View view) {
+        if (mIsExistedTest) {
+            Intent trainingIntent =
+                    new Intent(this, TrainingQuestionActivity.class);
+            trainingIntent.putExtra("ExamTest", examTest);
+            startActivity(trainingIntent);
+        }
+        else
+            Toast.makeText(this, R.string.msg_test_isnt_existed, Toast.LENGTH_SHORT).show();
+    }
     /**
      * Обработка нажатия на кнопку "Создать вопрос".
      * @param view

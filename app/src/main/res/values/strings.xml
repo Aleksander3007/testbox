@@ -8,7 +8,10 @@
     <string name="delete_btn">Удалить</string>
     <string name="ok_btn">ОК</string>
     <string name="btn_startTest">Начать тест</string>
+    <string name="btn_startTraining">Тренировка</string>
     <string name="btn_createQuestions">Добавить вопрос</string>
+    <string name="btn_submit">Подтвердить</string>
+    <string name="btn_goToResult">Результат</string>
     <string name="create_new_answer">Вариант ответа</string>
     <string name="btn_nextQuestion">Следующий</string>
     <string name="btn_finish">Завершить</string>

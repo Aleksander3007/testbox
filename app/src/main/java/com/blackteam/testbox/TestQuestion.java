@@ -27,4 +27,16 @@ public class TestQuestion implements Serializable {
     public List<TestAnswer> getAnswers() {return mAnswers; }
 
     public void addAnswers(List<TestAnswer> answers) { mAnswers.addAll(answers); }
+
+    /**
+     * Правильно ли был дан ответ на вопрос.
+     * @return true - если правильно.
+     */
+    public boolean verify() {
+        for (TestAnswer answer : mAnswers) {
+            if (!answer.verify())
+                return false;
+        }
+        return true;
+    }
 }
