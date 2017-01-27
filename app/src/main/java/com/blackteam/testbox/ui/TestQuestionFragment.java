@@ -61,9 +61,7 @@ public class TestQuestionFragment extends Fragment {
     private void addAnswerView(TestAnswer answer) {
         final View answerView = getLayoutInflater(null).inflate(R.layout.listview_elem_answer, null);
         TextView answerTextView = (TextView) answerView.findViewById(R.id.tv_answerText);
-        CheckBox answerCheckBox = (CheckBox) answerView.findViewById(R.id.cb_isRightAnswer);
         answerTextView.setText(answer.getText());
-        answerCheckBox.setChecked(answer.isMarked());
         mAnswersLinearLayout.addView(answerView);
     }
 }
