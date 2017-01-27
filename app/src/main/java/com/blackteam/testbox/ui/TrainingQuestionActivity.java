@@ -2,6 +2,7 @@ package com.blackteam.testbox.ui;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.text.style.TextAppearanceSpan;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -158,22 +159,25 @@ public class TrainingQuestionActivity extends Activity {
      * @return true - если всё правильно.
      */
     private boolean verifAnswers() {
-        readAnswers();
-        return mQuestionCursor.getCurrent().verify();
-    }
-
-    /**
-     * Считываем полученные ответы в текущий вопрос.
-     */
-    private void readAnswers() {
         List<TestAnswer> answers = mQuestionCursor.getCurrent().getAnswers();
         int nAnswers = mAnswersLinearLayout.getChildCount();
         for (int iAnswer = 0; iAnswer < nAnswers; iAnswer++) {
+            TestAnswer answer = answers.get(iAnswer);
             final View answerView = mAnswersLinearLayout.getChildAt(iAnswer);
-            if (answerView.isSelected())
-                answers.get(iAnswer).mark();
-            else
-                answers.get(iAnswer).removeMark();
+            View answerIndicator = answerView.findViewById(R.id.indicator);
+
+            answer.setMark(answerView.isSelected());
+
+            // Делаем ответы не кликабельными (После проверки ответа уже нельзя ничего не менять).
+            answerView.setClickable(false);
+            // Затемняем те ответы, которые не были выбраны.
+            answerView.setAlpha(answer.isMarked() ? 1.0f : 0.3f);
+            // Устанавливаем цвет индикатора правильный/неправильный ответ.
+            answerIndicator.setBackgroundResource(answer.isRight() ?
+                    R.color.answer_indicator_success :
+                    R.color.answer_indicator_error);
         }
+
+        return mQuestionCursor.getCurrent().verify();
     }
 }

@@ -15,4 +15,5 @@
     <dimen name="dialog_content_bottom_margin">24dp</dimen>
     <dimen name="dialog_content_horizontal_margin">16dp</dimen>
     <dimen name="list_elem_content_vertical_margin">8dp</dimen>
+    <dimen name="list_elem_content_left_margin">8dp</dimen>
 </resources>

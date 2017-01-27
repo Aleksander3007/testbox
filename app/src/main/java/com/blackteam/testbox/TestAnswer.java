@@ -27,6 +27,7 @@ public class TestAnswer implements Serializable {
 
     public void mark() { mMarked = true; }
     public void removeMark() { mMarked = false; }
+    public void setMark(boolean marked) { mMarked = marked; }
     public boolean isMarked() { return mMarked; }
 
     /**

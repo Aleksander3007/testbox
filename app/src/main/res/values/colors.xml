@@ -7,4 +7,7 @@
     <!-- Акцентный цвет приложения. Используется косвенным образом для кнопок, SeekBar, ProgressBar -->
     <color name="colorAccent">#FF4081</color>
     <color name="colorBottomEditingBar">#F0F0F0</color>
+
+    <color name="answer_indicator_error">#FF0000</color>
+    <color name="answer_indicator_success">#00FF00</color>
 </resources>
