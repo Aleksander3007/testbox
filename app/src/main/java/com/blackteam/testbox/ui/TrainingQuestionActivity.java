@@ -69,9 +69,9 @@ public class TrainingQuestionActivity extends Activity {
 
         boolean right = verifAnswers();
         if (right)
-            Toast.makeText(this, "ВЕРНО", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.msg_right_answer, Toast.LENGTH_SHORT).show();
         else
-            Toast.makeText(this, "НЕВЕРНО", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.msg_wrong_answer, Toast.LENGTH_SHORT).show();
     }
 
     @OnClick(R.id.btn_nextQuestion)

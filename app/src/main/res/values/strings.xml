@@ -25,6 +25,8 @@
     <string name="msg_zero_answers">Вопрос теста должен содержать хотя бы один ответ</string>
     <string name="msg_delete_exam_theme">При удалении выбранной темы, удаляться и его подтемы</string>
     <string name="msg_fail_delete_exam_theme">Не удалось удалить тест %s</string>
+    <string name="msg_right_answer">Верно</string>
+    <string name="msg_wrong_answer">Неверно</string>
     <string name="etHint_testDescription">Описание</string>
     <string name="title_delete_exam_theme">Удаление темы</string>
 
