@@ -18,9 +18,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/activity_content_bottom_margin"
-            android:layout_marginLeft="@dimen/activity_content_horizontal_margin"
-            android:layout_marginRight="@dimen/activity_content_horizontal_margin"
             android:textAppearance="@android:style/TextAppearance.Holo.Large"/>
+
+        <!-- Разделитель -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="?android:attr/listDivider"/>
 
         <!-- Список возможных ответов. -->
         <LinearLayout
@@ -28,9 +32,7 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/activity_content_bottom_margin"
-            android:layout_marginLeft="@dimen/activity_content_horizontal_margin"
-            android:layout_marginRight="@dimen/activity_content_horizontal_margin" />
+            android:layout_marginBottom="@dimen/activity_content_bottom_margin" />
 
         <LinearLayout
             android:orientation="horizontal"
@@ -46,12 +48,13 @@
                 style="?android:attr/buttonBarButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.5" />
+                android:layout_weight="0.5"
+                android:gravity="left|center"/>
 
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center"
+                android:gravity="right|center"
                 android:layout_weight="0.5">
 
                 <Button
@@ -60,7 +63,7 @@
                     android:visibility="visible"
                     style="?android:attr/buttonBarButtonStyle"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content" />
 
                 <Button
                     android:id="@+id/btn_nextQuestion"
@@ -68,7 +71,7 @@
                     android:visibility="invisible"
                     style="?android:attr/buttonBarButtonStyle"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content" />
 
                 <Button
                     android:id="@+id/btn_goToResult"
@@ -76,7 +79,7 @@
                     android:visibility="invisible"
                     style="?android:attr/buttonBarButtonStyle"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content" />
 
             </RelativeLayout>
 
