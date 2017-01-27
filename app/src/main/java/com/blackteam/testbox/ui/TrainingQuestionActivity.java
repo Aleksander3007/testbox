@@ -170,9 +170,8 @@ public class TrainingQuestionActivity extends Activity {
         int nAnswers = mAnswersLinearLayout.getChildCount();
         for (int iAnswer = 0; iAnswer < nAnswers; iAnswer++) {
             final View answerView = mAnswersLinearLayout.getChildAt(iAnswer);
-            CheckBox isRightAnswerCheckBox = (CheckBox) answerView.findViewById(R.id.cb_isRightAnswer);
-            if (isRightAnswerCheckBox.isChecked())
-                answers.get(iAnswer).isMarked();
+            if (answerView.isSelected())
+                answers.get(iAnswer).mark();
             else
                 answers.get(iAnswer).removeMark();
         }
