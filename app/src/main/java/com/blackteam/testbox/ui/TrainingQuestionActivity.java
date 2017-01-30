@@ -57,6 +57,7 @@ public class TrainingQuestionActivity extends Activity {
         ButterKnife.bind(this);
 
         mExamTest = (ExamTest) getIntent().getExtras().getSerializable("ExamTest");
+        mExamTest.shuffle(); // Перемешиваем вопросы и ответы.
         mQuestionCursor = new ListCursor<>(mExamTest.getQuestions());
         displayQuestion(mQuestionCursor.getCurrent());
         updateView(QuestionState.THINKING);

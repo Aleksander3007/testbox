@@ -18,6 +18,7 @@ import java.io.Serializable;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -222,5 +223,13 @@ public class ExamTest implements Serializable {
      */
     public boolean delete(Context context) {
         return context.deleteFile(getFileName());
+    }
+
+    /**
+     * Перемешать вопросы и ответы.
+     */
+    public void shuffle() {
+        for (TestQuestion question : mQuestions) question.shuffleAnswers();
+        Collections.shuffle(mQuestions);
     }
 }

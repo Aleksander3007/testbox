@@ -2,6 +2,7 @@ package com.blackteam.testbox;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,5 +53,12 @@ public class TestQuestion implements Serializable {
             }
         }
         return mRightAnswer;
+    }
+
+    /**
+     * Перемешать ответы.
+     */
+    public void shuffleAnswers() {
+        Collections.shuffle(mAnswers);
     }
 }
