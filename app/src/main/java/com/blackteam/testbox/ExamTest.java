@@ -29,10 +29,12 @@ public class ExamTest implements Serializable {
 
     private static final String sDescriptionTag = "description";
     private static final String sQuestionTag = "question";
+    private static final String sExplanationTag = "explanation";
     private static final String sAnswerTag = "answer";
 
     private static final String sDescriptionAttr = "text";
     private static final String sQuestionTextAttr = "text";
+    private static final String sExplanationAttr = "text";
     private static final String sAnswerTextAttr = "text";
     private static final String sIsRightAnswerAttr = "isRight";
 
@@ -105,6 +107,10 @@ public class ExamTest implements Serializable {
                     if (xmlParser.getName().equals(sQuestionTag)) {
                         String questionText = xmlParser.getAttributeValue(null, sQuestionTextAttr);
                         question = new TestQuestion(questionText);
+                    }
+                    else if (xmlParser.getName().equals(sExplanationTag)) {
+                        String explanationText = xmlParser.getAttributeValue(null, sQuestionTextAttr);
+                        question.setExplanation(explanationText);
                     }
                     // Если тег ответ, то считываем данные по ответам.
                     else if (xmlParser.getName().equals(sAnswerTag)) {
@@ -186,6 +192,12 @@ public class ExamTest implements Serializable {
         for (TestQuestion testQuestion : questions) {
             xmlSerializer.startTag(null, sQuestionTag);
             xmlSerializer.attribute(null, sQuestionTextAttr, testQuestion.getText());
+
+            if (testQuestion.getExplanation() != null) {
+                xmlSerializer.startTag(null, sExplanationTag);
+                xmlSerializer.attribute(null, sExplanationAttr, testQuestion.getExplanation());
+                xmlSerializer.endTag(null, sExplanationTag);
+            }
 
             // Записываем все ответы для каждого вопроса в тесте.
             for (TestAnswer testAnswer : testQuestion.getAnswers()) {

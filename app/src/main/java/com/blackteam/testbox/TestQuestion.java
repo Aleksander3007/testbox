@@ -12,17 +12,22 @@ import java.util.Map;
 public class TestQuestion implements Serializable {
     private String mQuestion;
     private List<TestAnswer> mAnswers = new ArrayList<>();
+    private String mExplanation;
 
     public TestQuestion(String question) {
         this.mQuestion = question;
     }
 
-    public TestQuestion(String question, List<TestAnswer> answers) {
+    public TestQuestion(String question, List<TestAnswer> answers, String explanation) {
         this.mQuestion = question;
         this.mAnswers = answers;
+        this.mExplanation = explanation;
     }
 
     public String getText() { return mQuestion; }
+
+    public String getExplanation() { return mExplanation; }
+    public void setExplanation(String explanation) { mExplanation = explanation; }
 
     public List<TestAnswer> getAnswers() {return mAnswers; }
 

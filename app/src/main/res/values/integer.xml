@@ -2,4 +2,5 @@
 <resources>
     <integer name="maxLength_exam_theme_name">32</integer>
     <integer name="maxLength_answer">128</integer>
+    <integer name="lines_question_explanation">3</integer>
 </resources>

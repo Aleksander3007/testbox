@@ -16,4 +16,5 @@
     <dimen name="dialog_content_horizontal_margin">16dp</dimen>
     <dimen name="list_elem_content_vertical_margin">8dp</dimen>
     <dimen name="list_elem_content_left_margin">8dp</dimen>
+    <dimen name="activity_with_bottom_bar_bottom_padding">80dp</dimen>
 </resources>

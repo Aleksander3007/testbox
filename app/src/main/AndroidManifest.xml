@@ -22,7 +22,10 @@
         <activity android:name=".ui.ExamThemesActivity"/>
         <activity android:name=".ui.ExamTestStartActivity"/>
         <activity android:name=".ui.TestQuestionActivity"/>
-        <activity android:name=".ui.EditableQuestionActivity"/>
+        <!-- adjustPan - Окно активности и его компоненты не изменяются, а сдвигаются таким образом,
+         чтобы текстовое поле с фокусом не было закрыто клавиатурой. -->
+        <activity android:name=".ui.EditableQuestionActivity"
+                  android:windowSoftInputMode="adjustPan"/>
         <activity android:name=".ui.ErrorActivity"/>
         <activity android:name=".ui.TrainingQuestionActivity"/>
     </application>

@@ -34,6 +34,12 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/activity_content_bottom_margin" />
 
+        <TextView
+            android:id="@+id/tv_explanation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <!-- Кнопки управления. -->
         <LinearLayout
             android:orientation="horizontal"
             style="?android:attr/buttonBarStyle"

@@ -36,6 +36,7 @@ public class EditableQuestionActivity extends BaseActivity {
 
     @BindView(R.id.ll_answers) LinearLayout mAnswersLinearLayout;
     @BindView(R.id.et_question) EditText mQuestionEditText;
+    @BindView(R.id.et_explanation) EditText mExplanationEditText;
     @BindView(R.id.fab_createNewItem) FloatingActionButton mCreateAnswerFab;
     @BindView(R.id.bottom_editing_bar) LinearLayout mBottomEditingBar;
     @BindView(R.id.btn_prevPage) Button mPreviousQuestionBtn;
@@ -188,6 +189,7 @@ public class EditableQuestionActivity extends BaseActivity {
      */
     private void displayQuestion(TestQuestion question) {
         mQuestionEditText.setText(question.getText());
+        mExplanationEditText.setText(question.getExplanation());
         displayAnswer(question.getAnswers());
         // не отображать кнопка "предыдущий вопрос", если его не существует.
         if (!mQuestionCursor.hasPrevious())
@@ -236,8 +238,9 @@ public class EditableQuestionActivity extends BaseActivity {
             return null;
         }
 
-        List<TestAnswer> answers = new ArrayList<>();
+        String explanationText = mExplanationEditText.getText().toString();
 
+        List<TestAnswer> answers = new ArrayList<>();
         int nAnswerViews = mAnswersLinearLayout.getChildCount();
         if (nAnswerViews > 0) {
             // Считываем возможные ответы.
@@ -248,7 +251,7 @@ public class EditableQuestionActivity extends BaseActivity {
                 answers.add(new TestAnswer(answerTextView.getText().toString(),
                         isRightAnswerCheckBox.isChecked()));
             }
-            return new TestQuestion(questionText, answers);
+            return new TestQuestion(questionText, answers, explanationText);
         }
         else {
             Toast.makeText(this, R.string.msg_zero_answers, Toast.LENGTH_SHORT).show();

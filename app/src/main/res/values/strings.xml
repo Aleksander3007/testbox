@@ -28,6 +28,8 @@
     <string name="msg_right_answer">Верно</string>
     <string name="msg_wrong_answer">Неверно</string>
     <string name="etHint_testDescription">Описание</string>
+    <string name="etHint_question_text">Вопрос</string>
+    <string name="etHint_question_explanation">Объяснение</string>
     <string name="title_delete_exam_theme">Удаление темы</string>
 
     <!-- TODO: Remove or change this placeholder text -->

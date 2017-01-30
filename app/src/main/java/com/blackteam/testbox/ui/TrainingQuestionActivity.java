@@ -40,6 +40,7 @@ public class TrainingQuestionActivity extends Activity {
 
     @BindView(R.id.btn_finish) Button mFinishBtn;
     @BindView(R.id.tv_question) TextView mQuestionTextView;
+    @BindView(R.id.tv_explanation) TextView mExplanationTextView;
     @BindView(R.id.ll_answers) LinearLayout mAnswersLinearLayout;
     @BindView(R.id.btn_submit) Button mSubmitBtn;
     @BindView(R.id.btn_nextQuestion) Button mNextQuestionBtn;
@@ -58,6 +59,7 @@ public class TrainingQuestionActivity extends Activity {
         mQuestionCursor = new ListCursor<>(mExamTest.getQuestions());
         displayQuestion(mQuestionCursor.getCurrent());
         updateView(QuestionState.THINKING);
+        hideQuestionExplanation();
     }
 
     @OnClick(R.id.btn_submit)
@@ -68,16 +70,20 @@ public class TrainingQuestionActivity extends Activity {
             updateView(QuestionState.COMPLETED);
 
         boolean right = verifAnswers();
-        if (right)
+        if (right) {
             Toast.makeText(this, R.string.msg_right_answer, Toast.LENGTH_SHORT).show();
-        else
+        }
+        else {
+            showQuestionExplanation();
             Toast.makeText(this, R.string.msg_wrong_answer, Toast.LENGTH_SHORT).show();
+        }
     }
 
     @OnClick(R.id.btn_nextQuestion)
     public void nextQuestionOnClick(View view) {
         if (mQuestionCursor.hasNext()) {
             updateView(QuestionState.THINKING);
+            hideQuestionExplanation();
             displayQuestion(mQuestionCursor.next());
         }
         else {
@@ -134,6 +140,22 @@ public class TrainingQuestionActivity extends Activity {
     private void displayAnswer(List<TestAnswer> answers) {
         mAnswersLinearLayout.removeAllViews();
         for (TestAnswer answer : answers) addAnswerView(answer);
+    }
+
+    /**
+     * Отобразить объяснение ответа на вопрос.
+     */
+    private void showQuestionExplanation() {
+        mExplanationTextView.setText(mQuestionCursor.getCurrent().getExplanation());
+        mExplanationTextView.setVisibility(View.VISIBLE);
+    }
+
+    /**
+     * Скрыть объяснение ответа на вопрос.
+     */
+    private void hideQuestionExplanation() {
+        mExplanationTextView.setText("");
+        mExplanationTextView.setVisibility(View.INVISIBLE);
     }
 
     /**
