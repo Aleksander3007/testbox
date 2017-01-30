@@ -31,6 +31,8 @@
     <string name="etHint_question_text">Вопрос</string>
     <string name="etHint_question_explanation">Объяснение</string>
     <string name="title_delete_exam_theme">Удаление темы</string>
+    <string name="number_correct_answers">Правильных ответов</string>
+    <string name="percent_number_correct_answers">Процент правильных ответов</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

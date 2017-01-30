@@ -28,6 +28,7 @@
                   android:windowSoftInputMode="adjustPan"/>
         <activity android:name=".ui.ErrorActivity"/>
         <activity android:name=".ui.TrainingQuestionActivity"/>
+        <activity android:name=".ui.TestResultActivity"/>
     </application>
 
 </manifest>

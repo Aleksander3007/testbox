@@ -14,6 +14,9 @@ public class TestQuestion implements Serializable {
     private List<TestAnswer> mAnswers = new ArrayList<>();
     private String mExplanation;
 
+    /** На данный вопрос был данный правильный ответ? */
+    private boolean mRightAnswer;
+
     public TestQuestion(String question) {
         this.mQuestion = question;
     }
@@ -22,6 +25,7 @@ public class TestQuestion implements Serializable {
         this.mQuestion = question;
         this.mAnswers = answers;
         this.mExplanation = explanation;
+        mRightAnswer = false;
     }
 
     public String getText() { return mQuestion; }
@@ -33,15 +37,20 @@ public class TestQuestion implements Serializable {
 
     public void addAnswers(List<TestAnswer> answers) { mAnswers.addAll(answers); }
 
+    public boolean rightAnswer() { return mRightAnswer; }
+
     /**
      * Правильно ли был дан ответ на вопрос.
      * @return true - если правильно.
      */
     public boolean verify() {
+        mRightAnswer = true;
         for (TestAnswer answer : mAnswers) {
-            if (!answer.verify())
-                return false;
+            if (!answer.verify()) {
+                mRightAnswer = false;
+                break;
+            }
         }
-        return true;
+        return mRightAnswer;
     }
 }

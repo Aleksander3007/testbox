@@ -1,6 +1,7 @@
 package com.blackteam.testbox.ui;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.style.TextAppearanceSpan;
 import android.view.View;
@@ -93,7 +94,9 @@ public class TrainingQuestionActivity extends Activity {
 
     @OnClick(R.id.btn_goToResult)
     public void goToResultOnClick(View view) {
-        // TODO: Переход на страницу с результатами.
+        Intent trainingResultActivity = new Intent(this, TestResultActivity.class);
+        trainingResultActivity.putExtra("ExamTest", mExamTest);
+        startActivity(trainingResultActivity);
     }
 
     @OnClick(R.id.btn_finish)
