@@ -40,7 +40,7 @@ public class ExamTest implements Serializable {
 
     private String mName;
     private String mDescription;
-    private List<TestQuestion> questions = new ArrayList<>();
+    private List<TestQuestion> mQuestions = new ArrayList<>();
 
     /**
      * Конструктор.
@@ -53,10 +53,10 @@ public class ExamTest implements Serializable {
     public void setDescription(String description) { mDescription = description; }
     public String getDescription() { return mDescription; }
 
-    public List<TestQuestion> getQuestions() { return questions; }
+    public List<TestQuestion> getQuestions() { return mQuestions; }
 
     public void addQuestion(TestQuestion question) {
-        questions.add(question);
+        mQuestions.add(question);
     }
 
     /**
@@ -72,7 +72,7 @@ public class ExamTest implements Serializable {
         FileInputStream fileInputStream = context.openFileInput(getFileName());
         readExamTestFile(fileInputStream);
         fileInputStream.close();
-        return questions;
+        return mQuestions;
     }
 
     /**
@@ -130,7 +130,7 @@ public class ExamTest implements Serializable {
                     if (xmlParser.getName().equals(sQuestionTag)) {
                         if (question != null) {
                             question.addAnswers(answers);
-                            questions.add(question);
+                            mQuestions.add(question);
                             answers.clear();
                         }
                     }
@@ -189,7 +189,7 @@ public class ExamTest implements Serializable {
         }
 
         // Записываем все вопросы в тесте.
-        for (TestQuestion testQuestion : questions) {
+        for (TestQuestion testQuestion : mQuestions) {
             xmlSerializer.startTag(null, sQuestionTag);
             xmlSerializer.attribute(null, sQuestionTextAttr, testQuestion.getText());
 
