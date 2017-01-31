@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingTop="@dimen/expansion_panel_vertical_padding"
+    android:paddingBottom="@dimen/expansion_panel_vertical_padding"
+    android:layout_marginBottom="@dimen/expansion_panel_vertical_margin">
+
+    <RelativeLayout
+        android:id="@+id/rl_question_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true">
+
+        <TextView
+            android:id="@+id/tv_question_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/expansion_panel_content_right_margin"/>
+
+        <ImageButton
+            android:id="@+id/btn_expand"
+            android:src="@drawable/ic_expand_more_black_24dp"
+            android:alpha="0.38"
+            android:background="@null"
+            android:clickable="false"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true" />
+
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/expansion_panel_vertical_padding"
+        android:background="@android:color/black"
+        android:alpha="0.12" />
+
+    <com.github.aakira.expandablelayout.ExpandableLinearLayout
+        android:id="@+id/el_question_content"
+        android:orientation="vertical"
+        app:ael_orientation="vertical"
+        app:ael_expanded="false"
+        app:ael_duration="300"
+        app:ael_interpolator="fastOutSlowIn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <include
+            layout="@layout/content_question"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    </com.github.aakira.expandablelayout.ExpandableLinearLayout>
+
+</LinearLayout>

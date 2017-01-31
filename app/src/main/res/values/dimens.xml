@@ -17,4 +17,8 @@
     <dimen name="list_elem_content_vertical_margin">8dp</dimen>
     <dimen name="list_elem_content_left_margin">8dp</dimen>
     <dimen name="activity_with_bottom_bar_bottom_padding">80dp</dimen>
+    <dimen name="expansion_panel_horizontal_padding">24dp</dimen>
+    <dimen name="expansion_panel_vertical_padding">16dp</dimen>
+    <dimen name="expansion_panel_vertical_margin">16dp</dimen>
+    <dimen name="expansion_panel_content_right_margin">16dp</dimen>
 </resources>

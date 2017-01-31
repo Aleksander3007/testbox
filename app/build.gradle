@@ -27,6 +27,7 @@ dependencies {
     compile 'com.android.support:appcompat-v7:25.1.0'
     compile 'com.android.support:design:25.1.0'
     compile 'com.jakewharton:butterknife:8.4.0'
+    compile 'com.github.aakira:expandable-layout:1.6.0@aar'
 
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'
 
@@ -38,4 +39,5 @@ dependencies {
     androidTestCompile 'com.android.support.test:runner:0.4'
     androidTestCompile 'com.android.support.test:rules:0.4'
     androidTestCompile 'com.android.support:support-annotations:25.1.0'
+    compile 'com.google.android.gms:play-services-appindexing:8.4.0'
 }

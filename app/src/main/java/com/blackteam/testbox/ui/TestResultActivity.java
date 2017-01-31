@@ -2,11 +2,16 @@ package com.blackteam.testbox.ui;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.blackteam.testbox.ExamTest;
 import com.blackteam.testbox.R;
+import com.blackteam.testbox.TestAnswer;
 import com.blackteam.testbox.TestQuestion;
+import com.github.aakira.expandablelayout.ExpandableLinearLayout;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -16,8 +21,12 @@ import butterknife.ButterKnife;
  */
 public class TestResultActivity extends Activity {
 
-    @BindView(R.id.tv_num_correct_answers) TextView mCorrectAnswersTextView;
-    @BindView(R.id.tv_percent_correct_answers) TextView mPercentCorrectAnswersTextView;
+    @BindView(R.id.tv_num_correct_answers)
+    TextView mCorrectAnswersTextView;
+    @BindView(R.id.tv_percent_correct_answers)
+    TextView mPercentCorrectAnswersTextView;
+    @BindView(R.id.ll_questions)
+    LinearLayout mQuestionsLinearLayout;
 
     private ExamTest mExamTest;
 
@@ -29,6 +38,7 @@ public class TestResultActivity extends Activity {
 
         mExamTest = (ExamTest) getIntent().getExtras().getSerializable("ExamTest");
         showResult();
+        showQuestions();
     }
 
     /**
@@ -58,6 +68,71 @@ public class TestResultActivity extends Activity {
     }
 
     private float getPercentCorrectAnswers(int numCorrectAnswers, int totalAnswers) {
-        return ((float)numCorrectAnswers / totalAnswers) * 100f;
+        return ((float) numCorrectAnswers / totalAnswers) * 100f;
+    }
+
+    /**
+     * Отобразить список вопросов.
+     */
+    private void showQuestions() {
+        for (TestQuestion question : mExamTest.getQuestions()) showQuestion(question);
+    }
+
+    /**
+     * Отобразить вопрос.
+     */
+    private void showQuestion(TestQuestion question) {
+        final View questionContentView =
+                getLayoutInflater().inflate(R.layout.expansion_panel_question, null);
+        final TextView questionTitleTextView =
+                (TextView) questionContentView.findViewById(R.id.tv_question_title);
+        final TextView questionTextView =
+                (TextView) questionContentView.findViewById(R.id.tv_question);
+        final LinearLayout answersLinearLayout =
+                (LinearLayout) questionContentView.findViewById(R.id.ll_answers);
+        final TextView explanationTextView =
+                (TextView) questionContentView.findViewById(R.id.tv_explanation);
+        final View questionHeaderView =
+                questionContentView.findViewById(R.id.rl_question_header);
+        final ImageButton expandButton =
+                (ImageButton) questionContentView.findViewById(R.id.btn_expand);
+        final ExpandableLinearLayout questionContentExpandableLayout =
+                (ExpandableLinearLayout) questionContentView.findViewById(R.id.el_question_content);
+
+        questionHeaderView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                // Проверка в начале потому, что isExpanded() меняет свое значение,
+                // только когда полностью свернётся или развернется.
+
+                // Если панель была развернута, то мы сейчас ее свернем, а значит
+                // изображение на кнопке должно стать "Развернуть".
+                expandButton.setImageResource(questionContentExpandableLayout.isExpanded() ?
+                        R.drawable.ic_expand_more_black_24dp :
+                        R.drawable.ic_expand_less_black_24dp
+                );
+
+                questionContentExpandableLayout.toggle();
+            }
+        });
+
+        questionTitleTextView.setText(question.getText());
+        questionTextView.setVisibility(View.GONE);
+        explanationTextView.setText(question.getExplanation());
+
+        for (TestAnswer answer : question.getAnswers()) {
+            View answerView = getLayoutInflater().inflate(R.layout.listview_elem_answer, null);
+            TextView answerTextView = (TextView) answerView.findViewById(R.id.tv_answerText);
+            View answerIndicator = answerView.findViewById(R.id.indicator);
+            // Устанавливаем цвет индикатора правильный/неправильный ответ.
+            answerIndicator.setBackgroundResource(answer.isRight() ?
+                    R.color.answer_indicator_success :
+                    R.color.answer_indicator_error);
+            answerTextView.setText(answer.getText());
+            answersLinearLayout.addView(answerView);
+        }
+
+        mQuestionsLinearLayout.addView(questionContentView);
     }
 }
