@@ -17,6 +17,7 @@ import com.github.aakira.expandablelayout.ExpandableLinearLayout;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Страница с результами прохожения теста/тренировки.
@@ -41,6 +42,17 @@ public class TestResultActivity extends Activity {
         mExamTest = (ExamTest) getIntent().getExtras().getSerializable("ExamTest");
         showResult();
         showQuestions();
+    }
+
+    /**
+     * Нажатие на кнопку "Закрыть окно результата теста".
+     * @param view
+     */
+    @OnClick(R.id.btn_close_test_result)
+    public void closeResultOnClick(View view) {
+        // Закрываем Activity (и переходим к странице старта теста, страница прохождения теста
+        // недоступна, т.к. у неё стоит параметр noHistory, см. AndroidManifest.xml).
+        this.finish();
     }
 
     /**
