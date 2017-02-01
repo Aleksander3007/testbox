@@ -10,4 +10,6 @@
 
     <color name="answer_indicator_error">#FF0000</color>
     <color name="answer_indicator_success">#00FF00</color>
+    <color name="question_indicator_error">#FFFF0000</color>
+    <color name="question_indicator_success">#FF00FF00</color>
 </resources>

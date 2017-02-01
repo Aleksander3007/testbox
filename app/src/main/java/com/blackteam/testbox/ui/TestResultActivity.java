@@ -2,8 +2,10 @@ package com.blackteam.testbox.ui;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -86,6 +88,8 @@ public class TestResultActivity extends Activity {
                 getLayoutInflater().inflate(R.layout.expansion_panel_question, null);
         final TextView questionTitleTextView =
                 (TextView) questionContentView.findViewById(R.id.tv_question_title);
+        final ImageView indicatorImageView =
+                (ImageView) questionContentView.findViewById(R.id.iv_question_indicator);
         final TextView questionTextView =
                 (TextView) questionContentView.findViewById(R.id.tv_question);
         final LinearLayout answersLinearLayout =
@@ -121,18 +125,34 @@ public class TestResultActivity extends Activity {
         questionTextView.setVisibility(View.GONE);
         explanationTextView.setText(question.getExplanation());
 
-        for (TestAnswer answer : question.getAnswers()) {
-            View answerView = getLayoutInflater().inflate(R.layout.listview_elem_answer, null);
-            TextView answerTextView = (TextView) answerView.findViewById(R.id.tv_answerText);
-            View answerIndicator = answerView.findViewById(R.id.indicator);
-            // Устанавливаем цвет индикатора правильный/неправильный ответ.
-            answerIndicator.setBackgroundResource(answer.isRight() ?
-                    R.color.answer_indicator_success :
-                    R.color.answer_indicator_error);
-            answerTextView.setText(answer.getText());
-            answersLinearLayout.addView(answerView);
-        }
+        // Отображаем вопрос в соответствии как на него ответил пользователь (правильно/неправильно).
+        // ... выставляем необходимую иконку.
+        indicatorImageView.setImageResource(question.rightAnswer() ?
+            R.drawable.ic_check_black_24dp :
+            R.drawable.ic_error_outline_black_24dp);
+        // ... меняем ее цвет на нужный.
+        indicatorImageView.setColorFilter(question.rightAnswer() ?
+                ContextCompat.getColor(this, R.color.question_indicator_success) :
+            ContextCompat.getColor(this, R.color.question_indicator_error));
+
+        // Отображаем ответы на вопрос.
+        for (TestAnswer answer : question.getAnswers()) showAnswer(answer, answersLinearLayout);
 
         mQuestionsLinearLayout.addView(questionContentView);
+    }
+
+    private void showAnswer(TestAnswer answer, LinearLayout answersLinearLayout) {
+        View answerView = getLayoutInflater().inflate(R.layout.listview_elem_answer, null);
+        TextView answerTextView = (TextView) answerView.findViewById(R.id.tv_answerText);
+        View answerIndicator = answerView.findViewById(R.id.indicator);
+
+        answerView.setSelected(answer.isMarked());
+        // Устанавливаем цвет индикатора правильный/неправильный ответ.
+        answerIndicator.setBackgroundResource(answer.isRight() ?
+                R.color.answer_indicator_success :
+                R.color.answer_indicator_error);
+        answerTextView.setText(answer.getText());
+
+        answersLinearLayout.addView(answerView);
     }
 }
