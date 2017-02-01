@@ -37,9 +37,9 @@ public class MainActivity extends BaseActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        NavigationTree<ExamThemeData> examThemes = null;
         try {
-            examThemes = ExamLoader.loadExam(getApplicationContext());
+            NavigationTree<ExamThemeData> examThemes =
+                    ExamLoader.loadExam(getApplicationContext());
 
             // В случае, если приложение запускается впервые.
             if (examThemes == null) {
@@ -50,6 +50,9 @@ public class MainActivity extends BaseActivity {
                 examThemes.createRootElement(
                         new ExamThemeData(sExamRootStr, sExamRootId, sIsExamRootTest));
             }
+
+            ((TestBoxApp)getApplicationContext()).setExamTree(examThemes);
+
         } catch (IOException ioex) {
             Log.e("MainActivity", ioex.getMessage());
             ioex.printStackTrace();
@@ -57,8 +60,6 @@ public class MainActivity extends BaseActivity {
             Log.e("MainActivity", xppex.getMessage());
             xppex.printStackTrace();
         }
-
-        ((TestBoxApp)getApplicationContext()).setExamTree(examThemes);
     }
 
     /**
