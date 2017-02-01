@@ -22,17 +22,21 @@
         <activity android:name=".ui.ExamThemesActivity"/>
         <activity android:name=".ui.ExamTestStartActivity"/>
         <activity android:name=".ui.TestQuestionActivity"/>
+        <activity android:name=".ui.ErrorActivity"/>
+        <activity android:name=".ui.TestResultActivity"/>
+
         <!-- adjustPan - Окно активности и его компоненты не изменяются, а сдвигаются таким образом,
          чтобы текстовое поле с фокусом не было закрыто клавиатурой. -->
-        <activity android:name=".ui.EditableQuestionActivity"
-                  android:windowSoftInputMode="adjustPan"/>
-        <activity android:name=".ui.ErrorActivity"/>
-        <activity android:name=".ui.TrainingQuestionActivity"/>
-        <activity android:name=".ui.TestResultActivity"/><!-- ATTENTION: This was auto-generated to add Google Play services to your project for
-     App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->
-        <meta-data
-            android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version"/>
+        <activity
+            android:name=".ui.EditableQuestionActivity"
+            android:windowSoftInputMode="adjustPan"/>
+
+        <!-- Данное Activity не сохраняется в истории backstack по след. причине:
+            пользователь не должен иметь возможности вернутся к тесту после его прохождения.-->
+        <activity
+            android:name=".ui.TrainingQuestionActivity"
+             android:noHistory="true"/>
+
     </application>
 
 </manifest>
