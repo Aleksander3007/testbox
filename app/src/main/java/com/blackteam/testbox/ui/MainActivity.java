@@ -25,10 +25,6 @@ import butterknife.OnClick;
 
 public class MainActivity extends BaseActivity {
 
-    private static final String sExamRootStr = "Экзамен";
-    private static final String sExamRootId = "0";
-    private static final boolean sIsExamRootTest = false;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,29 +33,7 @@ public class MainActivity extends BaseActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        try {
-            NavigationTree<ExamThemeData> examThemes =
-                    ExamLoader.loadExam(getApplicationContext());
-
-            // В случае, если приложение запускается впервые.
-            if (examThemes == null) {
-                examThemes = new NavigationTree<>();
-            }
-
-            if (examThemes.getRootElement() == null) {
-                examThemes.createRootElement(
-                        new ExamThemeData(sExamRootStr, sExamRootId, sIsExamRootTest));
-            }
-
-            ((TestBoxApp)getApplicationContext()).setExamTree(examThemes);
-
-        } catch (IOException ioex) {
-            Log.e("MainActivity", ioex.getMessage());
-            ioex.printStackTrace();
-        } catch (XmlPullParserException xppex) {
-            Log.e("MainActivity", xppex.getMessage());
-            xppex.printStackTrace();
-        }
+        ((TestBoxApp)getApplicationContext()).loadExamTree();
     }
 
     /**

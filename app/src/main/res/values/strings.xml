@@ -23,15 +23,18 @@
     <string name="msg_successful_saving">Изменения успешно сохранены</string>
     <string name="msg_error_saving">Не удалось сохранить изменения</string>
     <string name="msg_eror_add_new_exam_theme">Не удалось создать тему. Возможно такая тема уже существует</string>
+    <string name="msg_error_loading_exam_themes">Не удалось загрузить темы экзаменов</string>
     <string name="msg_zero_answers">Вопрос теста должен содержать хотя бы один ответ</string>
     <string name="msg_delete_exam_theme">При удалении выбранной темы, удаляться и его подтемы</string>
     <string name="msg_fail_delete_exam_theme">Не удалось удалить тест %s</string>
     <string name="msg_right_answer">Верно</string>
     <string name="msg_wrong_answer">Неверно</string>
+    <string name="msg_do_editing_save">Сохранить изменения?</string>
     <string name="etHint_testDescription">Описание</string>
     <string name="etHint_question_text">Вопрос</string>
     <string name="etHint_question_explanation">Объяснение</string>
     <string name="title_delete_exam_theme">Удаление темы</string>
+    <string name="title_finish_editing">Завершение редактирования</string>
     <string name="number_correct_answers">Правильных ответов</string>
     <string name="percent_number_correct_answers">Процент правильных ответов</string>
 

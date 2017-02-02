@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
@@ -82,5 +83,33 @@ public class NavigationTree<E> extends WideTree<E> implements Serializable {
      */
     public WideTree.Node<E> getCurElem() {
         return mBreadCrumbs.peek();
+    }
+
+    /**
+     * Проход по указанному пути.
+     * Если в пути будут содержаться неккоректные данные, то будет выдано исключение.
+     * @return указанный путь.
+     * @throws IllegalArgumentException - указанный узел не существует (возможно текущий узел - конечный).
+     */
+    public void setPath(Deque<E> path) throws IllegalArgumentException {
+        mBreadCrumbs.clear();
+        // В mBreadCrumbs должен всегда содержаться один элемент (root).
+        mBreadCrumbs.push(mRoot);
+
+        Iterator<E> dataIterator = path.descendingIterator();
+        dataIterator.next(); // пропускаем root элемент, т.к. он уже добавлен.
+        while (dataIterator.hasNext()) next(dataIterator.next());
+    }
+
+    /**
+     * Получить путь от текущего до корневого узла.
+     * @return путь.
+     */
+    public Deque<E> getPath() {
+        Deque<E> path = new ArrayDeque<E>();
+        for (WideTree.Node<E> node : mBreadCrumbs) {
+            path.add(node.getData());
+        }
+        return path;
     }
 }

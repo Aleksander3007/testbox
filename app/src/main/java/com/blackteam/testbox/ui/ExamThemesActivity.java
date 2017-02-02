@@ -25,12 +25,18 @@ import com.blackteam.testbox.utils.NavigationTree;
 import com.blackteam.testbox.utils.WideTree;
 
 import java.io.IOException;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.Iterator;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+/**
+ * Страница с экзамеционными темами.
+ * Навигация по экзамеционным темам происходит в рамках одной активити.
+ */
 public class ExamThemesActivity extends BaseActivity
         implements AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener {
 
@@ -46,6 +52,8 @@ public class ExamThemesActivity extends BaseActivity
     private boolean hasExamThemeChanged = false;
     /** Редактируемая экзамеционная тема. */
     private ExamThemeData editingExamTheme;
+    /** Сохраняем путь откуда было начато редактирование. */
+    private Deque<ExamThemeData> mStartPathEdit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,25 +66,24 @@ public class ExamThemesActivity extends BaseActivity
         // Если отображено несколько тем, для кого из них отображать детей по нажатию кнопки.
         mNextPageButton.setVisibility(View.INVISIBLE);
 
-        mExamTheme = ((TestBoxApp)getApplicationContext()).getExamTree().getCurElem();
-
-        mExamThemesListAdapter =
-                new ArrayAdapter<>(this,
-                        R.layout.support_simple_spinner_dropdown_item,
-                        mExamTheme.getChildren()
-                );
+        mExamTheme = ((TestBoxApp)getApplicationContext()).getExamTree().getRootElement();
+        updateView();
 
         /** Добавляем слушателя нажатий на list. */
         mExamThemesListView.setOnItemClickListener(this);
         mExamThemesListView.setOnItemLongClickListener(this);
-
-        mExamThemesListView.setAdapter(mExamThemesListAdapter);
     }
 
     @Override
     public void onBackPressed() {
-        goToParent();
-        super.onBackPressed();
+        mExamTheme = goToParent();
+        if (mExamTheme != null) {
+            updateView();
+        }
+        // Предыдущий активити как раз корневой узел.
+        else {
+            super.onBackPressed();
+        }
     }
 
     @Override
@@ -89,6 +96,7 @@ public class ExamThemesActivity extends BaseActivity
     protected void setModeEditor() {
         super.setModeEditor();
         mBottomEditingBar.setVisibility(View.VISIBLE);
+        mStartPathEdit = ((TestBoxApp)getApplicationContext()).getExamTree().getPath();
     }
 
     /**
@@ -110,9 +118,26 @@ public class ExamThemesActivity extends BaseActivity
     @OnClick(R.id.btn_finish)
     public void finishEditingOnClick(View view) {
         if (hasExamThemeChanged) {
-            // TODO: Спрашиваем, сохранить ли изменения.
-            // Если нет, то надо загружать из файла. и возратить всё на начальную позицию.
-            // hasExamThemeChanged = false;
+            AlertDialog.Builder confirmChangesDialog = new AlertDialog.Builder(this);
+            confirmChangesDialog.setTitle(R.string.title_finish_editing)
+                    .setMessage(R.string.msg_do_editing_save)
+                    // Если сохранить изменения.
+                    .setPositiveButton(R.string.btn_save, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            saveExamThemes();
+                            dialog.cancel();
+                        }
+                    })
+                    // В противном случае откат.
+                    .setNegativeButton(R.string.cancel_btn, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            rollbackChanges();
+                            dialog.cancel();
+                        }
+                    });
+            confirmChangesDialog.create().show();
         }
         setModeUser();
     }
@@ -123,18 +148,16 @@ public class ExamThemesActivity extends BaseActivity
      */
     @OnClick(R.id.btn_save)
     public void saveOnClick(View view) {
-        try {
-            ExamLoader.saveExam(getApplicationContext(),
-                    ((TestBoxApp)getApplicationContext()).getExamTree());
-            Toast.makeText(this, R.string.msg_successful_saving, Toast.LENGTH_SHORT).show();
-            hasExamThemeChanged = false;
-        } catch (IOException ioex) {
-            Log.e("ExamThemesA", ioex.getMessage());
-            ioex.printStackTrace();
-            Toast.makeText(this, R.string.msg_error_saving, Toast.LENGTH_SHORT).show();
-        }
+        saveExamThemes();
     }
 
+    /**
+     * Нажатие на элемент списка (т.е. на экзамеционную тему).
+     * @param parent
+     * @param itemClicked объект, который был нажат.
+     * @param position позиция нажатого объекта в списке.
+     * @param id
+     */
     @Override
     public void onItemClick(AdapterView<?> parent, View itemClicked, int position, long id) {
         // Определяем выбранную экз. тему.
@@ -143,12 +166,10 @@ public class ExamThemesActivity extends BaseActivity
 
         NavigationTree<ExamThemeData>  examTree =
                 ((TestBoxApp)getApplicationContext()).getExamTree();
-        examTree.next(examThemeData);
+        mExamTheme = examTree.next(examThemeData);
 
         if (!examTree.getCurElem().getData().containsTest()) {
-            Intent examThemesActivity =
-                    new Intent(getApplicationContext(), ExamThemesActivity.class);
-            startActivity(examThemesActivity);
+            updateView();
         }
         // Если данная тема содержит тест, то переход на стартовую страницу теста.
         else {
@@ -175,8 +196,12 @@ public class ExamThemesActivity extends BaseActivity
         return false;
     }
 
-    private void goToParent() {
-        ((TestBoxApp)getApplicationContext()).getExamTree().prev();
+    /**
+     * Переход к родителю текущих подтем.
+     * @return
+     */
+    private WideTree.Node<ExamThemeData> goToParent() {
+        return ((TestBoxApp)getApplicationContext()).getExamTree().prev();
     }
 
     /**
@@ -284,4 +309,52 @@ public class ExamThemesActivity extends BaseActivity
         return  mExamTheme.getData().getId() + mExamTheme.getChildren().size();
     }
 
+    /**
+     * Сохранить все экзам. темы.
+     * @return true - изменения успешно сохранены.
+     */
+    private boolean saveExamThemes() {
+        try {
+            ExamLoader.saveExam(getApplicationContext(),
+                    ((TestBoxApp)getApplicationContext()).getExamTree());
+            Toast.makeText(this, R.string.msg_successful_saving, Toast.LENGTH_SHORT).show();
+            hasExamThemeChanged = false;
+            return true;
+        } catch (IOException ioex) {
+            Log.e("ExamThemesA", ioex.getMessage());
+            ioex.printStackTrace();
+            Toast.makeText(this, R.string.msg_error_saving, Toast.LENGTH_SHORT).show();
+            return false;
+        }
+    }
+
+    /**
+     * Откат изменений до сохраненных.
+     * @return true - откат успешно завершен.
+     */
+    private boolean rollbackChanges() {
+        // Загружаем последнюю информацию до текущих изменений (откатываемся).
+        boolean isLoaded = ((TestBoxApp)getApplicationContext()).loadExamTree();
+        if (isLoaded) {
+            // Возращаемся на место, откуда было начато редактирование.
+            ((TestBoxApp)getApplicationContext()).getExamTree().setPath(mStartPathEdit);
+            mExamTheme = ((TestBoxApp)getApplicationContext()).getExamTree().getCurElem();
+            // Обновляем отображение.
+            updateView();
+            hasExamThemeChanged = false;
+        }
+        return  isLoaded;
+    }
+
+    /**
+     * Обновляем отображение.
+     */
+    private void updateView() {
+        mExamThemesListAdapter =
+                new ArrayAdapter<>(this,
+                        R.layout.support_simple_spinner_dropdown_item,
+                        mExamTheme.getChildren()
+                );
+        mExamThemesListView.setAdapter(mExamThemesListAdapter);
+    }
 }
