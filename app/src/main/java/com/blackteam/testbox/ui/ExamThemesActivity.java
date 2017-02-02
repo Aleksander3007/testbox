@@ -88,6 +88,7 @@ public class ExamThemesActivity extends BaseActivity
 
     @Override
     protected void setModeUser() {
+        finishEditing();
         super.setModeUser();
         mBottomEditingBar.setVisibility(View.INVISIBLE);
     }
@@ -112,33 +113,12 @@ public class ExamThemesActivity extends BaseActivity
     }
 
     /**
-     * Завершить редактирование.
+     * Обработка нажатия на кнопку завершения редактирования.
      * @param view
      */
     @OnClick(R.id.btn_finish)
     public void finishEditingOnClick(View view) {
-        if (hasExamThemeChanged) {
-            AlertDialog.Builder confirmChangesDialog = new AlertDialog.Builder(this);
-            confirmChangesDialog.setTitle(R.string.title_finish_editing)
-                    .setMessage(R.string.msg_do_editing_save)
-                    // Если сохранить изменения.
-                    .setPositiveButton(R.string.btn_save, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            saveExamThemes();
-                            dialog.cancel();
-                        }
-                    })
-                    // В противном случае откат.
-                    .setNegativeButton(R.string.cancel_btn, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            rollbackChanges();
-                            dialog.cancel();
-                        }
-                    });
-            confirmChangesDialog.create().show();
-        }
+        finishEditing();
         setModeUser();
     }
 
@@ -194,6 +174,34 @@ public class ExamThemesActivity extends BaseActivity
             return true;
         }
         return false;
+    }
+
+    /**
+     * Завершить редактирование.
+     */
+    private void finishEditing() {
+        if (hasExamThemeChanged) {
+            AlertDialog.Builder confirmChangesDialog = new AlertDialog.Builder(this);
+            confirmChangesDialog.setTitle(R.string.title_finish_editing)
+                    .setMessage(R.string.msg_do_editing_save)
+                    // Если сохранить изменения.
+                    .setPositiveButton(R.string.btn_save, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            saveExamThemes();
+                            dialog.cancel();
+                        }
+                    })
+                    // В противном случае откат.
+                    .setNegativeButton(R.string.cancel_btn, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            rollbackChanges();
+                            dialog.cancel();
+                        }
+                    });
+            confirmChangesDialog.create().show();
+        }
     }
 
     /**
