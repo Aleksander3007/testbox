@@ -6,11 +6,9 @@ import android.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.view.WindowManager;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.blackteam.testbox.R;
 
@@ -34,6 +32,12 @@ public class CreatingThemeDialogFragment extends DialogFragment {
         final View creatingThemeDialogView =
                 inflater.inflate(R.layout.fragment_creating_theme_dialog, container, false);
         unbinder = ButterKnife.bind(this, creatingThemeDialogView);
+
+        // Request focus and show soft keyboard automatically
+        // Запрос фокуса и отображение soft keyboard принудительно.
+        mNewThemeNameEditText.requestFocus();
+        getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+
         return creatingThemeDialogView;
     }
 

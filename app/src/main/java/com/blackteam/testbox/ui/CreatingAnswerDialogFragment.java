@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.EditText;
 
 import com.blackteam.testbox.R;
@@ -29,6 +30,12 @@ public class CreatingAnswerDialogFragment extends DialogFragment {
         final View creatingAnswerDialogView
                 = inflater.inflate(R.layout.fragment_creating_answer_dialog, container, false);
         unbinder = ButterKnife.bind(this, creatingAnswerDialogView);
+
+        // Request focus and show soft keyboard automatically
+        // Запрос фокуса и отображение soft keyboard принудительно.
+        newAnswerEditText.requestFocus();
+        getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+
         return creatingAnswerDialogView;
     }
 
