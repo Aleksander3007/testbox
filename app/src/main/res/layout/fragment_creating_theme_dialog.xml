@@ -30,7 +30,7 @@
 
     <CheckBox
         android:id="@+id/cb_contains_test"
-        android:text="@string/bc_exam_theme_contains_test"
+        android:text="@string/cb_exam_theme_contains_test"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dialog_content_horizontal_margin"

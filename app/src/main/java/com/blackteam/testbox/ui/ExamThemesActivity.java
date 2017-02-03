@@ -37,7 +37,8 @@ import butterknife.OnClick;
  * Навигация по экзамеционным темам происходит в рамках одной активити.
  */
 public class ExamThemesActivity extends BaseActivity
-        implements AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener {
+        implements AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener,
+        EditableByDialog {
 
     @BindView(R.id.lv_exam_themes) ListView mExamThemesListView;
     @BindView(R.id.bottom_editing_bar) LinearLayout mBottomEditingBar;
@@ -176,8 +177,12 @@ public class ExamThemesActivity extends BaseActivity
             String theme = ((TextView) itemClicked).getText().toString();
             editingExamTheme = mExamTheme.getChild(new ExamThemeData(theme)).getData();
 
-            EditingThemeDialogFragment editingThemeDialogFragment =
-                    EditingThemeDialogFragment.newInstance(editingExamTheme);
+            EditDialogFragment editingThemeDialogFragment = EditDialogFragment.newInstance(
+                    editingExamTheme.getName(),
+                    getResources().getString(R.string.create_new_theme),
+                    getResources().getString(R.string.cb_exam_theme_contains_test),
+                    editingExamTheme.containsTest()
+                    );
             editingThemeDialogFragment.show(getFragmentManager(), "editingThemeDialog");
 
             return true;
@@ -245,7 +250,8 @@ public class ExamThemesActivity extends BaseActivity
      * @param examThemeNewName новое имя темы экзамена.
      * @param isTest содержит ли данная тема тест.
      */
-    public void editExamTheme(String examThemeNewName, boolean isTest) {
+    @Override
+    public void editElement(String examThemeNewName, boolean isTest) {
         ExamThemeData newExamThemeData =
                 new ExamThemeData(examThemeNewName, editingExamTheme.getId(), isTest);
         mExamTheme.getChild(editingExamTheme).setData(newExamThemeData);
@@ -256,7 +262,8 @@ public class ExamThemesActivity extends BaseActivity
     /**
      * Удалить выбранную тему и все его подтемы.
      */
-    public void deleteExamTheme() {
+    @Override
+    public void deleteElement() {
         AlertDialog.Builder confirmDeletionDialog = new AlertDialog.Builder(this);
         confirmDeletionDialog.setTitle(R.string.title_delete_exam_theme)
                 .setMessage(R.string.msg_delete_exam_theme)
@@ -271,10 +278,15 @@ public class ExamThemesActivity extends BaseActivity
                 .setNegativeButton(R.string.cancel_btn, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int i) {
-                        // Открываем окно редактирования по новой, т.к. оно закрылось.
-                        EditingThemeDialogFragment editingThemeDialogFragment =
-                                EditingThemeDialogFragment.newInstance(editingExamTheme);
+                        // Открываем диалог редактирования по новой, т.к. он закрылся.
+                        EditDialogFragment editingThemeDialogFragment = EditDialogFragment.newInstance(
+                                editingExamTheme.getName(),
+                                getResources().getString(R.string.create_new_theme),
+                                getResources().getString(R.string.cb_exam_theme_contains_test),
+                                editingExamTheme.containsTest()
+                        );
                         editingThemeDialogFragment.show(getFragmentManager(), "editingThemeDialog");
+                        // Закрываем диалог удаления темы.
                         dialog.cancel();
                     }
                 });
