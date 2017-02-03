@@ -31,7 +31,7 @@ import butterknife.OnClick;
 /**
  * Страница с вопросами, которые разрешено редактировать.
  */
-public class EditableQuestionActivity extends BaseActivity implements EditableByDialog {
+public class EditQuestionActivity extends BaseActivity implements EditableByDialog {
 
     @BindView(R.id.ll_answers) LinearLayout mAnswersLinearLayout;
     @BindView(R.id.et_question) EditText mQuestionEditText;
@@ -51,7 +51,7 @@ public class EditableQuestionActivity extends BaseActivity implements EditableBy
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_editable_question);
+        setContentView(R.layout.activity_edit_question);
         ButterKnife.bind(this);
 
         mExamTest = (ExamTest) getIntent().getExtras().getSerializable("ExamTest");

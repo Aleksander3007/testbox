@@ -28,7 +28,7 @@
         <!-- adjustPan - Окно активности и его компоненты не изменяются, а сдвигаются таким образом,
          чтобы текстовое поле с фокусом не было закрыто клавиатурой. -->
         <activity
-            android:name=".ui.EditableQuestionActivity"
+            android:name=".ui.EditQuestionActivity"
             android:windowSoftInputMode="adjustPan"/>
 
         <!-- Данное Activity не сохраняется в истории backstack по след. причине:

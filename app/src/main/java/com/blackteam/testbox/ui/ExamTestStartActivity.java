@@ -157,7 +157,7 @@ public class ExamTestStartActivity extends BaseActivity {
                 break;
             case EDITOR:
                 examTestQuestionIntent =
-                        new Intent(getApplicationContext(), EditableQuestionActivity.class);
+                        new Intent(getApplicationContext(), EditQuestionActivity.class);
 
                 break;
         }

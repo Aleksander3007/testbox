@@ -51,7 +51,7 @@ public class CreatingAnswerDialogFragment extends DialogFragment {
      */
     @OnClick(R.id.btn_ok)
     public void confirmOnClick(View view) {
-        ((EditableQuestionActivity)getActivity())
+        ((EditQuestionActivity)getActivity())
                 .addNewAnswer(newAnswerEditText.getText().toString());
         dismiss();
     }
