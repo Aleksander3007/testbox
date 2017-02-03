@@ -4,10 +4,11 @@ import android.app.AlertDialog;
 import android.app.FragmentManager;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.design.widget.FloatingActionButton;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -25,9 +26,7 @@ import com.blackteam.testbox.utils.NavigationTree;
 import com.blackteam.testbox.utils.WideTree;
 
 import java.io.IOException;
-import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.Iterator;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -44,6 +43,11 @@ public class ExamThemesActivity extends BaseActivity
     @BindView(R.id.bottom_editing_bar) LinearLayout mBottomEditingBar;
     @BindView(R.id.btn_prevPage) Button mPrevPageButton;
     @BindView(R.id.btn_nextPage) Button mNextPageButton;
+
+    /** Имитируем анимацию перехода между активити, т.к. у нас одно активити, а переходы между
+     * подтемами есть. */
+    private Animation mFlipinAnimation;
+    private Animation mFlipoutAnimation;
 
     private NavigationTree.Node<ExamThemeData> mExamTheme;
     private ArrayAdapter<WideTree.Node<ExamThemeData>> mExamThemesListAdapter;
@@ -72,6 +76,9 @@ public class ExamThemesActivity extends BaseActivity
         /** Добавляем слушателя нажатий на list. */
         mExamThemesListView.setOnItemClickListener(this);
         mExamThemesListView.setOnItemLongClickListener(this);
+
+        mFlipinAnimation = AnimationUtils.loadAnimation(this, R.anim.flipin);
+        mFlipoutAnimation = AnimationUtils.loadAnimation(this, R.anim.flipout);
     }
 
     @Override
@@ -79,6 +86,7 @@ public class ExamThemesActivity extends BaseActivity
         mExamTheme = goToParent();
         if (mExamTheme != null) {
             updateView();
+            mExamThemesListView.startAnimation(mFlipoutAnimation);
         }
         // Предыдущий активити как раз корневой узел.
         else {
@@ -149,6 +157,7 @@ public class ExamThemesActivity extends BaseActivity
         mExamTheme = examTree.next(examThemeData);
 
         if (!examTree.getCurElem().getData().containsTest()) {
+            mExamThemesListView.startAnimation(mFlipinAnimation);
             updateView();
         }
         // Если данная тема содержит тест, то переход на стартовую страницу теста.
