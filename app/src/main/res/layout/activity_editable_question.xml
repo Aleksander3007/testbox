@@ -19,7 +19,8 @@
             <!-- Поле для ввода текста вопроса. -->
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/activity_content_bottom_margin">
 
                 <android.support.design.widget.TextInputEditText
                     android:id="@+id/et_question"
@@ -35,7 +36,8 @@
                 android:id="@+id/ll_answers"
                 android:orientation="vertical"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/activity_content_bottom_margin" />
 
             <!-- Поле для ввода объяснения правильного ответа. -->
             <android.support.design.widget.TextInputLayout
