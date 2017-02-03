@@ -16,7 +16,6 @@ import android.widget.Toast;
 import com.blackteam.testbox.ExamTest;
 import com.blackteam.testbox.R;
 import com.blackteam.testbox.TestAnswer;
-import com.blackteam.testbox.TestBoxApp;
 import com.blackteam.testbox.TestQuestion;
 import com.blackteam.testbox.utils.ListCursor;
 import com.blackteam.testbox.utils.UIHelper;
@@ -56,17 +55,9 @@ public class EditableQuestionActivity extends BaseActivity {
 
         mQuestionCursor = new ListCursor<>(mExamTest.getQuestions());
 
-        switch (((TestBoxApp)getApplicationContext()).getUserType()) {
-            case USER:
-                UIHelper.disableEditText(mQuestionEditText);
-                break;
-            case EDITOR:
-                UIHelper.enableEditText(mQuestionEditText);
-                if (!mQuestionCursor.isEmpty()) displayQuestion(mQuestionCursor.getCurrent());
-                if (!mQuestionCursor.hasPrevious()) mPreviousQuestionBtn.setVisibility(View.INVISIBLE);
-                mIsNewQuestion = mQuestionCursor.isEmpty();
-                break;
-        }
+        if (!mQuestionCursor.isEmpty()) displayQuestion(mQuestionCursor.getCurrent());
+        if (!mQuestionCursor.hasPrevious()) mPreviousQuestionBtn.setVisibility(View.INVISIBLE);
+        mIsNewQuestion = mQuestionCursor.isEmpty();
     }
 
     @Override
@@ -264,13 +255,11 @@ public class EditableQuestionActivity extends BaseActivity {
      * @return true - правильно.
      */
     private boolean isQuestionTextValid() {
-        if (mQuestionEditText.getText().length() == 0) return false;
-        return true;
+        return mQuestionEditText.getText().length() != 0;
     }
 
     private boolean isAnswerValid(TextView answerTextView) {
-        if (answerTextView.getText().length() == 0) return false;
-        return true;
+        return answerTextView.getText().length() != 0;
     }
     /**
      * Добавить элемент, отображающий редактируемый возможный вариант ответа в Activity.
