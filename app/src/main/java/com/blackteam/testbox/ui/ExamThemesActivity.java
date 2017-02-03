@@ -155,9 +155,10 @@ public class ExamThemesActivity extends BaseActivity
 
         NavigationTree<ExamThemeData>  examTree =
                 ((TestBoxApp)getApplicationContext()).getExamTree();
-        mExamTheme = examTree.next(examThemeData);
+        WideTree.Node<ExamThemeData> nextExamTheme = examTree.next(examThemeData);
 
         if (!examTree.getCurElem().getData().containsTest()) {
+            mExamTheme = nextExamTheme;
             mExamThemesListView.startAnimation(mFlipinAnimation);
             updateView();
         }
