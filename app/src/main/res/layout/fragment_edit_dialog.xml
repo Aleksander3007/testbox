@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:paddingTop="@dimen/dialog_top_padding"
+              android:paddingLeft="@dimen/dialog_horizontal_padding"
+              android:paddingRight="@dimen/dialog_horizontal_padding"
+              android:orientation="vertical"
+              android:minWidth="@dimen/dialog_minWidth">
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/til_mainText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dialog_content_horizontal_margin"
+        android:layout_marginRight="@dimen/dialog_content_horizontal_margin"
+        android:layout_marginBottom="@dimen/dialog_content_bottom_margin">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/et_mainText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    </android.support.design.widget.TextInputLayout>
+
+    <CheckBox
+        android:id="@+id/cb_checkItem"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dialog_content_horizontal_margin"
+        android:layout_marginRight="@dimen/dialog_content_horizontal_margin"
+        android:layout_marginBottom="@dimen/dialog_content_bottom_margin" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="?android:attr/buttonBarStyle"
+        android:layout_marginTop="@dimen/dialog_btn_bar_top_margin"
+        android:layout_marginBottom="@dimen/dialog_btn_margin">
+
+        <Button
+            android:id="@+id/btn_delete"
+            android:text="@string/delete_btn"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            style="?android:attr/buttonBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true">
+
+            <Button
+                android:id="@+id/btn_cancel"
+                android:text="@string/cancel_btn"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <Button
+                android:id="@+id/btn_ok"
+                android:text="@string/ok_btn"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+
+</LinearLayout>

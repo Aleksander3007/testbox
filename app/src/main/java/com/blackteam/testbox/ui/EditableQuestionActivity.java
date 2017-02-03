@@ -19,7 +19,6 @@ import com.blackteam.testbox.R;
 import com.blackteam.testbox.TestAnswer;
 import com.blackteam.testbox.TestQuestion;
 import com.blackteam.testbox.utils.ListCursor;
-import com.blackteam.testbox.utils.UIHelper;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -32,7 +31,7 @@ import butterknife.OnClick;
 /**
  * Страница с вопросами, которые разрешено редактировать.
  */
-public class EditableQuestionActivity extends BaseActivity {
+public class EditableQuestionActivity extends BaseActivity implements EditableByDialog {
 
     @BindView(R.id.ll_answers) LinearLayout mAnswersLinearLayout;
     @BindView(R.id.et_question) EditText mQuestionEditText;
@@ -45,6 +44,9 @@ public class EditableQuestionActivity extends BaseActivity {
     private ListCursor<TestQuestion> mQuestionCursor;
     /** Отображаемый в текущий момент вопрос новый, т.е. еще не был добавлен в экзамен. тест. */
     private boolean mIsNewQuestion;
+
+    /** Редактируемый элемент из списка вопросов. */
+    private View mEditingAnswerView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -240,7 +242,7 @@ public class EditableQuestionActivity extends BaseActivity {
             // Считываем возможные ответы.
             for (int iAnswerView = 0; iAnswerView < nAnswerViews; iAnswerView++) {
                 final View answerView = mAnswersLinearLayout.getChildAt(iAnswerView);
-                TextView answerTextView = (TextView) answerView.findViewById(R.id.et_answerText);
+                TextView answerTextView = (TextView) answerView.findViewById(R.id.et_mainText);
                 CheckBox isRightAnswerCheckBox = (CheckBox) answerView.findViewById(R.id.cb_isRightAnswer);
                 answers.add(new TestAnswer(answerTextView.getText().toString(),
                         isRightAnswerCheckBox.isChecked()));
@@ -270,10 +272,29 @@ public class EditableQuestionActivity extends BaseActivity {
      */
     private void addEditableAnswerView(TestAnswer answer) {
         final View answerView = getLayoutInflater().inflate(R.layout.listview_elem_edit_answer, null);
-        EditText answerEditText = (EditText) answerView.findViewById(R.id.et_answerText);
-        CheckBox answerCheckBox = (CheckBox) answerView.findViewById(R.id.cb_isRightAnswer);
-        answerEditText.setText(answer.getText());
+        final CheckBox answerCheckBox = (CheckBox) answerView.findViewById(R.id.cb_isRightAnswer);
+        final TextView answerTextView = (TextView) answerView.findViewById(R.id.tv_answerText);
         answerCheckBox.setChecked(answer.isRight());
+        answerTextView.setText(answer.getText());
+
+        final int answerIndex = mAnswersLinearLayout.getChildCount();
+
+        /**Обработка нажатия на вариант вопроса (Открывается меню редактирования). */
+        answerTextView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                mEditingAnswerView = answerView;
+                view.setSelected(true);
+                EditDialogFragment editAnswerDialogFragment = EditDialogFragment.newInstance(
+                        answerTextView.getText().toString(),
+                        getResources().getString(R.string.create_new_answer),
+                        getResources().getString(R.string.cb_is_right_answer),
+                        answerCheckBox.isChecked());
+                editAnswerDialogFragment.show(getFragmentManager(), "editAnswerDialogFragment");
+                return true;
+            }
+        });
+
         mAnswersLinearLayout.addView(answerView);
     }
 
@@ -302,5 +323,26 @@ public class EditableQuestionActivity extends BaseActivity {
             ioex.printStackTrace();
             Toast.makeText(this, R.string.msg_error_saving, Toast.LENGTH_SHORT).show();
         }
+    }
+
+    /**
+     * Изменить выбранный вариант ответа.
+     * @param answerNewText новый текст вариант ответа.
+     * @param isRight правильный ли это вариант?
+     */
+    @Override
+    public void editElement(String answerNewText, boolean isRight) {
+        CheckBox answerCheckBox = (CheckBox) mEditingAnswerView.findViewById(R.id.cb_isRightAnswer);
+        TextView answerTextView = (TextView) mEditingAnswerView.findViewById(R.id.tv_answerText);
+        answerTextView.setText(answerNewText);
+        answerCheckBox.setChecked(isRight);
+    }
+
+    /**
+     * Удалить выбранный вариант ответа.
+     */
+    @Override
+    public void deleteElement() {
+        mAnswersLinearLayout.removeView(mEditingAnswerView);
     }
 }
