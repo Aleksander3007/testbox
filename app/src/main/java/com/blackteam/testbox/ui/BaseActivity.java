@@ -13,7 +13,7 @@ import com.blackteam.testbox.TestBoxApp;
  */
 public class BaseActivity extends AppCompatActivity {
 
-    private MenuItem mUserTypeMenuItem;
+    protected MenuItem mUserTypeMenuItem;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

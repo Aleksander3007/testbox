@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
+import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -61,21 +62,23 @@ public class EditableQuestionActivity extends BaseActivity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        // INFO: onCreateOptionsMenu() вызывается после Activity.onResume().
+
+        boolean menuDisplayed = super.onCreateOptionsMenu(menu);
+        if (menuDisplayed) {
+            // Скрываем кнопку перехода между режимами.
+            mUserTypeMenuItem.setVisible(false);
+        }
+
+        return menuDisplayed;
+    }
+
+    @Override
     protected void onStop() {
         // Сохраняем состояние потом востанавливаем.
         super.onStop();
-    }
-
-    @Override
-    protected void setModeUser() {
-        super.setModeUser();
-        mBottomEditingBar.setVisibility(View.INVISIBLE);
-    }
-
-    @Override
-    protected void setModeEditor() {
-        super.setModeEditor();
-        mBottomEditingBar.setVisibility(View.VISIBLE);
     }
 
     /**
