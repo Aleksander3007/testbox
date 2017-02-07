@@ -4,18 +4,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingTop="@dimen/expansion_panel_vertical_padding"
-    android:paddingBottom="@dimen/expansion_panel_vertical_padding"
-    android:layout_marginBottom="@dimen/expansion_panel_vertical_margin">
+    android:layout_height="match_parent">
 
+    <!-- Header. -->
     <RelativeLayout
         android:id="@+id/rl_question_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingTop="@dimen/expansion_panel_vertical_padding"
         android:clickable="true">
 
         <LinearLayout
+            android:orientation="horizontal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
@@ -30,11 +30,9 @@
                 android:id="@+id/tv_question_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
                 android:layout_marginRight="@dimen/expansion_panel_content_right_margin" />
 
         </LinearLayout>
-
 
         <ImageButton
             android:id="@+id/btn_expand"
@@ -44,18 +42,18 @@
             android:clickable="false"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true" />
+            android:layout_alignParentRight="true" />
 
     </RelativeLayout>
 
+    <!-- Разделитель. -->
     <View
+        android:background="?android:attr/listDivider"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginTop="@dimen/expansion_panel_vertical_padding"
-        android:background="@android:color/black"
-        android:alpha="0.12" />
+        android:layout_marginTop="@dimen/expansion_panel_vertical_padding" />
 
+    <!-- Основной контент. -->
     <com.github.aakira.expandablelayout.ExpandableLinearLayout
         android:id="@+id/el_question_content"
         android:orientation="vertical"
@@ -70,6 +68,13 @@
             layout="@layout/content_question"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
+
+        <!-- Разделитель. -->
+        <View
+            android:background="?android:attr/listDivider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="@dimen/expansion_panel_vertical_padding" />
 
     </com.github.aakira.expandablelayout.ExpandableLinearLayout>
 
