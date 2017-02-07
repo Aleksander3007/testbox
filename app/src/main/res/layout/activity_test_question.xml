@@ -9,6 +9,14 @@
     <android.support.v4.view.ViewPager
         android:id="@+id/vp_questions"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="wrap_content">
+
+        <android.support.v4.view.PagerTitleStrip
+            android:id="@+id/pts_questionTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/title_page_top_padding"
+            android:paddingBottom="@dimen/title_page_bottom_padding"/>
+    </android.support.v4.view.ViewPager>
 
 </LinearLayout>

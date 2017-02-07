@@ -21,4 +21,6 @@
     <dimen name="expansion_panel_vertical_padding">16dp</dimen>
     <dimen name="expansion_panel_vertical_margin">16dp</dimen>
     <dimen name="expansion_panel_content_right_margin">16dp</dimen>
+    <dimen name="title_page_top_padding">8dp</dimen>
+    <dimen name="title_page_bottom_padding">16dp</dimen>
 </resources>

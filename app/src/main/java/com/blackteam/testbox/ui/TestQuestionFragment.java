@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -14,43 +13,68 @@ import com.blackteam.testbox.R;
 import com.blackteam.testbox.TestAnswer;
 import com.blackteam.testbox.TestQuestion;
 
-import junit.framework.Test;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 
 /**
  * Фрагмент, для отображения вопроса в тесте.
  */
-
 public class TestQuestionFragment extends Fragment {
 
     public static final String ARG_TEST_QUESTION = "testQuestion";
 
     @BindView(R.id.tv_question) TextView mQuestionTextView;
     @BindView(R.id.ll_answers) LinearLayout mAnswersLinearLayout;
+    @BindView(R.id.tv_explanation) TextView mExpalantionTextView;
 
     private Unbinder unbinder;
+
+    private TestQuestion mQuestion;
+
+    /**
+     * Создание экземпляра {@link TestQuestionFragment}
+     * @param question экзамеционный вопрос, который необходимо отобразить.
+     */
+    public static TestQuestionFragment newInstance(TestQuestion question) {
+        Bundle args = new Bundle();
+        args.putSerializable(ARG_TEST_QUESTION, question);
+        TestQuestionFragment fragment = new TestQuestionFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.exam_test_question, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_test_question, container, false);
         unbinder = ButterKnife.bind(this, rootView);
-        TestQuestion question = (TestQuestion) getArguments().getSerializable(ARG_TEST_QUESTION);
-        displayQuestion(question);
+        mQuestion = (TestQuestion) getArguments().getSerializable(ARG_TEST_QUESTION);
+        displayQuestion(mQuestion);
         return rootView;
     }
 
     @Override
     public void onDestroyView() {
+        // Т.к. FragmentStatePagerAdapter держит в памяти не все страницы, то необходимо сохранять
+        // содержимое страниц.
+        updateQuestion();
         super.onDestroyView();
         unbinder.unbind();
     }
 
+    /**
+     * Нажатие на кнопку завершения тестирования.
+     */
+    @OnClick(R.id.btn_finish_test)
+    public void finishTestOnClick() {
+        ((TestQuestionActivity)getActivity()).finishTest();
+    }
+
     private void displayQuestion(TestQuestion question) {
         mQuestionTextView.setText(question.getText());
+        mExpalantionTextView.setVisibility(View.INVISIBLE);
         for (TestAnswer answer : question.getAnswers()) addAnswerView(answer);
     }
 
@@ -62,6 +86,26 @@ public class TestQuestionFragment extends Fragment {
         final View answerView = getLayoutInflater(null).inflate(R.layout.listview_elem_answer, null);
         TextView answerTextView = (TextView) answerView.findViewById(R.id.tv_answerText);
         answerTextView.setText(answer.getText());
+        answerView.setSelected(answer.isMarked());
+        // Обработка нажатия на ответ.
+        answerView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                view.setSelected(!view.isSelected());
+            }
+        });
         mAnswersLinearLayout.addView(answerView);
+    }
+
+    /**
+     * Обновляем содержимое вопроса в соответствии с отображаемых на экране содержимым.
+     */
+    private void updateQuestion() {
+        int nAnswers = mAnswersLinearLayout.getChildCount();
+        for (int iAnswer = 0; iAnswer < nAnswers; iAnswer++) {
+            View answerView = mAnswersLinearLayout.getChildAt(iAnswer);
+            TestAnswer answer = mQuestion.getAnswers().get(iAnswer);
+            answer.setMark(answerView.isSelected());
+        }
     }
 }

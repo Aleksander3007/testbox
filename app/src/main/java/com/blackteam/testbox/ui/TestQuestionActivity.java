@@ -1,27 +1,16 @@
 package com.blackteam.testbox.ui;
 
-import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.AppCompatActivity;
-import android.util.DisplayMetrics;
-import android.util.Log;
-import android.view.MotionEvent;
-import android.view.View;
-import android.widget.CheckBox;
-import android.widget.TextView;
-import android.widget.ViewFlipper;
 
 import com.blackteam.testbox.ExamTest;
 import com.blackteam.testbox.R;
-import com.blackteam.testbox.TestAnswer;
 import com.blackteam.testbox.TestQuestion;
 import com.blackteam.testbox.TestQuestionAdapter;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -47,5 +36,14 @@ public class TestQuestionActivity extends FragmentActivity {
                         getSupportFragmentManager(),
                         (ArrayList<TestQuestion>) mExamTest.getQuestions());
         mQuestionsViewPager.setAdapter(testQuestionAdapter);
+    }
+
+    /**
+     * Завершение тестирования.
+     */
+    public void finishTest() {
+        Intent trainingResultActivity = new Intent(this, TestResultActivity.class);
+        trainingResultActivity.putExtra("ExamTest", mExamTest);
+        startActivity(trainingResultActivity);
     }
 }

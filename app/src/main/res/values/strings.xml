@@ -36,6 +36,7 @@
     <string name="etHint_question_explanation">Объяснение</string>
     <string name="title_delete_exam_theme">Удаление темы</string>
     <string name="title_finish_editing">Завершение редактирования</string>
+    <string name="title_test_question_page">№</string>
     <string name="number_correct_answers">Правильных ответов</string>
     <string name="percent_number_correct_answers">Процент правильных ответов</string>
 
