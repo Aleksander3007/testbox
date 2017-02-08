@@ -21,7 +21,6 @@
         </activity>
         <activity android:name=".ui.ExamThemesActivity"/>
         <activity android:name=".ui.ExamTestStartActivity"/>
-        <activity android:name=".ui.TestQuestionActivity"/>
         <activity android:name=".ui.ErrorActivity"/>
         <activity android:name=".ui.TestResultActivity"/>
 
@@ -31,11 +30,13 @@
             android:name=".ui.EditQuestionActivity"
             android:windowSoftInputMode="adjustPan"/>
 
-        <!-- Данное Activity не сохраняется в истории backstack по след. причине:
+        <!-- Данные Activity не сохраняются в истории backstack по след. причине:
             пользователь не должен иметь возможности вернутся к тесту после его прохождения.-->
         <activity
             android:name=".ui.TrainingQuestionActivity"
              android:noHistory="true"/>
+        <activity android:name=".ui.TestQuestionActivity"
+            android:noHistory="true"/>
 
     </application>
 
