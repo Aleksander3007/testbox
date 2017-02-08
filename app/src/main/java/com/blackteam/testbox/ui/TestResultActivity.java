@@ -40,8 +40,16 @@ public class TestResultActivity extends Activity {
         ButterKnife.bind(this);
 
         mExamTest = (ExamTest) getIntent().getExtras().getSerializable("ExamTest");
+        verifQuestions();
         showResult();
         showQuestions();
+    }
+
+    /**
+     * Запуск проверки вопросов на корректность ответа пользователя.
+     */
+    private void verifQuestions() {
+        for (TestQuestion question : mExamTest.getQuestions()) question.verify();
     }
 
     /**
