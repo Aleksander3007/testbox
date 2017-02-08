@@ -33,6 +33,6 @@ public class TestQuestionAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public CharSequence getPageTitle(int position) {
-        return "№" + position;
+        return "№" + String.valueOf(position + 1);
     }
 }
