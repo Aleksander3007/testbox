@@ -57,18 +57,16 @@ public class TestQuestionFragment extends Fragment {
 
     @Override
     public void onDestroyView() {
-        // Т.к. FragmentStatePagerAdapter держит в памяти не все страницы, то необходимо сохранять
-        // содержимое страниц.
-        updateQuestion();
         super.onDestroyView();
         unbinder.unbind();
     }
 
     /**
      * Нажатие на кнопку завершения тестирования.
+     * @param view нажатый элемент.
      */
     @OnClick(R.id.btn_finish_test)
-    public void finishTestOnClick() {
+    public void finishTestOnClick(View view) {
         ((TestQuestionActivity)getActivity()).finishTest();
     }
 
@@ -82,7 +80,7 @@ public class TestQuestionFragment extends Fragment {
      * Добавить элемент, отображающий возможный вариант ответа в Activity.
      * @param answer Текст ответа.
      */
-    private void addAnswerView(TestAnswer answer) {
+    private void addAnswerView(final TestAnswer answer) {
         final View answerView = getLayoutInflater(null).inflate(R.layout.listview_elem_answer, null);
         TextView answerTextView = (TextView) answerView.findViewById(R.id.tv_answerText);
         answerTextView.setText(answer.getText());
@@ -92,20 +90,9 @@ public class TestQuestionFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 view.setSelected(!view.isSelected());
+                answer.setMark(view.isSelected());
             }
         });
         mAnswersLinearLayout.addView(answerView);
-    }
-
-    /**
-     * Обновляем содержимое вопроса в соответствии с отображаемых на экране содержимым.
-     */
-    private void updateQuestion() {
-        int nAnswers = mAnswersLinearLayout.getChildCount();
-        for (int iAnswer = 0; iAnswer < nAnswers; iAnswer++) {
-            View answerView = mAnswersLinearLayout.getChildAt(iAnswer);
-            TestAnswer answer = mQuestion.getAnswers().get(iAnswer);
-            answer.setMark(answerView.isSelected());
-        }
     }
 }
