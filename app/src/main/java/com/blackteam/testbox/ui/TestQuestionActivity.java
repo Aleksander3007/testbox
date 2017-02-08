@@ -31,6 +31,9 @@ public class TestQuestionActivity extends BaseActivity {
     private static final int sTimeUpdateInterval = 1;
     /** Время на прохождение теста, с. */
     private int mTestTime = 12; // TODO: Заглушка по времени.
+    /** Таймер обратного отсчета времени прохождения теста. */
+    private CountDownTimer mTestTimer;
+    private boolean mIsTestFinished;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +66,7 @@ public class TestQuestionActivity extends BaseActivity {
             mTimerMenuItem.setVisible(true);
         }
 
+        mIsTestFinished = false;
         // Запускаем таймер здесь, т.к. нам необходимо дождаться инициализации меню,
         // чтобы отображать оставшиеся время в пункт меню.
         startTimer(mTestTime, sTimeUpdateInterval);
@@ -73,10 +77,18 @@ public class TestQuestionActivity extends BaseActivity {
     /**
      * Завершение тестирования.
      */
-    public void finishTest() {
-        Intent trainingResultActivity = new Intent(this, TestResultActivity.class);
-        trainingResultActivity.putExtra("ExamTest", mExamTest);
-        startActivity(trainingResultActivity);
+    public synchronized void finishTest() {
+        // Защита от многократного запуска Activity.
+        // Ведь тест может завершиться по двум причинам: пользователем и таймером.
+
+        if (!mIsTestFinished) {
+            mIsTestFinished = true;
+            // Тест завершился, а значит таймер больше не нужен.
+            mTestTimer.cancel();
+            Intent trainingResultActivity = new Intent(this, TestResultActivity.class);
+            trainingResultActivity.putExtra("ExamTest", mExamTest);
+            startActivity(trainingResultActivity);
+        }
     }
 
     /**
@@ -94,7 +106,7 @@ public class TestQuestionActivity extends BaseActivity {
      * @param updateIterval время обновления отображения таймера, с.
      */
     private void startTimer(int testTotalTime, int updateIterval) {
-        CountDownTimer testTimer = new CountDownTimer(testTotalTime * 1000, updateIterval * 1000) {
+        mTestTimer = new CountDownTimer(testTotalTime * 1000, updateIterval * 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
                 mTimerMenuItem.setTitle(formatTime((int) (millisUntilFinished / 1000)));
@@ -107,6 +119,6 @@ public class TestQuestionActivity extends BaseActivity {
                 finishTest();
             }
         };
-        testTimer.start();
+        mTestTimer.start();
     }
 }
