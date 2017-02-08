@@ -4,6 +4,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.blackteam.testbox.R;
 import com.blackteam.testbox.TestBoxApp;
@@ -14,11 +15,17 @@ import com.blackteam.testbox.TestBoxApp;
 public class BaseActivity extends AppCompatActivity {
 
     protected MenuItem mUserTypeMenuItem;
+    protected MenuItem mTimerMenuItem;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         mUserTypeMenuItem = menu.findItem(R.id.mi_userType);
+        mTimerMenuItem = menu.findItem(R.id.mi_timer);
+
+        // По умолчанию таймер не отображается,
+        // т.к. для большинства Activity он не нужен.
+        mTimerMenuItem.setVisible(false);
 
         try {
             setViewByUserType();
