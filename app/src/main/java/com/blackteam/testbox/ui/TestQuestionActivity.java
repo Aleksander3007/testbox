@@ -32,6 +32,8 @@ public class TestQuestionActivity extends FragmentActivity {
 
         mExamTest = (ExamTest) getIntent().getExtras().getSerializable("ExamTest");
 
+        mExamTest.shuffle(); // Перемешиваем вопросы и ответы.
+
         TestQuestionAdapter testQuestionAdapter = new TestQuestionAdapter(
                         getSupportFragmentManager(),
                         (ArrayList<TestQuestion>) mExamTest.getQuestions());
