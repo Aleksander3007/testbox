@@ -3,10 +3,9 @@ package com.blackteam.testbox.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.Menu;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.blackteam.testbox.ExamTest;
@@ -23,7 +22,6 @@ import butterknife.ButterKnife;
  * Страница с экзамеционными вопросами в режиме "Пользователь" (тестируемый).
  */
 public class TestQuestionActivity extends BaseActivity {
-
     @BindView(R.id.vp_questions) ViewPager mQuestionsViewPager;
 
     private ExamTest mExamTest;
@@ -43,11 +41,13 @@ public class TestQuestionActivity extends BaseActivity {
 
         mExamTest = (ExamTest) getIntent().getExtras().getSerializable("ExamTest");
 
-        mExamTest.shuffle(); // Перемешиваем вопросы и ответы.
+        // Перемешиваем вопросы и ответы.
+        mExamTest.shuffle();
+        mExamTest.setTest();
 
         TestQuestionAdapter testQuestionAdapter = new TestQuestionAdapter(
-                        getSupportFragmentManager(),
-                        (ArrayList<TestQuestion>) mExamTest.getQuestions());
+                getSupportFragmentManager(),
+                mExamTest.getQuestions());
         mQuestionsViewPager.setAdapter(testQuestionAdapter);
     }
 

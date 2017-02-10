@@ -32,16 +32,22 @@ public class ExamTest implements Serializable {
     private static final String sQuestionTag = "question";
     private static final String sExplanationTag = "explanation";
     private static final String sAnswerTag = "answer";
+    private static final String sTestTag = "test";
 
     private static final String sDescriptionAttr = "text";
     private static final String sQuestionTextAttr = "text";
     private static final String sExplanationAttr = "text";
     private static final String sAnswerTextAttr = "text";
     private static final String sIsRightAnswerAttr = "isRight";
+    private static final String sNumTestQuestionsAttr = "nQuestions";
 
     private String mName;
     private String mDescription;
     private List<TestQuestion> mQuestions = new ArrayList<>();
+    /** Количество вопросов, которые должны учавствовать в тестирование. */
+    private int mNumTestQuestions;
+    /** Актуальное кол-во вопросов, которые будут учавствовать в тестирование. */
+    private int mActualNumQuestions;
 
     /**
      * Конструктор.
@@ -54,10 +60,19 @@ public class ExamTest implements Serializable {
     public void setDescription(String description) { mDescription = description; }
     public String getDescription() { return mDescription; }
 
-    public List<TestQuestion> getQuestions() { return mQuestions; }
+    public List<TestQuestion> getAllQuestions() { return mQuestions; }
+    /** Возращает только те вопросы, которые будут учавствовать в тестировании или тренировки. */
+    public List<TestQuestion> getQuestions() {return mQuestions.subList(0, mActualNumQuestions);}
 
-    public void addQuestion(TestQuestion question) {
-        mQuestions.add(question);
+    public int getNumTestQuestions() {return mNumTestQuestions; }
+    public void setNumTestQuestions(int numTestQuestions) { mNumTestQuestions = numTestQuestions; }
+
+    public int getActualNumQuestions() { return mActualNumQuestions; }
+    public void setActualNumQuestions(int actualNumQuestions) {mActualNumQuestions = actualNumQuestions; }
+
+    /** Установка режима тестирования. */
+    public void setTest() {
+        mActualNumQuestions = mNumTestQuestions;
     }
 
     /**
@@ -124,6 +139,10 @@ public class ExamTest implements Serializable {
                     else if (xmlParser.getName().equals(sDescriptionTag)) {
                         mDescription = xmlParser.getAttributeValue(null, sDescriptionAttr);
                     }
+                    else if (xmlParser.getName().equals(sTestTag)) {
+                        mNumTestQuestions = Integer.parseInt(xmlParser
+                                .getAttributeValue(null, sNumTestQuestionsAttr));
+                    }
                     break;
                 case XmlPullParser.END_TAG:
                     // Если закрывается тег вопрос, то добавляем к нему все ответы,
@@ -188,6 +207,10 @@ public class ExamTest implements Serializable {
             xmlSerializer.attribute(null, sDescriptionAttr, mDescription);
             xmlSerializer.endTag(null, sDescriptionTag);
         }
+
+        xmlSerializer.startTag(null, sTestTag);
+        xmlSerializer.attribute(null, sNumTestQuestionsAttr, String.valueOf(mNumTestQuestions));
+        xmlSerializer.endTag(null, sTestTag);
 
         // Записываем все вопросы в тесте.
         for (TestQuestion testQuestion : mQuestions) {

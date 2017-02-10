@@ -3,11 +3,17 @@ package com.blackteam.testbox.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.AppCompatRadioButton;
+import android.support.v7.widget.AppCompatSeekBar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RadioGroup;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,6 +31,7 @@ import java.io.IOException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 
 /**
@@ -35,9 +42,15 @@ public class ExamTestStartActivity extends BaseActivity {
     @BindView(R.id.tv_testName) TextView mTestNameTextView;
     @BindView(R.id.et_testDescription) EditText mTestDescriptionEditText;
     @BindView(R.id.tv_testDescription) TextView mTestDescriptionTextView;
-    @BindView(R.id.btn_startTest) Button mStartTestButton;
     @BindView(R.id.ll_exam_test_start_user) LinearLayout mUserViewLinearLayout;
     @BindView(R.id.ll_exam_test_start_editor) LinearLayout mEditorViewLinearLayout;
+    @BindView(R.id.sb_num_questions) AppCompatSeekBar mNumQuestionsSeekBar;
+    @BindView(R.id.et_num_questions) EditText mNumQuestionsEditText;
+    @BindView(R.id.rb_testing) AppCompatRadioButton mTestingRadioButton;
+    @BindView(R.id.rb_training) AppCompatRadioButton mTrainingRadioButton;
+    @BindView(R.id.ll_training_settings) View mTrainingSettingsView;
+    @BindView(R.id.et_num_training_questions) EditText mNumTrainingQuestionsEditText;
+    @BindView(R.id.sb_num_training_questions) SeekBar mNumTrainigQuestionsSeekBar;
 
     private NavigationTree.Node<ExamThemeData> mExamTheme;
     private ExamTest examTest;
@@ -87,6 +100,9 @@ public class ExamTestStartActivity extends BaseActivity {
         UIHelper.disableEditText(mTestDescriptionEditText);
         mUserViewLinearLayout.setVisibility(View.VISIBLE);
         mEditorViewLinearLayout.setVisibility(View.INVISIBLE);
+        mNumQuestionsSeekBar.setVisibility(View.GONE);
+        mNumQuestionsEditText.setVisibility(View.GONE);
+        updateNumTrainingQuestionsView();
     }
 
     @Override
@@ -96,31 +112,20 @@ public class ExamTestStartActivity extends BaseActivity {
         UIHelper.enableEditText(mTestDescriptionEditText);
         mUserViewLinearLayout.setVisibility(View.INVISIBLE);
         mEditorViewLinearLayout.setVisibility(View.VISIBLE);
+        displayNumTestQuestions();
     }
 
     /**
-     * Обработка нажатия на кнопку "Начать тест".
-     * @param view
+     * Обработка нажатия на кнопку "Начать".
      */
-    @OnClick(R.id.btn_startTest)
-    public void startTestOnClick(View view) {
-        if (mIsExistedTest)
-            startTestQuestionActivity();
+    @OnClick(R.id.btn_start)
+    public void startOnClick() {
+        if (mTestingRadioButton.isChecked())
+            startTest();
         else
-            Toast.makeText(this, R.string.msg_test_isnt_existed, Toast.LENGTH_SHORT).show();
+            startTraining();
     }
 
-    @OnClick(R.id.btn_startTraining)
-    public void startTrainingOnClick(View view) {
-        if (mIsExistedTest) {
-            Intent trainingIntent =
-                    new Intent(this, TrainingQuestionActivity.class);
-            trainingIntent.putExtra("ExamTest", examTest);
-            startActivity(trainingIntent);
-        }
-        else
-            Toast.makeText(this, R.string.msg_test_isnt_existed, Toast.LENGTH_SHORT).show();
-    }
     /**
      * Обработка нажатия на кнопку "Создать вопрос".
      * @param view
@@ -132,7 +137,7 @@ public class ExamTestStartActivity extends BaseActivity {
 
     /**
      * Обработка нажатия на кнопку сохранить.
-     * @param view
+     * @param view нажатый элемент.
      */
     @OnClick(R.id.btn_save)
     public void saveOnClick(View view) {
@@ -146,6 +151,38 @@ public class ExamTestStartActivity extends BaseActivity {
             ioex.printStackTrace();
             Toast.makeText(this, R.string.msg_error_saving, Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @OnCheckedChanged(R.id.rb_testing)
+    public void onTestingModeCheckedChanged(boolean checked) {
+        if (checked)
+            mTrainingSettingsView.setVisibility(View.GONE);
+    }
+
+    @OnCheckedChanged(R.id.rb_training)
+    public void onTrainingModeCheckedChanged(boolean checked) {
+        if (checked)
+            mTrainingSettingsView.setVisibility(View.VISIBLE);
+    }
+
+
+    public void startTest() {
+        if (mIsExistedTest)
+            startTestQuestionActivity();
+        else
+            Toast.makeText(this, R.string.msg_test_isnt_existed, Toast.LENGTH_SHORT).show();
+    }
+
+    public void startTraining() {
+        if (mIsExistedTest) {
+            examTest.setActualNumQuestions(mNumTrainigQuestionsSeekBar.getProgress());
+            Intent trainingIntent =
+                    new Intent(this, TrainingQuestionActivity.class);
+            trainingIntent.putExtra("ExamTest", examTest);
+            startActivity(trainingIntent);
+        }
+        else
+            Toast.makeText(this, R.string.msg_test_isnt_existed, Toast.LENGTH_SHORT).show();
     }
 
     private void startTestQuestionActivity() {
@@ -173,5 +210,149 @@ public class ExamTestStartActivity extends BaseActivity {
     private void displayDescription(String description) {
         mTestDescriptionEditText.setText(description);
         mTestDescriptionTextView.setText(description);
+    }
+
+    /**
+     * Отображение настройки количества вопросов для теста.
+     */
+    private void displayNumTestQuestions() {
+        mNumQuestionsSeekBar.setMax(examTest.getAllQuestions().size());
+        mNumQuestionsSeekBar.setProgress(examTest.getNumTestQuestions());
+        mNumQuestionsEditText.setText(String.valueOf(examTest.getNumTestQuestions()));
+
+        // зменения в Seekbar также отражаются в EditText.
+        mNumQuestionsSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if (fromUser) {
+                    mNumQuestionsEditText.setText(String.valueOf(progress));
+                    examTest.setNumTestQuestions(progress);
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+        // Изменения в EditText также отражаются в Seekbar.
+        mNumQuestionsEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                int numTestQuestions;
+                if (mNumQuestionsEditText.getText().toString().length() != 0) {
+                    numTestQuestions = Integer.parseInt(mNumQuestionsEditText.getText().toString());
+                    // Если число больше, то упирается в максимум.
+                    if (numTestQuestions > examTest.getAllQuestions().size())
+                        numTestQuestions = examTest.getAllQuestions().size();
+                }
+                // Если строка пустая, то упирается в минимум.
+                else {
+                    numTestQuestions = 0;
+                }
+
+                mNumQuestionsSeekBar.setProgress(numTestQuestions);
+                examTest.setNumTestQuestions(numTestQuestions);
+            }
+        });
+
+        // После потери фокуса необходимо установить корректную величину в EditText.
+        // Т.к. величина может оказаться за пределами диапазона.
+        mNumQuestionsEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    mNumQuestionsEditText.setText(String.valueOf(examTest.getNumTestQuestions()));
+                }
+            }
+        });
+
+        mNumQuestionsSeekBar.setVisibility(View.VISIBLE);
+        mNumQuestionsEditText.setVisibility(View.VISIBLE);
+    }
+
+    /**
+     * Обновляем отображение настройки количества вопросов в тренировки.
+     */
+    private void updateNumTrainingQuestionsView() {
+        mNumTrainigQuestionsSeekBar.setMax(examTest.getAllQuestions().size());
+        mNumTrainigQuestionsSeekBar.setProgress(mNumQuestionsSeekBar.getMax());
+        mNumTrainingQuestionsEditText.setText(String.valueOf(
+                mNumTrainigQuestionsSeekBar.getProgress()));
+
+        // Изменения в Seekbar также отражаются в EditText.
+        mNumTrainigQuestionsSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if (fromUser) {
+                    mNumTrainingQuestionsEditText.setText(String.valueOf(progress));
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+        // Изменения в EditText также отражаются в Seekbar.
+        mNumTrainingQuestionsEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                int numTrainingQuestions;
+                if (s.toString().length() != 0) {
+                    numTrainingQuestions = Integer.parseInt(s.toString());
+                    // Если число больше, то упирается в максимум.
+                    if (numTrainingQuestions > mNumTrainigQuestionsSeekBar.getMax())
+                        numTrainingQuestions = mNumTrainigQuestionsSeekBar.getMax();
+                }
+                // Если строка пустая, то упирается в минимум.
+                else {
+                    numTrainingQuestions = 0;
+                }
+
+                mNumTrainigQuestionsSeekBar.setProgress(numTrainingQuestions);
+            }
+        });
+
+        // После потери фокуса необходимо установить корректную величину в EditText.
+        // Т.к. величина может оказаться за пределами диапазона.
+        mNumQuestionsEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    mNumQuestionsEditText.setText(String.valueOf(
+                            mNumTrainigQuestionsSeekBar.getProgress()));
+                }
+            }
+        });
     }
 }

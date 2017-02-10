@@ -23,7 +23,6 @@ import butterknife.OnClick;
  * Страница с результами прохожения теста/тренировки.
  */
 public class TestResultActivity extends Activity {
-
     @BindView(R.id.tv_num_correct_answers)
     TextView mCorrectAnswersTextView;
     @BindView(R.id.tv_percent_correct_answers)
@@ -78,12 +77,12 @@ public class TestResultActivity extends Activity {
     }
 
     private int getNumQuestions() {
-        return mExamTest.getQuestions().size();
+        return mExamTest.getAllQuestions().size();
     }
 
     private int geNumCorrectAnswers() {
         int numCorrectAnswers = 0;
-        for (TestQuestion question : mExamTest.getQuestions()) {
+        for (TestQuestion question : mExamTest.getAllQuestions()) {
             if (question.rightAnswer()) numCorrectAnswers++;
         }
         return numCorrectAnswers;

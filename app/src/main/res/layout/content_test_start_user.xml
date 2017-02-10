@@ -11,9 +11,34 @@
         android:layout_marginTop="@dimen/element_vertical_margin"
         android:layout_marginBottom="@dimen/element_vertical_margin"/>
 
+    <RadioGroup
+        android:id="@+id/rg_test_mode"
+        android:orientation="horizontal"
+        android:checkedButton="@+id/rb_testing"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal">
+
+        <android.support.v7.widget.AppCompatRadioButton
+            android:id="@+id/rb_testing"
+            android:text="@string/rb_testing"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginRight="@dimen/radio_button_margin_right"/>
+
+        <android.support.v7.widget.AppCompatRadioButton
+            android:id="@+id/rb_training"
+            android:text="@string/rb_training"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true" />
+
+    </RadioGroup>
+
     <Button
-        android:id="@+id/btn_startTest"
-        android:text="@string/btn_startTest"
+        android:id="@+id/btn_start"
+        android:text="@string/btn_start"
         style="?android:attr/buttonBarButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -21,14 +46,44 @@
         android:layout_marginBottom="@dimen/element_vertical_margin"
         android:layout_gravity="center" />
 
-    <Button
-        android:id="@+id/btn_startTraining"
-        android:text="@string/btn_startTraining"
-        style="?android:attr/buttonBarButtonStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/element_vertical_margin"
-        android:layout_marginBottom="@dimen/element_vertical_margin"
-        android:layout_gravity="center" />
+    <LinearLayout
+        android:id="@+id/ll_training_settings"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:text="@string/num_questions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"/>
+
+        <RelativeLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/et_num_training_questions"
+                android:inputType="number"
+                android:maxLength="9"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_marginLeft="@dimen/textview_for_seek_bar_margin_left" />
+
+            <android.support.v7.widget.AppCompatSeekBar
+                android:id="@+id/sb_num_training_questions"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@+id/et_num_training_questions"
+                android:layout_centerVertical="true"/>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
 
 </LinearLayout>

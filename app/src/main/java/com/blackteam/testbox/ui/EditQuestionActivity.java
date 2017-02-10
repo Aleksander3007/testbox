@@ -56,7 +56,7 @@ public class EditQuestionActivity extends BaseActivity implements EditableByDial
 
         mExamTest = (ExamTest) getIntent().getExtras().getSerializable("ExamTest");
 
-        mQuestionCursor = new ListCursor<>(mExamTest.getQuestions());
+        mQuestionCursor = new ListCursor<>(mExamTest.getAllQuestions());
 
         if (!mQuestionCursor.isEmpty()) displayQuestion(mQuestionCursor.getCurrent());
         if (!mQuestionCursor.hasPrevious()) mPreviousQuestionBtn.setVisibility(View.INVISIBLE);
