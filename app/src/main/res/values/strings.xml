@@ -6,6 +6,10 @@
     <string name="create_new_theme">Название темы</string>
     <string name="num_test_questions">Количество вопросов в тесте</string>
     <string name="num_questions">Количество вопросов</string>
+    <string name="test_time_limit">Время на тест</string>
+    <string name="hours_short_name">ч</string>
+    <string name="minutes_short_name">мин</string>
+    <string name="seconds_short_name">сек</string>
     <string name="cancel_btn">Отмена</string>
     <string name="delete_btn">Удалить</string>
     <string name="ok_btn">ОК</string>
@@ -45,6 +49,10 @@
     <string name="title_test_question_page">№</string>
     <string name="number_correct_answers">Правильных ответов</string>
     <string name="percent_number_correct_answers">Процент правильных ответов</string>
+
+    <string name="test_time_hours_default">00</string>
+    <string name="test_time_minutes_default">20</string>
+    <string name="test_time_seconds_default">00</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

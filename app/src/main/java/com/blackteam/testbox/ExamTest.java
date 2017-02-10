@@ -40,10 +40,16 @@ public class ExamTest implements Serializable {
     private static final String sAnswerTextAttr = "text";
     private static final String sIsRightAnswerAttr = "isRight";
     private static final String sNumTestQuestionsAttr = "nQuestions";
+    private static final String sTestTimeLimitAttr = "timeLimit";
+
+    /** 20 минут. */
+    private static final int sTestTimeLimitDefault = 1200;
 
     private String mName;
     private String mDescription;
     private List<TestQuestion> mQuestions = new ArrayList<>();
+    /** Время на прохождение теста, с. */
+    private int mTestTimeLimit = sTestTimeLimitDefault;
     /** Количество вопросов, которые должны учавствовать в тестирование. */
     private int mNumTestQuestions;
     /** Актуальное кол-во вопросов, которые будут учавствовать в тестирование. */
@@ -69,6 +75,14 @@ public class ExamTest implements Serializable {
 
     public int getActualNumQuestions() { return mActualNumQuestions; }
     public void setActualNumQuestions(int actualNumQuestions) {mActualNumQuestions = actualNumQuestions; }
+
+    public int getTimeLimit() {
+        return mTestTimeLimit;
+    }
+
+    public void setTimeLimit(int testTimeLimit) {
+        mTestTimeLimit = testTimeLimit;
+    }
 
     /** Установка режима тестирования. */
     public void setTest() {
@@ -137,11 +151,19 @@ public class ExamTest implements Serializable {
                         answers.add(answer);
                     }
                     else if (xmlParser.getName().equals(sDescriptionTag)) {
-                        mDescription = xmlParser.getAttributeValue(null, sDescriptionAttr);
+                        setDescription(xmlParser.getAttributeValue(null, sDescriptionAttr));
                     }
                     else if (xmlParser.getName().equals(sTestTag)) {
-                        mNumTestQuestions = Integer.parseInt(xmlParser
-                                .getAttributeValue(null, sNumTestQuestionsAttr));
+                        try {
+                            setNumTestQuestions(Integer.parseInt(xmlParser
+                                    .getAttributeValue(null, sNumTestQuestionsAttr)));
+                        }
+                        catch (NumberFormatException nfex) {/* игнорируем, т.е. значение будет по default. */ }
+                        try {
+                            setTimeLimit(Integer.parseInt(xmlParser
+                                    .getAttributeValue(null, sTestTimeLimitAttr)));
+                        }
+                        catch (NumberFormatException nfex) {/* игнорируем, т.е. значение будет по default. */ }
                     }
                     break;
                 case XmlPullParser.END_TAG:
@@ -210,6 +232,7 @@ public class ExamTest implements Serializable {
 
         xmlSerializer.startTag(null, sTestTag);
         xmlSerializer.attribute(null, sNumTestQuestionsAttr, String.valueOf(mNumTestQuestions));
+        xmlSerializer.attribute(null, sTestTimeLimitAttr, String.valueOf(mTestTimeLimit));
         xmlSerializer.endTag(null, sTestTag);
 
         // Записываем все вопросы в тесте.

@@ -25,6 +25,10 @@
     <dimen name="title_page_bottom_padding">16dp</dimen>
     <dimen name="radio_button_margin_right">8dp</dimen>
 
+    <dimen name="test_settings_name_margin_right">16dp</dimen>
+    <dimen name="test_settings_val_margin_right">8dp</dimen>
+    <dimen name="test_settings_val_small_margin_right">2dp</dimen>
+
     <dimen name="esb_title_vertical_margin">8dp</dimen>
     <dimen name="esb_edit_text_margin_left">8dp</dimen>
 </resources>

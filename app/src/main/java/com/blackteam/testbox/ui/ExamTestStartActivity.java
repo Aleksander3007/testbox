@@ -3,17 +3,14 @@ package com.blackteam.testbox.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringDef;
 import android.support.v7.widget.AppCompatRadioButton;
-import android.support.v7.widget.AppCompatSeekBar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.RadioGroup;
-import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,6 +46,10 @@ public class ExamTestStartActivity extends BaseActivity {
     @BindView(R.id.rb_training) AppCompatRadioButton mTrainingRadioButton;
     @BindView(R.id.ll_training_settings) View mTrainingSettingsView;
     @BindView(R.id.esb_num_training_questions) EditableSeekBar mNumTrainingQuestionsSeekBar;
+    @BindView(R.id.ll_test_time) View mTestTimeView;
+    @BindView(R.id.et_test_time_hours) EditText mTestTimeHoursEditText;
+    @BindView(R.id.et_test_time_minutes) EditText mTestTimeMinutesEditText;
+    @BindView(R.id.et_test_time_seconds) EditText mTestTimeSecondsEditText;
 
     private NavigationTree.Node<ExamThemeData> mExamTheme;
     private ExamTest examTest;
@@ -83,6 +84,10 @@ public class ExamTestStartActivity extends BaseActivity {
             Log.e("ExamTestQuestionA", xppex.getMessage());
             xppex.printStackTrace();
         }
+
+        displayNumTestQuestions();
+        displayNumTrainingQuestionsView();
+        displayTestTime();
     }
 
     @Override
@@ -98,8 +103,6 @@ public class ExamTestStartActivity extends BaseActivity {
         UIHelper.disableEditText(mTestDescriptionEditText);
         mUserViewLinearLayout.setVisibility(View.VISIBLE);
         mEditorViewLinearLayout.setVisibility(View.INVISIBLE);
-        mNumQuestionsSeekBar.setVisibility(View.GONE);
-        updateNumTrainingQuestionsView();
     }
 
     @Override
@@ -109,7 +112,6 @@ public class ExamTestStartActivity extends BaseActivity {
         UIHelper.enableEditText(mTestDescriptionEditText);
         mUserViewLinearLayout.setVisibility(View.INVISIBLE);
         mEditorViewLinearLayout.setVisibility(View.VISIBLE);
-        displayNumTestQuestions();
     }
 
     /**
@@ -139,7 +141,7 @@ public class ExamTestStartActivity extends BaseActivity {
     @OnClick(R.id.btn_save)
     public void saveOnClick(View view) {
         try {
-            examTest.setDescription(mTestDescriptionEditText.getText().toString());
+            packExamTest();
             examTest.save(getApplicationContext());
             displayDescription(examTest.getDescription());
             Toast.makeText(this, R.string.msg_successful_saving, Toast.LENGTH_SHORT).show();
@@ -215,14 +217,102 @@ public class ExamTestStartActivity extends BaseActivity {
     private void displayNumTestQuestions() {
         mNumQuestionsSeekBar.setRange(0, examTest.getAllQuestions().size());
         mNumQuestionsSeekBar.setValue(examTest.getNumTestQuestions());
-        mNumQuestionsSeekBar.setVisibility(View.VISIBLE);
+    }
+
+    private void displayTestTime() {
+
+        mTestTimeHoursEditText.setText(String.format("%02d", examTest.getTimeLimit() / 3600));
+        mTestTimeMinutesEditText.setText(String.format("%02d", examTest.getTimeLimit() / 60));
+        mTestTimeSecondsEditText.setText(String.format("%02d", examTest.getTimeLimit() % 60));
+
+        mTestTimeHoursEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.toString().isEmpty()) {
+                    s.append("00");
+                    mTestTimeHoursEditText.setSelection(0, s.toString().length());
+                }
+
+            }
+        });
+
+        mTestTimeMinutesEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (!s.toString().isEmpty()) {
+                    int nMinutes = Integer.parseInt(s.toString());
+                    if (nMinutes > 59) s.replace(0, s.toString().length(), "59");
+                }
+                else {
+                    s.append("00");
+                    mTestTimeMinutesEditText.setSelection(0, s.toString().length());
+                }
+            }
+        });
+
+        mTestTimeSecondsEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (!s.toString().isEmpty()) {
+                    int nSeconds = Integer.parseInt(s.toString());
+                    if (nSeconds > 59) s.replace(0, s.toString().length(), "59");
+                }
+                else {
+                    s.append("00");
+                    mTestTimeSecondsEditText.setSelection(0, s.toString().length());
+                }
+            }
+        });
+
+        mTestTimeView.setVisibility(View.VISIBLE);
     }
 
     /**
      * Обновляем отображение настройки количества вопросов в тренировки.
      */
-    private void updateNumTrainingQuestionsView() {
+    private void displayNumTrainingQuestionsView() {
         mNumTrainingQuestionsSeekBar.setRange(1, examTest.getAllQuestions().size());
         mNumTrainingQuestionsSeekBar.setValue(examTest.getAllQuestions().size());
+    }
+
+    /**
+     * Собрать введенные данные для теста.
+     */
+    private void packExamTest() {
+        examTest.setDescription(mTestDescriptionEditText.getText().toString());
+        examTest.setNumTestQuestions(mNumQuestionsSeekBar.getValue());
+
+        int nHours = Integer.parseInt(mTestTimeHoursEditText.getText().toString());;
+        int nMinutes = Integer.parseInt(mTestTimeMinutesEditText.getText().toString());
+        int nSeconds = Integer.parseInt(mTestTimeSecondsEditText.getText().toString());
+        int testTimeLimit = nHours * 3600 + nMinutes * 60 + nSeconds;
+        examTest.setTimeLimit(testTimeLimit);
     }
 }

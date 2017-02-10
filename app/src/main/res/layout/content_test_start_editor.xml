@@ -20,6 +20,67 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
+    <LinearLayout
+        android:id="@+id/ll_test_time"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:text="Время на тест"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/test_settings_name_margin_right"/>
+
+        <!-- Часы. -->
+        <EditText
+            android:id="@+id/et_test_time_hours"
+            android:inputType="number"
+            android:maxLength="2"
+            android:text="@string/test_time_hours_default"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/test_settings_val_small_margin_right"/>
+
+        <TextView
+            android:text="@string/hours_short_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/test_settings_val_margin_right"/>
+
+        <!-- Минуты. -->
+        <EditText
+            android:id="@+id/et_test_time_minutes"
+            android:inputType="number"
+            android:maxLength="2"
+            android:text="@string/test_time_minutes_default"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/test_settings_val_small_margin_right"/>
+
+        <TextView
+            android:text="@string/minutes_short_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/test_settings_val_margin_right"/>
+
+        <!-- Секунды. -->
+        <EditText
+            android:id="@+id/et_test_time_seconds"
+            android:inputType="number"
+            android:maxLength="2"
+            android:text="@string/test_time_seconds_default"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/test_settings_val_small_margin_right"/>
+
+        <TextView
+            android:text="сек"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
     <RelativeLayout
         style="?android:attr/buttonBarStyle"
         android:layout_width="match_parent"
