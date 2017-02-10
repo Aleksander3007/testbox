@@ -59,6 +59,8 @@ public class ExamThemesActivity extends BaseActivity
     private ExamThemeData editingExamTheme;
     /** Сохраняем путь откуда было начато редактирование. */
     private Deque<ExamThemeData> mStartPathEdit;
+    /** Диалоговое окно подтверждения изменений. */
+    private AlertDialog mConfirmChangesDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -195,9 +197,11 @@ public class ExamThemesActivity extends BaseActivity
      * Завершить редактирование.
      */
     private void finishEditing() {
-        if (hasExamThemeChanged) {
-            AlertDialog.Builder confirmChangesDialog = new AlertDialog.Builder(this);
-            confirmChangesDialog.setTitle(R.string.title_finish_editing)
+        // Отображаем диалог изменений только в том случае, если изменения имеются и
+        // данный диалог еще не был отображен.
+        if (hasExamThemeChanged && !isDialogShowing(mConfirmChangesDialog)) {
+            AlertDialog.Builder confirmChangesDialogBuilder = new AlertDialog.Builder(this);
+            confirmChangesDialogBuilder.setTitle(R.string.title_finish_editing)
                     .setMessage(R.string.msg_do_editing_save)
                     // Если сохранить изменения.
                     .setPositiveButton(R.string.btn_save, new DialogInterface.OnClickListener() {
@@ -215,8 +219,18 @@ public class ExamThemesActivity extends BaseActivity
                             dialog.cancel();
                         }
                     });
-            confirmChangesDialog.create().show();
+            mConfirmChangesDialog = confirmChangesDialogBuilder.create();
+            mConfirmChangesDialog.show();
         }
+    }
+
+    /**
+     * Отображается ли указанный диалог.
+     * @param dialog диалог.
+     * @return true - если отображается.
+     */
+    private boolean isDialogShowing(AlertDialog dialog) {
+        return dialog != null && dialog.isShowing();
     }
 
     /**
