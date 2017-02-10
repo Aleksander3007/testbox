@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
 
     <TextView
         android:id="@+id/tv_testDescription"
@@ -24,15 +25,13 @@
             android:text="@string/rb_testing"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
             android:layout_marginRight="@dimen/radio_button_margin_right"/>
 
         <android.support.v7.widget.AppCompatRadioButton
             android:id="@+id/rb_training"
             android:text="@string/rb_training"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true" />
+            android:layout_height="wrap_content" />
 
     </RadioGroup>
 
@@ -53,35 +52,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <TextView
-            android:text="@string/num_questions"
+        <com.blackteam.testbox.ui.EditableSeekBar
+            android:id="@+id/esb_num_training_questions"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"/>
-
-        <RelativeLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <EditText
-                android:id="@+id/et_num_training_questions"
-                android:inputType="number"
-                android:maxLength="9"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_marginLeft="@dimen/textview_for_seek_bar_margin_left" />
-
-            <android.support.v7.widget.AppCompatSeekBar
-                android:id="@+id/sb_num_training_questions"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_toLeftOf="@+id/et_num_training_questions"
-                android:layout_centerVertical="true"/>
-
-        </RelativeLayout>
+            app:esbTitle="@string/num_questions"/>
 
     </LinearLayout>
 

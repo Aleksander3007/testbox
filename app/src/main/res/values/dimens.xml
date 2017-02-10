@@ -23,6 +23,8 @@
     <dimen name="expansion_panel_content_right_margin">16dp</dimen>
     <dimen name="title_page_top_padding">8dp</dimen>
     <dimen name="title_page_bottom_padding">16dp</dimen>
-    <dimen name="textview_for_seek_bar_margin_left">8dp</dimen>
     <dimen name="radio_button_margin_right">8dp</dimen>
+
+    <dimen name="esb_title_vertical_margin">8dp</dimen>
+    <dimen name="esb_edit_text_margin_left">8dp</dimen>
 </resources>

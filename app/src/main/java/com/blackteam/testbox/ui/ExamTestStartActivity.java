@@ -44,13 +44,11 @@ public class ExamTestStartActivity extends BaseActivity {
     @BindView(R.id.tv_testDescription) TextView mTestDescriptionTextView;
     @BindView(R.id.ll_exam_test_start_user) LinearLayout mUserViewLinearLayout;
     @BindView(R.id.ll_exam_test_start_editor) LinearLayout mEditorViewLinearLayout;
-    @BindView(R.id.sb_num_questions) AppCompatSeekBar mNumQuestionsSeekBar;
-    @BindView(R.id.et_num_questions) EditText mNumQuestionsEditText;
+    @BindView(R.id.esb_num_questions) EditableSeekBar mNumQuestionsSeekBar;
     @BindView(R.id.rb_testing) AppCompatRadioButton mTestingRadioButton;
     @BindView(R.id.rb_training) AppCompatRadioButton mTrainingRadioButton;
     @BindView(R.id.ll_training_settings) View mTrainingSettingsView;
-    @BindView(R.id.et_num_training_questions) EditText mNumTrainingQuestionsEditText;
-    @BindView(R.id.sb_num_training_questions) SeekBar mNumTrainigQuestionsSeekBar;
+    @BindView(R.id.esb_num_training_questions) EditableSeekBar mNumTrainingQuestionsSeekBar;
 
     private NavigationTree.Node<ExamThemeData> mExamTheme;
     private ExamTest examTest;
@@ -101,7 +99,6 @@ public class ExamTestStartActivity extends BaseActivity {
         mUserViewLinearLayout.setVisibility(View.VISIBLE);
         mEditorViewLinearLayout.setVisibility(View.INVISIBLE);
         mNumQuestionsSeekBar.setVisibility(View.GONE);
-        mNumQuestionsEditText.setVisibility(View.GONE);
         updateNumTrainingQuestionsView();
     }
 
@@ -175,7 +172,7 @@ public class ExamTestStartActivity extends BaseActivity {
 
     public void startTraining() {
         if (mIsExistedTest) {
-            examTest.setActualNumQuestions(mNumTrainigQuestionsSeekBar.getProgress());
+            examTest.setActualNumQuestions(mNumTrainingQuestionsSeekBar.getValue());
             Intent trainingIntent =
                     new Intent(this, TrainingQuestionActivity.class);
             trainingIntent.putExtra("ExamTest", examTest);
@@ -216,143 +213,16 @@ public class ExamTestStartActivity extends BaseActivity {
      * Отображение настройки количества вопросов для теста.
      */
     private void displayNumTestQuestions() {
-        mNumQuestionsSeekBar.setMax(examTest.getAllQuestions().size());
-        mNumQuestionsSeekBar.setProgress(examTest.getNumTestQuestions());
-        mNumQuestionsEditText.setText(String.valueOf(examTest.getNumTestQuestions()));
-
-        // зменения в Seekbar также отражаются в EditText.
-        mNumQuestionsSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if (fromUser) {
-                    mNumQuestionsEditText.setText(String.valueOf(progress));
-                    examTest.setNumTestQuestions(progress);
-                }
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
-
-        // Изменения в EditText также отражаются в Seekbar.
-        mNumQuestionsEditText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                int numTestQuestions;
-                if (mNumQuestionsEditText.getText().toString().length() != 0) {
-                    numTestQuestions = Integer.parseInt(mNumQuestionsEditText.getText().toString());
-                    // Если число больше, то упирается в максимум.
-                    if (numTestQuestions > examTest.getAllQuestions().size())
-                        numTestQuestions = examTest.getAllQuestions().size();
-                }
-                // Если строка пустая, то упирается в минимум.
-                else {
-                    numTestQuestions = 0;
-                }
-
-                mNumQuestionsSeekBar.setProgress(numTestQuestions);
-                examTest.setNumTestQuestions(numTestQuestions);
-            }
-        });
-
-        // После потери фокуса необходимо установить корректную величину в EditText.
-        // Т.к. величина может оказаться за пределами диапазона.
-        mNumQuestionsEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (!hasFocus) {
-                    mNumQuestionsEditText.setText(String.valueOf(examTest.getNumTestQuestions()));
-                }
-            }
-        });
-
+        mNumQuestionsSeekBar.setRange(0, examTest.getAllQuestions().size());
+        mNumQuestionsSeekBar.setValue(examTest.getNumTestQuestions());
         mNumQuestionsSeekBar.setVisibility(View.VISIBLE);
-        mNumQuestionsEditText.setVisibility(View.VISIBLE);
     }
 
     /**
      * Обновляем отображение настройки количества вопросов в тренировки.
      */
     private void updateNumTrainingQuestionsView() {
-        mNumTrainigQuestionsSeekBar.setMax(examTest.getAllQuestions().size());
-        mNumTrainigQuestionsSeekBar.setProgress(mNumQuestionsSeekBar.getMax());
-        mNumTrainingQuestionsEditText.setText(String.valueOf(
-                mNumTrainigQuestionsSeekBar.getProgress()));
-
-        // Изменения в Seekbar также отражаются в EditText.
-        mNumTrainigQuestionsSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if (fromUser) {
-                    mNumTrainingQuestionsEditText.setText(String.valueOf(progress));
-                }
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
-
-        // Изменения в EditText также отражаются в Seekbar.
-        mNumTrainingQuestionsEditText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                int numTrainingQuestions;
-                if (s.toString().length() != 0) {
-                    numTrainingQuestions = Integer.parseInt(s.toString());
-                    // Если число больше, то упирается в максимум.
-                    if (numTrainingQuestions > mNumTrainigQuestionsSeekBar.getMax())
-                        numTrainingQuestions = mNumTrainigQuestionsSeekBar.getMax();
-                }
-                // Если строка пустая, то упирается в минимум.
-                else {
-                    numTrainingQuestions = 0;
-                }
-
-                mNumTrainigQuestionsSeekBar.setProgress(numTrainingQuestions);
-            }
-        });
-
-        // После потери фокуса необходимо установить корректную величину в EditText.
-        // Т.к. величина может оказаться за пределами диапазона.
-        mNumQuestionsEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (!hasFocus) {
-                    mNumQuestionsEditText.setText(String.valueOf(
-                            mNumTrainigQuestionsSeekBar.getProgress()));
-                }
-            }
-        });
+        mNumTrainingQuestionsSeekBar.setRange(1, examTest.getAllQuestions().size());
+        mNumTrainingQuestionsSeekBar.setValue(examTest.getAllQuestions().size());
     }
 }

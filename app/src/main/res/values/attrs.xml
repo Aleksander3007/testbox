@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="EditableSeekBar">
+        <attr name="esbTitle" format="string"/>
+        <attr name="esbMin" format="integer"/>
+        <attr name="esbMax" format="integer"/>
+        <attr name="esbValue" format="integer"/>
+    </declare-styleable>
+</resources>
