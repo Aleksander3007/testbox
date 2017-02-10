@@ -28,7 +28,7 @@ public class TestQuestionActivity extends BaseActivity {
     /** Время обновления отображения таймера, c. */
     private static final int sTimeUpdateInterval = 1;
     /** Время на прохождение теста, с. */
-    private int mTestTime = 12; // TODO: Заглушка по времени.
+    private int mTestTime;
     /** Таймер обратного отсчета времени прохождения теста. */
     private CountDownTimer mTestTimer;
     private boolean mIsTestFinished;
@@ -44,6 +44,8 @@ public class TestQuestionActivity extends BaseActivity {
         // Перемешиваем вопросы и ответы.
         mExamTest.shuffle();
         mExamTest.setTest();
+
+        mTestTime = mExamTest.getTimeLimit();
 
         TestQuestionAdapter testQuestionAdapter = new TestQuestionAdapter(
                 getSupportFragmentManager(),
