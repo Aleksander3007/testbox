@@ -74,6 +74,12 @@ public class TestQuestionActivity extends BaseActivity {
         return menuDisplayed;
     }
 
+    @Override
+    public void onBackPressed() {
+        mTestTimer.cancel();
+        super.onBackPressed();
+    }
+
     /**
      * Завершение тестирования.
      */
