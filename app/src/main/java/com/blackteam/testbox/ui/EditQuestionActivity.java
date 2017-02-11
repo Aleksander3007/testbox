@@ -61,6 +61,7 @@ public class EditQuestionActivity extends BaseActivity implements EditableByDial
 
         if (!mQuestionCursor.isEmpty()) displayQuestion(mQuestionCursor.getCurrent());
         if (!mQuestionCursor.hasPrevious()) mPreviousQuestionBtn.setVisibility(View.INVISIBLE);
+        /** Если в тесте нет ни одного вопроса, то первый отображаемый вопрос новый. */
         mIsNewQuestion = mQuestionCursor.isEmpty();
     }
 
@@ -168,8 +169,10 @@ public class EditQuestionActivity extends BaseActivity implements EditableByDial
         boolean success;
         if (mIsNewQuestion) {
             success = addQuestion();
-            // Переходим к только что добавленному (он уже отображен на экране).
-            mQuestionCursor.next();
+            if (success) {
+                // Переходим к только что добавленному (он уже отображен на экране).
+                mQuestionCursor.next();
+            }
         }
         else {
             success = editCurrentQuestion();
@@ -243,7 +246,7 @@ public class EditQuestionActivity extends BaseActivity implements EditableByDial
             // Считываем возможные ответы.
             for (int iAnswerView = 0; iAnswerView < nAnswerViews; iAnswerView++) {
                 final View answerView = mAnswersLinearLayout.getChildAt(iAnswerView);
-                TextView answerTextView = (TextView) answerView.findViewById(R.id.et_mainText);
+                TextView answerTextView = (TextView) answerView.findViewById(R.id.tv_answerText);
                 CheckBox isRightAnswerCheckBox = (CheckBox) answerView.findViewById(R.id.cb_isRightAnswer);
                 answers.add(new TestAnswer(answerTextView.getText().toString(),
                         isRightAnswerCheckBox.isChecked()));
