@@ -167,9 +167,8 @@ public class ExamThemesActivity extends BaseActivity
         }
         // Если данная тема содержит тест, то переход на стартовую страницу теста.
         else {
-            Intent examTestStartActivity =
-                    new Intent(getApplicationContext(), ExamTestStartActivity.class);
-            startActivity(examTestStartActivity);
+            // ... но сначало необходимо проверить бы ли изменения.
+            finishEditing(ExamTestStartActivity.class, ExamTestStartActivity.class);
         }
     }
 
@@ -198,6 +197,16 @@ public class ExamThemesActivity extends BaseActivity
      * Завершить редактирование.
      */
     private void finishEditing() {
+        finishEditing(null, null);
+    }
+
+    /**
+     * Завершить редактирование, с последующим открытием новой Activity, в определненных случаях.
+     * @param activityAfterSave класс Activity который необходимо открыть после сохранения изменений.
+     * @param activityIfNotChanges класс Activity который необходимо открыть если изменений не было.
+     */
+    private void finishEditing(final Class<?> activityAfterSave,
+                               final Class<?>  activityIfNotChanges) {
         // Отображаем диалог изменений только в том случае, если изменения имеются и
         // данный диалог еще не был отображен.
         if (hasExamThemeChanged && !isDialogShowing(mConfirmChangesDialog)) {
@@ -210,6 +219,11 @@ public class ExamThemesActivity extends BaseActivity
                         public void onClick(DialogInterface dialog, int which) {
                             saveExamThemes();
                             dialog.cancel();
+                            if (activityAfterSave != null) {
+                                Intent intent =
+                                        new Intent(getApplicationContext(), activityAfterSave);
+                                startActivity(intent);
+                            }
                         }
                     })
                     // В противном случае откат.
@@ -222,6 +236,11 @@ public class ExamThemesActivity extends BaseActivity
                     });
             mConfirmChangesDialog = confirmChangesDialogBuilder.create();
             mConfirmChangesDialog.show();
+        }
+        else if (!hasExamThemeChanged && activityIfNotChanges != null) {
+            Intent intent =
+                    new Intent(getApplicationContext(), activityIfNotChanges);
+            startActivity(intent);
         }
     }
 
