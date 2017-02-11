@@ -12,6 +12,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -42,8 +43,8 @@ public class ExamThemesActivity extends BaseActivity
 
     @BindView(R.id.lv_exam_themes) ListView mExamThemesListView;
     @BindView(R.id.bottom_editing_bar) LinearLayout mBottomEditingBar;
-    @BindView(R.id.btn_prevPage) Button mPrevPageButton;
-    @BindView(R.id.btn_nextPage) Button mNextPageButton;
+    @BindView(R.id.btn_prevPage) ImageButton mPrevPageButton;
+    @BindView(R.id.btn_nextPage) ImageButton mNextPageButton;
 
     /** Имитируем анимацию перехода между активити, т.к. у нас одно активити, а переходы между
      * подтемами есть. */

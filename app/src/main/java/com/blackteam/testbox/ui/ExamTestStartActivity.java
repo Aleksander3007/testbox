@@ -298,7 +298,7 @@ public class ExamTestStartActivity extends BaseActivity {
      * Обновляем отображение настройки количества вопросов в тренировки.
      */
     private void displayNumTrainingQuestionsView() {
-        mNumTrainingQuestionsSeekBar.setRange(1, examTest.getAllQuestions().size());
+        mNumTrainingQuestionsSeekBar.setRange(0, examTest.getAllQuestions().size());
         mNumTrainingQuestionsSeekBar.setValue(examTest.getAllQuestions().size());
     }
 

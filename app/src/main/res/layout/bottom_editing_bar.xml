@@ -23,9 +23,41 @@
         android:background="@color/colorBottomEditingBar"
         android:padding="16dp">
 
+        <ImageButton
+            android:id="@+id/btn_prevPage"
+            android:src="@drawable/ic_arrow_back_black_24dp"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="0.25"/>
+
+        <ImageButton
+            android:id="@+id/btn_finish"
+            android:src="@drawable/ic_check_black_24dp"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="0.25"/>
+
+        <ImageButton
+            android:id="@+id/btn_save"
+            android:src="@drawable/ic_save_black_24dp"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="0.25"/>
+
+        <ImageButton
+            android:id="@+id/btn_nextPage"
+            android:src="@drawable/ic_arrow_forward_black_24dp"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="0.25"/>
+        <!--
         <Button
             android:id="@+id/btn_prevPage"
-            android:text="Prev"
+            android:text="@string/bottom_editing_bar_prev"
             style="?android:attr/buttonBarButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -33,7 +65,7 @@
 
         <Button
             android:id="@+id/btn_finish"
-            android:text="Finish"
+            android:text="@string/bottom_editing_bar_finish"
             style="?android:attr/buttonBarButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -41,7 +73,7 @@
 
         <Button
             android:id="@+id/btn_save"
-            android:text="Save"
+            android:text="@string/bottom_editing_bar_save"
             style="?android:attr/buttonBarButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -49,12 +81,12 @@
 
         <Button
             android:id="@+id/btn_nextPage"
-            android:text="Next"
+            android:text="@string/bottom_editing_bar_next"
             style="?android:attr/buttonBarButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0.25" />
-
+        -->
     </LinearLayout>
 
 </LinearLayout>

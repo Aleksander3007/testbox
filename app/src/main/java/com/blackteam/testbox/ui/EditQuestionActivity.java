@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,7 +39,7 @@ public class EditQuestionActivity extends BaseActivity implements EditableByDial
     @BindView(R.id.et_explanation) EditText mExplanationEditText;
     @BindView(R.id.fab_createNewItem) FloatingActionButton mCreateAnswerFab;
     @BindView(R.id.bottom_editing_bar) LinearLayout mBottomEditingBar;
-    @BindView(R.id.btn_prevPage) Button mPreviousQuestionBtn;
+    @BindView(R.id.btn_prevPage) ImageButton mPreviousQuestionBtn;
 
     private ExamTest mExamTest;
     private ListCursor<TestQuestion> mQuestionCursor;
