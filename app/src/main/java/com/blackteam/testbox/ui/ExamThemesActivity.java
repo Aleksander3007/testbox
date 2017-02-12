@@ -290,8 +290,10 @@ public class ExamThemesActivity extends BaseActivity
     public boolean editTheme(String examThemeNewName, boolean isTest) {
         ExamThemeData newExamThemeData =
                 new ExamThemeData(examThemeNewName, editingExamTheme.getData().getId(), isTest);
-        // Если темы с текущем именем не существует, то добавляем.
-        if (!mExamTheme.containsChild(newExamThemeData)) {
+        boolean isThemeExisted = mExamTheme.containsChild(newExamThemeData);
+        boolean isThemeNameChanged = !editingExamTheme.getData().getName().equals(examThemeNewName);
+        // Если темы с текущем именем не существует, или имя темы не менялось, то добавляем.
+        if (!isThemeExisted || !isThemeNameChanged) {
             editingExamTheme.setData(newExamThemeData);
             mExamThemesListAdapter.notifyDataSetChanged();
             hasExamThemeChanged = true;
