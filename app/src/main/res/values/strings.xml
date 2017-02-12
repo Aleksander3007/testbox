@@ -33,6 +33,7 @@
     <string name="msg_successful_saving">Изменения успешно сохранены</string>
     <string name="msg_error_saving">Не удалось сохранить изменения</string>
     <string name="msg_eror_add_new_exam_theme">Не удалось создать тему. Возможно такая тема уже существует</string>
+    <string name="msg_error_edit_exam_theme">Не удалось переименовать тему. Возможно тема с таким именем уже существует</string>
     <string name="msg_error_loading_exam_themes">Не удалось загрузить темы экзаменов</string>
     <string name="msg_zero_answers">Вопрос теста должен содержать хотя бы один ответ</string>
     <string name="msg_delete_exam_theme">При удалении выбранной темы, удаляться и его подтемы</string>

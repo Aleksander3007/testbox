@@ -32,7 +32,7 @@ import butterknife.OnClick;
 /**
  * Страница с вопросами, которые разрешено редактировать.
  */
-public class EditQuestionActivity extends BaseActivity implements EditableByDialog {
+public class EditQuestionActivity extends BaseActivity {
 
     @BindView(R.id.ll_answers) LinearLayout mAnswersLinearLayout;
     @BindView(R.id.et_question) EditText mQuestionEditText;
@@ -87,19 +87,18 @@ public class EditQuestionActivity extends BaseActivity implements EditableByDial
 
     /**
      * Обработка нажатия на кнопку создать новый ответ.
-     * @param view
+     * @param view нажатый элемент.
      */
     @OnClick(R.id.fab_createNewItem)
     public void createNewAnswerOnClick(View view) {
         FragmentManager fragmentManager = getFragmentManager();
-        CreatingAnswerDialogFragment creatingAnswerDialogFragment =
-                new CreatingAnswerDialogFragment();
-        creatingAnswerDialogFragment.show(fragmentManager, "creatingAnswerDialog");
+        EditAnswerDialogFragment creatingAnswerDialog = EditAnswerDialogFragment.newInstance();
+        creatingAnswerDialog.show(fragmentManager, "creatingAnswerDialog");
     }
 
     /**
      * Нажатие на кнопку "Сохранить".
-     * @param view
+     * @param view нажатый элемент.
      */
     @OnClick(R.id.btn_save)
     public void saveOnClick(View view) {
@@ -109,7 +108,7 @@ public class EditQuestionActivity extends BaseActivity implements EditableByDial
 
     /**
      * Нажатие на кнопку "Завершить".
-     * @param view
+     * @param view нажатый элемент.
      */
     @OnClick(R.id.btn_finish)
     public void finishOnClick(View view) {
@@ -118,7 +117,7 @@ public class EditQuestionActivity extends BaseActivity implements EditableByDial
 
     /**
      * Нажатие на кнопку "Предыдущий вопрос".
-     * @param view
+     * @param view нажатый элемент.
      */
     @OnClick(R.id.btn_prevPage)
     public void prevQuestionOnClick(View view) {
@@ -133,7 +132,7 @@ public class EditQuestionActivity extends BaseActivity implements EditableByDial
 
     /**
      * Нажатие на кнопку "Следующий вопрос".
-     * @param view
+     * @param view нажатый элемент.
      */
     @OnClick(R.id.btn_nextPage)
     public void nextQuestionOnClick(View view) {
@@ -284,17 +283,16 @@ public class EditQuestionActivity extends BaseActivity implements EditableByDial
         final int answerIndex = mAnswersLinearLayout.getChildCount();
 
         /**Обработка нажатия на вариант вопроса (Открывается меню редактирования). */
-        answerTextView.setOnLongClickListener(new View.OnLongClickListener() {
+        answerView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
                 mEditingAnswerView = answerView;
                 view.setSelected(true);
-                EditDialogFragment editAnswerDialogFragment = EditDialogFragment.newInstance(
+                EditAnswerDialogFragment editAnswerDialog = EditAnswerDialogFragment.newInstance(
                         answerTextView.getText().toString(),
-                        getResources().getString(R.string.create_new_answer),
-                        getResources().getString(R.string.cb_is_right_answer),
-                        answerCheckBox.isChecked());
-                editAnswerDialogFragment.show(getFragmentManager(), "editAnswerDialogFragment");
+                        answerCheckBox.isChecked(),
+                        false);
+                editAnswerDialog.show(getFragmentManager(), "editAnswerDialogFragment");
                 return true;
             }
         });
@@ -306,9 +304,9 @@ public class EditQuestionActivity extends BaseActivity implements EditableByDial
      * Добавить новый ответ в список.
      * @param answer текст ответа.
      */
-    public void addNewAnswer(String answer) {
+    public void addNewAnswer(String answer, boolean isRightAnswer) {
         try {
-            addEditableAnswerView(new TestAnswer(answer, false));
+            addEditableAnswerView(new TestAnswer(answer, isRightAnswer));
         }
         catch (Exception ex) {
             Log.d("ExamTestQuestionActiv", ex.getMessage());
@@ -334,8 +332,7 @@ public class EditQuestionActivity extends BaseActivity implements EditableByDial
      * @param answerNewText новый текст вариант ответа.
      * @param isRight правильный ли это вариант?
      */
-    @Override
-    public void editElement(String answerNewText, boolean isRight) {
+    public void editAnswer(String answerNewText, boolean isRight) {
         CheckBox answerCheckBox = (CheckBox) mEditingAnswerView.findViewById(R.id.cb_isRightAnswer);
         TextView answerTextView = (TextView) mEditingAnswerView.findViewById(R.id.tv_answerText);
         answerTextView.setText(answerNewText);
@@ -345,8 +342,7 @@ public class EditQuestionActivity extends BaseActivity implements EditableByDial
     /**
      * Удалить выбранный вариант ответа.
      */
-    @Override
-    public void deleteElement() {
+    public void deleteAnswer() {
         mAnswersLinearLayout.removeView(mEditingAnswerView);
     }
 }
