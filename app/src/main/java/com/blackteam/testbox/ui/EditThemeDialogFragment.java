@@ -35,6 +35,8 @@ public class EditThemeDialogFragment extends DialogFragment {
 
     /** Диалог открыт для создания новой темы? */
     private boolean mIsNewTheme;
+    /** Содержит ли тема тест. */
+    private boolean mСontainsTest;
 
     /**
      * Создание экземпляра класса {@link EditThemeDialogFragment}.
@@ -80,14 +82,17 @@ public class EditThemeDialogFragment extends DialogFragment {
         unbinder = ButterKnife.bind(this, editDialogView);
 
         String themeName = getArguments().getString(ARG_THEME_NAME);
-        boolean containsTest = getArguments().getBoolean(ARG_CONTAINS_TEST);
+        mСontainsTest = getArguments().getBoolean(ARG_CONTAINS_TEST);
         boolean hasSubThemes = getArguments().getBoolean(ARG_HAS_SUBTHEMES);
         mIsNewTheme = getArguments().getBoolean(ARG_IS_NEW_THEME);
 
         if (themeName != null) mThemeNameEditText.setText(themeName);
 
-        if (!hasSubThemes)
-            mContainsTestCheckBox.setChecked(containsTest);
+        if (!hasSubThemes) {
+            mContainsTestCheckBox.setChecked(mСontainsTest);
+            /** Нельзя тест перевести в разряд темы. */
+            mContainsTestCheckBox.setClickable(!mСontainsTest);
+        }
         else
             mContainsTestCheckBox.setVisibility(View.GONE);
 
