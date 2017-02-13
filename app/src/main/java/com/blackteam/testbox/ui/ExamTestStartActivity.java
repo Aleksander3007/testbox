@@ -36,6 +36,8 @@ import butterknife.OnClick;
  */
 public class ExamTestStartActivity extends BaseActivity {
 
+    public static final String TAG = "ExamTestStartActivity";
+
     @BindView(R.id.tv_testName) TextView mTestNameTextView;
     @BindView(R.id.et_testDescription) EditText mTestDescriptionEditText;
     @BindView(R.id.tv_testDescription) TextView mTestDescriptionTextView;
@@ -78,10 +80,10 @@ public class ExamTestStartActivity extends BaseActivity {
             // Если файл не найден значит он еще не был создан.
             mIsExistedTest = false;
         } catch (IOException ioex) {
-            Log.e("ExamTestQuestionA", ioex.getMessage());
+            Log.e(TAG, ioex.getMessage());
             ioex.printStackTrace();
         } catch (XmlPullParserException xppex) {
-            Log.e("ExamTestQuestionA", xppex.getMessage());
+            Log.e(TAG, xppex.getMessage());
             xppex.printStackTrace();
         }
 
@@ -126,11 +128,12 @@ public class ExamTestStartActivity extends BaseActivity {
     }
 
     /**
-     * Обработка нажатия на кнопку "Создать вопрос".
+     * Обработка нажатия на кнопку создания и редактирования вопросов.
      * @param view
      */
     @OnClick(R.id.btn_createQuestions)
     public void createQuestionsOnClick(View view) {
+        packExamTest();
         startTestQuestionActivity();
     }
 
@@ -146,7 +149,7 @@ public class ExamTestStartActivity extends BaseActivity {
             displayDescription(examTest.getDescription());
             Toast.makeText(this, R.string.msg_successful_saving, Toast.LENGTH_SHORT).show();
         } catch (IOException ioex) {
-            Log.e("ExamTestQuestionA", ioex.getMessage());
+            Log.e(TAG, ioex.getMessage());
             ioex.printStackTrace();
             Toast.makeText(this, R.string.msg_error_saving, Toast.LENGTH_SHORT).show();
         }
@@ -177,7 +180,7 @@ public class ExamTestStartActivity extends BaseActivity {
             examTest.setActualNumQuestions(mNumTrainingQuestionsSeekBar.getValue());
             Intent trainingIntent =
                     new Intent(this, TrainingQuestionActivity.class);
-            trainingIntent.putExtra("ExamTest", examTest);
+            trainingIntent.putExtra(EditQuestionActivity.ARG_EXAM_TEST, examTest);
             startActivity(trainingIntent);
         }
         else
@@ -198,7 +201,7 @@ public class ExamTestStartActivity extends BaseActivity {
                 break;
         }
 
-        examTestQuestionIntent.putExtra("ExamTest", examTest);
+        examTestQuestionIntent.putExtra(EditQuestionActivity.ARG_EXAM_TEST, examTest);
         startActivity(examTestQuestionIntent);
     }
 
