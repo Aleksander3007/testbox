@@ -54,39 +54,6 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="0.25"/>
-        <!--
-        <Button
-            android:id="@+id/btn_prevPage"
-            android:text="@string/bottom_editing_bar_prev"
-            style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.25" />
-
-        <Button
-            android:id="@+id/btn_finish"
-            android:text="@string/bottom_editing_bar_finish"
-            style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.25" />
-
-        <Button
-            android:id="@+id/btn_save"
-            android:text="@string/bottom_editing_bar_save"
-            style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.25" />
-
-        <Button
-            android:id="@+id/btn_nextPage"
-            android:text="@string/bottom_editing_bar_next"
-            style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.25" />
-        -->
     </LinearLayout>
 
 </LinearLayout>
