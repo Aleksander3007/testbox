@@ -1,6 +1,9 @@
 package com.blackteam.testbox.ui;
 
+import android.app.AlertDialog;
 import android.app.FragmentManager;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -21,6 +24,9 @@ import com.blackteam.testbox.TestAnswer;
 import com.blackteam.testbox.TestQuestion;
 import com.blackteam.testbox.utils.ListCursor;
 
+import org.xmlpull.v1.XmlPullParserException;
+
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +40,10 @@ import butterknife.OnClick;
  */
 public class EditQuestionActivity extends BaseActivity {
 
+    public static final String TAG = "EditQuestionActivity";
+
+    public static final String ARG_EXAM_TEST = "ExamTest";
+
     @BindView(R.id.ll_answers) LinearLayout mAnswersLinearLayout;
     @BindView(R.id.et_question) EditText mQuestionEditText;
     @BindView(R.id.et_explanation) EditText mExplanationEditText;
@@ -45,7 +55,6 @@ public class EditQuestionActivity extends BaseActivity {
     private ListCursor<TestQuestion> mQuestionCursor;
     /** Отображаемый в текущий момент вопрос новый, т.е. еще не был добавлен в экзамен. тест. */
     private boolean mIsNewQuestion;
-
     /** Редактируемый элемент из списка вопросов. */
     private View mEditingAnswerView;
 
@@ -55,14 +64,9 @@ public class EditQuestionActivity extends BaseActivity {
         setContentView(R.layout.activity_edit_question);
         ButterKnife.bind(this);
 
-        mExamTest = (ExamTest) getIntent().getExtras().getSerializable("ExamTest");
+        mExamTest = (ExamTest) getIntent().getExtras().getSerializable(ARG_EXAM_TEST);
 
-        mQuestionCursor = new ListCursor<>(mExamTest.getAllQuestions());
-
-        if (!mQuestionCursor.isEmpty()) displayQuestion(mQuestionCursor.getCurrent());
-        if (!mQuestionCursor.hasPrevious()) mPreviousQuestionBtn.setVisibility(View.INVISIBLE);
-        /** Если в тесте нет ни одного вопроса, то первый отображаемый вопрос новый. */
-        mIsNewQuestion = mQuestionCursor.isEmpty();
+        init();
     }
 
     @Override
@@ -112,7 +116,30 @@ public class EditQuestionActivity extends BaseActivity {
      */
     @OnClick(R.id.btn_finish)
     public void finishOnClick(View view) {
-        // TODO: Здесь необходимо спрашивать, сохранить ли изменения, если они были.
+        boolean success = makeExamTestChanges();
+        if (success) {
+            AlertDialog.Builder confirmChangesDialog = new AlertDialog.Builder(this);
+            confirmChangesDialog.setTitle(R.string.title_finish_editing)
+                    .setMessage(R.string.msg_do_editing_save)
+                    // Если сохранить изменения.
+                    .setPositiveButton(R.string.btn_save, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            saveAllQuestions();
+                            dialog.cancel();
+                        }
+                    })
+                    // В противном случае откат.
+                    .setNegativeButton(R.string.btn_rollback, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            // Если удалось откатиться, то возращается на начальное окно теста.
+                            if (rollbackChanges()) onBackPressed();
+                            dialog.cancel();
+                        }
+                    }).show();
+        }
+
     }
 
     /**
@@ -150,6 +177,20 @@ public class EditQuestionActivity extends BaseActivity {
             mPreviousQuestionBtn.setVisibility(View.VISIBLE);
             mIsNewQuestion = true;
         }
+    }
+
+    /**
+     * Инициализация.
+     */
+    private void init() {
+        mQuestionCursor = new ListCursor<>(mExamTest.getAllQuestions());
+
+        if (!mQuestionCursor.isEmpty()) displayQuestion(mQuestionCursor.getCurrent());
+        else clearDisplay();
+
+        if (!mQuestionCursor.hasPrevious()) mPreviousQuestionBtn.setVisibility(View.INVISIBLE);
+        /** Если в тесте нет ни одного вопроса, то первый отображаемый вопрос новый. */
+        mIsNewQuestion = mQuestionCursor.isEmpty();
     }
 
     /**
@@ -309,7 +350,7 @@ public class EditQuestionActivity extends BaseActivity {
             addEditableAnswerView(new TestAnswer(answer, isRightAnswer));
         }
         catch (Exception ex) {
-            Log.d("ExamTestQuestionActiv", ex.getMessage());
+            Log.d(TAG, ex.getMessage());
         }
     }
 
@@ -321,7 +362,7 @@ public class EditQuestionActivity extends BaseActivity {
             mExamTest.save(getApplicationContext());
             Toast.makeText(this, R.string.msg_successful_saving, Toast.LENGTH_SHORT).show();
         } catch (IOException ioex) {
-            Log.e("ExamTestQuestionA", ioex.getMessage());
+            Log.e(TAG, ioex.getMessage());
             ioex.printStackTrace();
             Toast.makeText(this, R.string.msg_error_saving, Toast.LENGTH_SHORT).show();
         }
@@ -344,5 +385,28 @@ public class EditQuestionActivity extends BaseActivity {
      */
     public void deleteAnswer() {
         mAnswersLinearLayout.removeView(mEditingAnswerView);
+    }
+
+    /**
+     * Откатить изменения до последнего.
+     */
+    private boolean rollbackChanges() {
+        try {
+            mExamTest.load(getApplicationContext());
+            init();
+            return true;
+        }
+        catch (FileNotFoundException fnfex) {
+            // Если файл не найден, значит тест новый, поэтому просто удаляем все только что добавленные вопросы.
+            mExamTest.getAllQuestions().clear();
+            init();
+            return true;
+        } catch (IOException | XmlPullParserException ex) {
+            Log.e(TAG, ex.getMessage());
+            ex.printStackTrace();
+            Toast.makeText(getApplicationContext(), R.string.msg_fail_loading_test, Toast.LENGTH_SHORT)
+                    .show();
+            return false;
+        }
     }
 }
