@@ -13,6 +13,7 @@
     <string name="cancel_btn">Отмена</string>
     <string name="delete_btn">Удалить</string>
     <string name="ok_btn">ОК</string>
+    <string name="btn_rollback">Не сохранять</string>
     <string name="btn_start">Начать</string>
     <string name="btn_startTest">Начать тест</string>
     <string name="btn_startTraining">Тренировка</string>

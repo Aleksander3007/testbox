@@ -228,7 +228,7 @@ public class ExamThemesActivity extends BaseActivity
                         }
                     })
                     // В противном случае откат.
-                    .setNegativeButton(R.string.cancel_btn, new DialogInterface.OnClickListener() {
+                    .setNegativeButton(R.string.btn_rollback, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             rollbackChanges();
