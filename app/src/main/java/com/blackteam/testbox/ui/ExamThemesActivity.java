@@ -11,7 +11,6 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -54,9 +53,9 @@ public class ExamThemesActivity extends BaseActivity
     private ArrayAdapter<WideTree.Node<ExamThemeData>> mExamThemesListAdapter;
 
     /** Были изменения в экзамеционных темах. */
-    private boolean hasExamThemeChanged = false;
+    private boolean mHasExamThemeChanged = false;
     /** Редактируемая экзамеционная тема. */
-    private WideTree.Node<ExamThemeData> editingExamTheme;
+    private WideTree.Node<ExamThemeData> mEditingExamTheme;
     /** Сохраняем путь откуда было начато редактирование. */
     private Deque<ExamThemeData> mStartPathEdit;
     /** Диалоговое окно подтверждения изменений. */
@@ -180,12 +179,12 @@ public class ExamThemesActivity extends BaseActivity
         if (((TestBoxApp)getApplicationContext()).getUserType() == TestBoxApp.UserType.EDITOR) {
             // Определяем выбранную экз. тему.
             String theme = ((TextView) itemClicked).getText().toString();
-            editingExamTheme = mExamTheme.getChild(new ExamThemeData(theme));
+            mEditingExamTheme = mExamTheme.getChild(new ExamThemeData(theme));
 
             EditThemeDialogFragment editingThemeDialogFragment = EditThemeDialogFragment
-                    .newInstance(editingExamTheme.getData().getName(),
-                            editingExamTheme.getData().containsTest(),
-                            editingExamTheme.hasChildren(),
+                    .newInstance(mEditingExamTheme.getData().getName(),
+                            mEditingExamTheme.getData().containsTest(),
+                            mEditingExamTheme.hasChildren(),
                             false);
             editingThemeDialogFragment.show(getFragmentManager(), "editingThemeDialog");
 
@@ -210,7 +209,7 @@ public class ExamThemesActivity extends BaseActivity
                                final Class<?>  activityIfNotChanges) {
         // Отображаем диалог изменений только в том случае, если изменения имеются и
         // данный диалог еще не был отображен.
-        if (hasExamThemeChanged && !isDialogShowing(mConfirmChangesDialog)) {
+        if (mHasExamThemeChanged && !isDialogShowing(mConfirmChangesDialog)) {
             AlertDialog.Builder confirmChangesDialogBuilder = new AlertDialog.Builder(this);
             confirmChangesDialogBuilder.setTitle(R.string.title_finish_editing)
                     .setMessage(R.string.msg_do_editing_save)
@@ -238,7 +237,7 @@ public class ExamThemesActivity extends BaseActivity
             mConfirmChangesDialog = confirmChangesDialogBuilder.create();
             mConfirmChangesDialog.show();
         }
-        else if (!hasExamThemeChanged && activityIfNotChanges != null) {
+        else if (!mHasExamThemeChanged && activityIfNotChanges != null) {
             Intent intent =
                     new Intent(getApplicationContext(), activityIfNotChanges);
             startActivity(intent);
@@ -275,7 +274,7 @@ public class ExamThemesActivity extends BaseActivity
         if (!mExamTheme.containsChild(newExamThemeData)) {
             mExamTheme.addChild(newExamThemeData);
             mExamThemesListAdapter.notifyDataSetChanged();
-            hasExamThemeChanged = true;
+            mHasExamThemeChanged = true;
             return true;
         }
         return false;
@@ -289,14 +288,14 @@ public class ExamThemesActivity extends BaseActivity
      */
     public boolean editTheme(String examThemeNewName, boolean isTest) {
         ExamThemeData newExamThemeData =
-                new ExamThemeData(examThemeNewName, editingExamTheme.getData().getId(), isTest);
+                new ExamThemeData(examThemeNewName, mEditingExamTheme.getData().getId(), isTest);
         boolean isThemeExisted = mExamTheme.containsChild(newExamThemeData);
-        boolean isThemeNameChanged = !editingExamTheme.getData().getName().equals(examThemeNewName);
+        boolean isThemeNameChanged = !mEditingExamTheme.getData().getName().equals(examThemeNewName);
         // Если темы с текущем именем не существует, или имя темы не менялось, то добавляем.
         if (!isThemeExisted || !isThemeNameChanged) {
-            editingExamTheme.setData(newExamThemeData);
+            mEditingExamTheme.setData(newExamThemeData);
             mExamThemesListAdapter.notifyDataSetChanged();
-            hasExamThemeChanged = true;
+            mHasExamThemeChanged = true;
             return true;
         }
         return false;
@@ -313,7 +312,7 @@ public class ExamThemesActivity extends BaseActivity
                     @Override
                     public void onClick(DialogInterface dialog, int i) {
                         // Удаляем тему и все его подтемы.
-                        deleteExamTheme(editingExamTheme);
+                        deleteExamTheme(mEditingExamTheme);
                         dialog.cancel();
                     }
                 })
@@ -323,9 +322,9 @@ public class ExamThemesActivity extends BaseActivity
                         // Открываем диалог редактирования по новой, т.к. он закрылся.
                         EditThemeDialogFragment editThemeDialog =
                                 EditThemeDialogFragment.newInstance(
-                                        editingExamTheme.getData().getName(),
-                                        editingExamTheme.getData().containsTest(),
-                                        editingExamTheme.hasChildren(),
+                                        mEditingExamTheme.getData().getName(),
+                                        mEditingExamTheme.getData().containsTest(),
+                                        mEditingExamTheme.hasChildren(),
                                         false);
                         editThemeDialog.show(getFragmentManager(), "editingThemeDialog");
                         // Закрываем диалог удаления темы.
@@ -344,7 +343,7 @@ public class ExamThemesActivity extends BaseActivity
         mExamTheme.removeChild(examTheme);
         deleteExamTest(examTheme);
         mExamThemesListAdapter.notifyDataSetChanged();
-        hasExamThemeChanged = true;
+        mHasExamThemeChanged = true;
     }
 
     /**
@@ -389,7 +388,7 @@ public class ExamThemesActivity extends BaseActivity
             ExamLoader.saveExam(getApplicationContext(),
                     ((TestBoxApp)getApplicationContext()).getExamTree());
             Toast.makeText(this, R.string.msg_successful_saving, Toast.LENGTH_SHORT).show();
-            hasExamThemeChanged = false;
+            mHasExamThemeChanged = false;
             return true;
         } catch (IOException ioex) {
             Log.e("ExamThemesA", ioex.getMessage());
@@ -412,7 +411,7 @@ public class ExamThemesActivity extends BaseActivity
             mExamTheme = ((TestBoxApp)getApplicationContext()).getExamTree().getCurElem();
             // Обновляем отображение.
             updateView();
-            hasExamThemeChanged = false;
+            mHasExamThemeChanged = false;
         }
         return  isLoaded;
     }
