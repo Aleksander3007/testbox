@@ -21,11 +21,14 @@
     <string name="btn_submit">Подтвердить</string>
     <string name="btn_goToResult">Результат</string>
     <string name="btn_close_test_result">Закрыть</string>
+    <string name="btn_backup">Резервное копирование</string>
+    <string name="btn_recovery">Восстановление</string>
     <string name="create_new_answer">Вариант ответа</string>
     <string name="btn_nextQuestion">Следующий</string>
     <string name="btn_finish">Завершить</string>
     <string name="question_text_empty">Необходимо указать вопрос</string>
     <string name="btn_save">Сохранить</string>
+    <string name="btn_settings">Настройки</string>
     <string name="cb_exam_theme_contains_test">Тест</string>
     <string name="cb_is_right_answer">Правильный</string>
     <string name="rb_training">Тренировка</string>
@@ -44,12 +47,22 @@
     <string name="msg_wrong_answer">Неверно</string>
     <string name="msg_do_editing_save">Сохранить изменения?</string>
     <string name="msg_test_time_ended">Время закончилось</string>
+    <string name="msg_success_backup">Резервное копирование успешно завершено</string>
+    <string name="msg_backup_sd_is_not_found">Невозможно сделать резервное копирование, т.к. SD-карта не найдена</string>
+    <string name="msg_fail_backup">Не удалость завершить резервное копирование</string>
+    <string name="msg_fail_permission_backup">Без разрешение на запись на SD-карту невозможно выполнить резервное копирование</string>
+    <string name="msg_success_recovery">Восстановление данных успешно завершено</string>
+    <string name="msg_recovery_file_is_not_existed">Файла с резервными данными не существует</string>
+    <string name="msg_fail_recovery">Не удалось восстановить данные</string>
+    <string name="msg_fail_permission_recovery">Без разрешение на чтение из SD-карты невозможно выполнить восстановление данных</string>
+    <string name="msg_recovery_data_will_remove">После восстановления текущие данные будут утерены. Продолжить?</string>
     <string name="etHint_testDescription">Описание</string>
     <string name="etHint_question_text">Вопрос</string>
     <string name="etHint_question_explanation">Объяснение</string>
     <string name="title_delete_exam_theme">Удаление темы</string>
     <string name="title_finish_editing">Завершение редактирования</string>
     <string name="title_test_question_page">№</string>
+    <string name="title_recovery">Восстановление данных</string>
     <string name="number_correct_answers">Правильных ответов</string>
     <string name="percent_number_correct_answers">Процент правильных ответов</string>
 
@@ -61,6 +74,9 @@
     <string name="bottom_editing_bar_next">Следующий</string>
     <string name="bottom_editing_bar_finish">Завершить</string>
     <string name="bottom_editing_bar_save">Сохранить</string>
+
+    <string name="pref_exam_file">Файл с темами экзаменов</string>
+    <string name="pref_exam_file_default">examData</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

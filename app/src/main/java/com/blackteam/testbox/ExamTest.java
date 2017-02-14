@@ -1,17 +1,25 @@
 package com.blackteam.testbox;
 
 import android.content.Context;
+import android.os.Environment;
 import android.util.Log;
 import android.util.Xml;
+
+import com.blackteam.testbox.utils.NavigationTree;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 import org.xmlpull.v1.XmlSerializer;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Serializable;
@@ -27,6 +35,8 @@ import java.util.List;
 public class ExamTest implements Serializable {
     /** Формат имени файла. Для получения имени файла использовать функции {@link #getFileName()}*/
     private static final String sFileNameFormat = "et%s.xml";
+
+    private static final String sSdDir = "testbox";
 
     private static final String sDescriptionTag = "description";
     private static final String sQuestionTag = "question";
@@ -122,11 +132,31 @@ public class ExamTest implements Serializable {
         inputStreamReader.close();
 
         // Распарсиваем строку как xml.
+        XmlPullParser xmlParser = parseXml(fileData);
+
+        parseExamTest(xmlParser);
+    }
+
+    /**
+     * Парсит строку как xml файл.
+     * @param xmlStr строка.
+     * @return xmlParser.
+     */
+    private static XmlPullParser parseXml(String xmlStr)
+            throws XmlPullParserException {
         XmlPullParserFactory xmlFactory = XmlPullParserFactory.newInstance();
         xmlFactory.setNamespaceAware(true);
         XmlPullParser xmlParser = xmlFactory.newPullParser();
-        xmlParser.setInput(new StringReader(fileData));
+        xmlParser.setInput(new StringReader(xmlStr));
+        return xmlParser;
+    }
 
+    /**
+     * Парсит тест через xmlParser.
+     * @param xmlParser xmlParser.
+     * @throws XmlPullParserException
+     */
+    private void parseExamTest(XmlPullParser xmlParser) throws XmlPullParserException, IOException {
         TestQuestion question = null;
         List<TestAnswer> answers = new ArrayList<>();
         int eventType = xmlParser.getEventType();
@@ -195,7 +225,7 @@ public class ExamTest implements Serializable {
      * Получить имя файла, содержащее информацию по данному тесту.
      * @return Имя файла.
      */
-    public String getFileName() {
+    private String getFileName() {
         return String.format(sFileNameFormat, mName);
     }
 
@@ -277,5 +307,69 @@ public class ExamTest implements Serializable {
     public void shuffle() {
         for (TestQuestion question : mQuestions) question.shuffleAnswers();
         Collections.shuffle(mQuestions);
+    }
+
+    /**
+     * Сохранение на SD-карту.
+     * @return true - если успешно завершено, false - скорее всего отсутсвует SD карта.
+     * @throws IOException
+     */
+    public boolean saveToSdCard() throws IOException {
+        // Если SD-карта есть.
+        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+            // Получаем путь к SD.
+            File backupFile = getSdExamFile();
+            if (backupFile != null) {
+                if (backupFile.exists()) backupFile.delete();
+                backupFile.createNewFile();
+                BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(backupFile));
+                String dataWrite = createXmlData();
+                bufferedWriter.write(dataWrite);
+                bufferedWriter.close();
+                return true;
+            }
+            else
+                return false;
+        }
+        else
+            return false;
+    }
+
+    public boolean loadFromSdCard() throws IOException, XmlPullParserException {
+        // Если SD-карта есть.
+        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+            // Получаем путь к SD.
+            File recoveryFile = getSdExamFile();
+            if (recoveryFile != null) {
+                // открываем поток для чтения
+                BufferedReader bufferedReader = new BufferedReader(new FileReader(recoveryFile));
+                String str;
+                StringBuilder examDataStr = new StringBuilder();
+                // читаем содержимое
+                while ((str = bufferedReader.readLine()) != null) {
+                    examDataStr.append(str);
+                }
+
+                XmlPullParser xmlParser = parseXml(examDataStr.toString());
+                parseExamTest(xmlParser);
+
+                return true;
+            }
+            else
+                return false;
+        }
+        else
+            return false;
+    }
+
+    /**
+     * Получаем доступ к файлу (c данными теста) на SD.
+     * @return файл.
+     */
+    private File getSdExamFile() {
+        File sdPath = Environment.getExternalStorageDirectory();
+        sdPath = new File(sdPath.getAbsolutePath() + "/" + sSdDir);
+        sdPath.mkdirs();
+        return new File(sdPath, getFileName());
     }
 }

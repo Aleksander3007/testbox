@@ -1,6 +1,8 @@
 package com.blackteam.testbox.utils;
 
 import android.content.Context;
+import android.os.Environment;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.util.Xml;
 
@@ -11,9 +13,14 @@ import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 import org.xmlpull.v1.XmlSerializer;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
@@ -24,6 +31,7 @@ import java.io.StringWriter;
  */
 public class ExamLoader {
     private static String sExamFileName = "exam.xml";
+    private static final String sSdDir = "testbox";
 
     private static final String sThemeTag = "theme";
 
@@ -60,10 +68,83 @@ public class ExamLoader {
     }
 
     /**
+     * Сохранение на SD-карту.
+     * @param examTree дерево с данными об экзаменах.
+     * @return true - если успешно завершено, false - скорее всего отсутсвует SD карта.
+     * @throws IOException
+     */
+    public static boolean saveToSdCard(NavigationTree<ExamThemeData> examTree) throws IOException {
+        // Если SD-карта есть.
+        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+            // Получаем путь к SD.
+            File backupFile = getSdExamFile();
+            if (backupFile != null) {
+                if (backupFile.exists()) backupFile.delete();
+                backupFile.createNewFile();
+                BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(backupFile));
+                String dataWrite = createXmlData(examTree);
+                bufferedWriter.write(dataWrite);
+                bufferedWriter.close();
+                return true;
+            }
+            else
+                return false;
+        }
+        else
+            return false;
+    }
+
+    /**
+     * Чтение с SD-карты.
+     * @return дерево с данными об экзаменах.
+     * @throws IOException
+     * @throws XmlPullParserException
+     */
+    @Nullable
+    public static NavigationTree<ExamThemeData> loadFromSdCard()
+            throws IOException, XmlPullParserException {
+        // Если SD-карта есть.
+        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+            // Получаем путь к SD.
+            File recoveryFile = getSdExamFile();
+            if (recoveryFile != null) {
+                // открываем поток для чтения
+                BufferedReader bufferedReader = new BufferedReader(new FileReader(recoveryFile));
+                String str;
+                StringBuilder examDataStr = new StringBuilder();
+                // читаем содержимое
+                while ((str = bufferedReader.readLine()) != null) {
+                    examDataStr.append(str);
+                }
+                // Парсим строку как xml.
+                XmlPullParser xmlParser = parseXml(examDataStr.toString());
+
+                return parseExamTree(xmlParser);
+            }
+            else
+                return null;
+        }
+        else
+            return null;
+    }
+
+    /**
+     * Получаем доступ к файлу (c экзам. данными) на SD.
+     * @return файл.
+     */
+    private static File getSdExamFile() {
+        File sdPath = Environment.getExternalStorageDirectory();
+        sdPath = new File(sdPath.getAbsolutePath() + "/" + sSdDir);
+        sdPath.mkdirs();
+        File sdFile = new File(sdPath, sExamFileName);
+        return sdFile;
+    }
+
+    /**
      * Установка режима unit-тестирования данного класса, чтобы не перезаписывался основной файл.
      */
     public static void setUnitTestMode() {
-        sExamFileName = "examUnitTest.xml";
+        sExamFileName = "__examUnitTest.xml";
     }
 
     /**
@@ -103,11 +184,14 @@ public class ExamLoader {
         String data = new String(inputBuffer);
         inputStreamReader.close();
 
-        // Распарсиваем строку как xml.
-        XmlPullParserFactory xmlFactory = XmlPullParserFactory.newInstance();
-        xmlFactory.setNamespaceAware(true);
-        XmlPullParser xmlParser = xmlFactory.newPullParser();
-        xmlParser.setInput(new StringReader(data));
+        // Парсим строку как xml.
+        XmlPullParser xmlParser = parseXml(data);
+
+        return parseExamTree(xmlParser);
+    }
+
+    private static NavigationTree<ExamThemeData> parseExamTree(XmlPullParser xmlParser)
+            throws XmlPullParserException, IOException {
 
         NavigationTree<ExamThemeData> examTree = new NavigationTree<>();
 
@@ -143,6 +227,20 @@ public class ExamLoader {
         }
 
         return examTree;
+    }
+
+    /**
+     * Парсит строку как xml файл.
+     * @param xmlStr строка.
+     * @return xmlParser.
+     */
+    private static XmlPullParser parseXml(String xmlStr)
+            throws XmlPullParserException {
+        XmlPullParserFactory xmlFactory = XmlPullParserFactory.newInstance();
+        xmlFactory.setNamespaceAware(true);
+        XmlPullParser xmlParser = xmlFactory.newPullParser();
+        xmlParser.setInput(new StringReader(xmlStr));
+        return xmlParser;
     }
 
     /**

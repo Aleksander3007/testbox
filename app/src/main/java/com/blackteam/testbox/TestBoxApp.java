@@ -47,21 +47,21 @@ public class TestBoxApp extends Application {
         return mExamTree;
     }
 
+    public void setExamTree(NavigationTree<ExamThemeData> examTree) {
+        mExamTree = examTree;
+    }
+
     public boolean loadExamTree() {
         try {
-            NavigationTree<ExamThemeData> examThemes =
+            NavigationTree<ExamThemeData> examTree =
                     ExamLoader.loadExam(getApplicationContext());
 
-            // В случае, если приложение запускается впервые.
-            if (examThemes == null) {
-                examThemes = new NavigationTree<>();
-            }
+            if (examTree != null)
+                this.mExamTree = examTree;
+                // В случае, если приложение запускается впервые.
+            else
+                clearExamTree();
 
-            if (examThemes.getRootElement() == null) {
-                examThemes.createRootElement(
-                        new ExamThemeData(sExamRootStr, sExamRootId, sIsExamRootTest));
-            }
-            this.mExamTree = examThemes;
             return true;
 
         } catch (IOException ioex) {
@@ -75,6 +75,27 @@ public class TestBoxApp extends Application {
             xppex.printStackTrace();
             return false;
         }
+    }
+
+    public boolean saveExamTree() {
+        if (mExamTree == null) clearExamTree();
+        try {
+            ExamLoader.saveExam(getApplicationContext(), mExamTree);
+            return true;
+        } catch (IOException ioex) {
+            Toast.makeText(this, R.string.msg_error_saving, Toast.LENGTH_LONG).show();
+            ioex.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * Очищаем экзам. дерево до первоначального состония.
+     */
+    private void clearExamTree() {
+        mExamTree = new NavigationTree<>();
+        mExamTree.createRootElement(
+                new ExamThemeData(sExamRootStr, sExamRootId, sIsExamRootTest));
     }
 
     @Override
