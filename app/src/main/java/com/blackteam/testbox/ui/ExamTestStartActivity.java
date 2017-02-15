@@ -3,7 +3,6 @@ package com.blackteam.testbox.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.annotation.StringDef;
 import android.support.v7.widget.AppCompatRadioButton;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -148,11 +147,11 @@ public class ExamTestStartActivity extends BaseActivity {
             packExamTest();
             new XmlLoaderInternal().save(this, examTest.getFileName(), examTest);
             displayDescription(examTest.getDescription());
-            Toast.makeText(this, R.string.msg_successful_saving, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.msg_success_saving, Toast.LENGTH_SHORT).show();
         } catch (IOException ioex) {
             Log.e(TAG, ioex.getMessage());
             ioex.printStackTrace();
-            Toast.makeText(this, R.string.msg_error_saving, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.msg_fail_saving, Toast.LENGTH_SHORT).show();
         }
     }
 

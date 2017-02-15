@@ -138,7 +138,7 @@ public class SettingsActivity extends Activity {
         AlertDialog.Builder confirmRecoveryDialog = new AlertDialog.Builder(this);
         confirmRecoveryDialog.setTitle(R.string.title_recovery)
                 .setMessage(R.string.msg_recovery_data_will_remove)
-                .setPositiveButton(R.string.ok_btn, new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         try {
@@ -167,7 +167,7 @@ public class SettingsActivity extends Activity {
                         dialog.cancel();
                     }
                 })
-                .setNegativeButton(R.string.cancel_btn, new DialogInterface.OnClickListener() {
+                .setNegativeButton(R.string.btn_cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.cancel();

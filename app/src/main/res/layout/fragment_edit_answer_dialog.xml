@@ -45,7 +45,7 @@
 
         <Button
             android:id="@+id/btn_delete"
-            android:text="@string/delete_btn"
+            android:text="@string/btn_delete"
             style="?android:attr/buttonBarButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -65,14 +65,14 @@
 
             <Button
                 android:id="@+id/btn_cancel"
-                android:text="@string/cancel_btn"
+                android:text="@string/btn_cancel"
                 style="?android:attr/buttonBarButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
             <Button
                 android:id="@+id/btn_ok"
-                android:text="@string/ok_btn"
+                android:text="@string/btn_ok"
                 style="?android:attr/buttonBarButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />

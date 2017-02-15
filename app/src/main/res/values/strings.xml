@@ -2,31 +2,30 @@
     <string name="app_name">testbox</string>
     <string name="user_type_user">Пользователь</string>
     <string name="user_type_editor">Редактор</string>
-    <string name="exam_btn">Экзамен</string>
-    <string name="create_new_theme">Название темы</string>
+    <string name="number_correct_answers">Правильных ответов</string>
+    <string name="percent_number_correct_answers">Процент правильных ответов</string>
     <string name="num_test_questions">Количество вопросов в тесте</string>
     <string name="num_questions">Количество вопросов</string>
     <string name="test_time_limit">Время на тест</string>
     <string name="hours_short_name">ч</string>
     <string name="minutes_short_name">мин</string>
     <string name="seconds_short_name">сек</string>
-    <string name="cancel_btn">Отмена</string>
-    <string name="delete_btn">Удалить</string>
-    <string name="ok_btn">ОК</string>
+    <string name="create_new_answer">Вариант ответа</string>
+    <string name="question_text_empty">Необходимо указать вопрос</string>
+    <string name="btn_exam">Экзамен</string>
+    <string name="btn_cancel">Отмена</string>
+    <string name="btn_delete">Удалить</string>
+    <string name="btn_ok">ОК</string>
     <string name="btn_rollback">Не сохранять</string>
     <string name="btn_start">Начать</string>
-    <string name="btn_startTest">Начать тест</string>
-    <string name="btn_startTraining">Тренировка</string>
-    <string name="btn_createQuestions">Вопросы</string>
+    <string name="btn_create_questions">Вопросы</string>
     <string name="btn_submit">Подтвердить</string>
-    <string name="btn_goToResult">Результат</string>
+    <string name="btn_go_to_result">Результат</string>
     <string name="btn_close_test_result">Закрыть</string>
     <string name="btn_backup">Резервное копирование</string>
     <string name="btn_recovery">Восстановление</string>
-    <string name="create_new_answer">Вариант ответа</string>
-    <string name="btn_nextQuestion">Следующий</string>
+    <string name="btn_next_question">Следующий</string>
     <string name="btn_finish">Завершить</string>
-    <string name="question_text_empty">Необходимо указать вопрос</string>
     <string name="btn_save">Сохранить</string>
     <string name="btn_settings">Настройки</string>
     <string name="cb_exam_theme_contains_test">Тест</string>
@@ -34,11 +33,11 @@
     <string name="rb_training">Тренировка</string>
     <string name="rb_testing">Тестирование</string>
     <string name="msg_test_isnt_existed">Тест не доступен</string>
-    <string name="msg_successful_saving">Изменения успешно сохранены</string>
-    <string name="msg_error_saving">Не удалось сохранить изменения</string>
-    <string name="msg_eror_add_new_exam_theme">Не удалось создать тему. Возможно такая тема уже существует</string>
-    <string name="msg_error_edit_exam_theme">Не удалось переименовать тему. Возможно тема с таким именем уже существует</string>
-    <string name="msg_error_loading_exam_themes">Не удалось загрузить темы экзаменов</string>
+    <string name="msg_success_saving">Изменения успешно сохранены</string>
+    <string name="msg_fail_saving">Не удалось сохранить изменения</string>
+    <string name="msg_fail_add_new_exam_theme">Не удалось создать тему. Возможно такая тема уже существует</string>
+    <string name="msg_fail_edit_exam_theme">Не удалось переименовать тему. Возможно тема с таким именем уже существует</string>
+    <string name="msg_fail_loading_exam_themes">Не удалось загрузить темы экзаменов</string>
     <string name="msg_zero_answers">Вопрос теста должен содержать хотя бы один ответ</string>
     <string name="msg_delete_exam_theme">При удалении выбранной темы, удаляться и его подтемы</string>
     <string name="msg_fail_delete_exam_theme">Не удалось удалить тест %s</string>
@@ -56,28 +55,15 @@
     <string name="msg_fail_recovery">Не удалось восстановить данные</string>
     <string name="msg_fail_permission_recovery">Без разрешение на чтение из SD-карты невозможно выполнить восстановление данных</string>
     <string name="msg_recovery_data_will_remove">После восстановления текущие данные будут утерены. Продолжить?</string>
-    <string name="etHint_testDescription">Описание</string>
-    <string name="etHint_question_text">Вопрос</string>
-    <string name="etHint_question_explanation">Объяснение</string>
+    <string name="hint_test_description">Описание</string>
+    <string name="hint_question_text">Вопрос</string>
+    <string name="hint_question_explanation">Объяснение</string>
+    <string name="hint_create_new_theme">Название темы</string>
     <string name="title_delete_exam_theme">Удаление темы</string>
     <string name="title_finish_editing">Завершение редактирования</string>
-    <string name="title_test_question_page">№</string>
     <string name="title_recovery">Восстановление данных</string>
-    <string name="number_correct_answers">Правильных ответов</string>
-    <string name="percent_number_correct_answers">Процент правильных ответов</string>
 
     <string name="test_time_hours_default">00</string>
     <string name="test_time_minutes_default">20</string>
     <string name="test_time_seconds_default">00</string>
-
-    <string name="bottom_editing_bar_prev">Предыдущий</string>
-    <string name="bottom_editing_bar_next">Следующий</string>
-    <string name="bottom_editing_bar_finish">Завершить</string>
-    <string name="bottom_editing_bar_save">Сохранить</string>
-
-    <string name="pref_exam_file">Файл с темами экзаменов</string>
-    <string name="pref_exam_file_default">examData</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

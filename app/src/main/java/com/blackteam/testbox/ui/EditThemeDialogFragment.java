@@ -147,7 +147,7 @@ public class EditThemeDialogFragment extends DialogFragment {
         // Если не удалось переименовать тему.
         if (!success) {
             mThemeNameEditText.setError(
-                    getResources().getString(R.string.msg_error_edit_exam_theme));
+                    getResources().getString(R.string.msg_fail_edit_exam_theme));
         }
 
         return success;
@@ -161,7 +161,7 @@ public class EditThemeDialogFragment extends DialogFragment {
         // Если не удалось создать тему.
         if (!success) {
             mThemeNameEditText.setError(
-                    getResources().getString(R.string.msg_eror_add_new_exam_theme));
+                    getResources().getString(R.string.msg_fail_add_new_exam_theme));
         }
 
         return success;

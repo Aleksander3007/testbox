@@ -52,7 +52,7 @@
 
                 <Button
                     android:id="@+id/btn_nextQuestion"
-                    android:text="@string/btn_nextQuestion"
+                    android:text="@string/btn_next_question"
                     android:visibility="invisible"
                     style="?android:attr/buttonBarButtonStyle"
                     android:layout_width="wrap_content"
@@ -60,7 +60,7 @@
 
                 <Button
                     android:id="@+id/btn_goToResult"
-                    android:text="@string/btn_goToResult"
+                    android:text="@string/btn_go_to_result"
                     android:visibility="invisible"
                     style="?android:attr/buttonBarButtonStyle"
                     android:layout_width="wrap_content"

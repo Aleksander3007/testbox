@@ -19,7 +19,7 @@
 
             <Button
                 android:id="@+id/btn_close_test_result"
-                android:text="Закрыть"
+                android:text="@string/btn_close_test_result"
                 style="?android:attr/buttonBarButtonStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

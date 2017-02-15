@@ -60,12 +60,12 @@ public class TestBoxApp extends Application {
             return true;
         }
         catch (IOException ioex) {
-            Toast.makeText(this, R.string.msg_error_loading_exam_themes, Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.msg_fail_loading_exam_themes, Toast.LENGTH_LONG).show();
             Log.e("TestBoxApp", ioex.getMessage());
             ioex.printStackTrace();
             return false;
         } catch (XmlPullParserException xppex) {
-            Toast.makeText(this, R.string.msg_error_loading_exam_themes, Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.msg_fail_loading_exam_themes, Toast.LENGTH_LONG).show();
             Log.e("TestBoxApp", xppex.getMessage());
             xppex.printStackTrace();
             return false;
@@ -78,7 +78,7 @@ public class TestBoxApp extends Application {
             new XmlLoaderInternal().save(getApplicationContext(), mExam.getFileName(), mExam);
             return true;
         } catch (IOException ioex) {
-            Toast.makeText(this, R.string.msg_error_saving, Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.msg_fail_saving, Toast.LENGTH_LONG).show();
             ioex.printStackTrace();
             return false;
         }

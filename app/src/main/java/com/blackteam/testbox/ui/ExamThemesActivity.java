@@ -5,10 +5,7 @@ import android.app.FragmentManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
@@ -321,7 +318,7 @@ public class ExamThemesActivity extends BaseActivity
         AlertDialog.Builder confirmDeletionDialog = new AlertDialog.Builder(this);
         confirmDeletionDialog.setTitle(R.string.title_delete_exam_theme)
                 .setMessage(R.string.msg_delete_exam_theme)
-                .setPositiveButton(R.string.ok_btn, new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int i) {
                         // Удаляем тему и все его подтемы.
@@ -329,7 +326,7 @@ public class ExamThemesActivity extends BaseActivity
                         dialog.cancel();
                     }
                 })
-                .setNegativeButton(R.string.cancel_btn, new DialogInterface.OnClickListener() {
+                .setNegativeButton(R.string.btn_cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int i) {
                         // Открываем диалог редактирования по новой, т.к. он закрылся.
@@ -398,7 +395,7 @@ public class ExamThemesActivity extends BaseActivity
      */
     private boolean saveExamThemes() {
         ((TestBoxApp)getApplicationContext()).saveExam();
-        Toast.makeText(this, R.string.msg_successful_saving, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, R.string.msg_success_saving, Toast.LENGTH_SHORT).show();
         mHasExamThemeChanged = false;
         return true;
     }

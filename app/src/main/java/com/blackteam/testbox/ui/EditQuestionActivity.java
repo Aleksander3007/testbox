@@ -3,14 +3,12 @@ package com.blackteam.testbox.ui;
 import android.app.AlertDialog;
 import android.app.FragmentManager;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -361,11 +359,11 @@ public class EditQuestionActivity extends BaseActivity {
     public void saveAllQuestions() {
         try {
             new XmlLoaderInternal().save(this, mExamTest.getFileName(), mExamTest);
-            Toast.makeText(this, R.string.msg_successful_saving, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.msg_success_saving, Toast.LENGTH_SHORT).show();
         } catch (IOException ioex) {
             Log.e(TAG, ioex.getMessage());
             ioex.printStackTrace();
-            Toast.makeText(this, R.string.msg_error_saving, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.msg_fail_saving, Toast.LENGTH_SHORT).show();
         }
     }
 
