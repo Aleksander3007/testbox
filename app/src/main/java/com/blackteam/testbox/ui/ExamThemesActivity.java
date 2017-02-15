@@ -5,8 +5,10 @@ import android.app.FragmentManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
@@ -14,6 +16,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,6 +44,7 @@ public class ExamThemesActivity extends BaseActivity
     @BindView(R.id.bottom_editing_bar) LinearLayout mBottomEditingBar;
     @BindView(R.id.btn_prevPage) ImageButton mPrevPageButton;
     @BindView(R.id.btn_nextPage) ImageButton mNextPageButton;
+    @BindView(R.id.l_buttons_bar) View mButtonsBarView;
 
     /** Имитируем анимацию перехода между активити, т.к. у нас одно активити, а переходы между
      * подтемами есть. */
@@ -99,12 +103,23 @@ public class ExamThemesActivity extends BaseActivity
         finishEditing();
         super.setModeUser();
         mBottomEditingBar.setVisibility(View.INVISIBLE);
+        RelativeLayout.LayoutParams layoutParams =
+                (RelativeLayout.LayoutParams) mExamThemesListView.getLayoutParams();
+        layoutParams.bottomMargin = 0;
+        mExamThemesListView.setLayoutParams(layoutParams);
     }
 
     @Override
     protected void setModeEditor() {
         super.setModeEditor();
+
         mBottomEditingBar.setVisibility(View.VISIBLE);
+        // Все данные должны отображаться над bottomBar.
+        RelativeLayout.LayoutParams layoutParams =
+                (RelativeLayout.LayoutParams) mExamThemesListView.getLayoutParams();
+        layoutParams.bottomMargin = mBottomEditingBar.getHeight() - mButtonsBarView.getHeight();
+        mExamThemesListView.setLayoutParams(layoutParams);
+
         mStartPathEdit = ((TestBoxApp)getApplicationContext()).getExamTree().getPath();
     }
 

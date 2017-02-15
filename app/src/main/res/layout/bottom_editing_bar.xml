@@ -16,6 +16,7 @@
         android:layout_gravity="end"/>
 
     <LinearLayout
+        android:id="@+id/l_buttons_bar"
         android:orientation="horizontal"
         style="?android:attr/buttonBarStyle"
         android:layout_width="match_parent"
