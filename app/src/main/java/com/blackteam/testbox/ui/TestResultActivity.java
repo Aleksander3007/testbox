@@ -3,6 +3,7 @@ package com.blackteam.testbox.ui;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.view.Menu;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -22,7 +23,7 @@ import butterknife.OnClick;
 /**
  * Страница с результами прохожения теста/тренировки.
  */
-public class TestResultActivity extends Activity {
+public class TestResultActivity extends BaseActivity {
 
     public static final String EXTRA_EXAM_TEST = "com.testbox.extras.EXTRA_EXAM_TEST";
 
@@ -42,6 +43,21 @@ public class TestResultActivity extends Activity {
         verifQuestions();
         showResult();
         showQuestions();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        // INFO: onCreateOptionsMenu() вызывается после Activity.onResume().
+
+        // Проверяем есть ли меню.
+        boolean menuDisplayed = super.onCreateOptionsMenu(menu);
+        if (menuDisplayed) {
+            // Скрываем кнопку перехода между режимами.
+            mUserTypeMenuItem.setVisible(false);
+        }
+
+        return menuDisplayed;
     }
 
     /**
