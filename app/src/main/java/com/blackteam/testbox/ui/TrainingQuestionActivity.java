@@ -64,7 +64,7 @@ public class TrainingQuestionActivity extends Activity {
     }
 
     @OnClick(R.id.btn_submit)
-    public void submitOnClick(View view) {
+    public void onSubmitClick(View view) {
         if (mQuestionCursor.hasNext())
             updateView(QuestionState.ANSWERED);
         else
@@ -92,16 +92,23 @@ public class TrainingQuestionActivity extends Activity {
         }
     }
 
+    /**
+     * Нажатие на кнопку перехода к результатам.
+     */
     @OnClick(R.id.btn_goToResult)
-    public void goToResultOnClick(View view) {
+    public void onGoToResultClick(View view) {
         Intent trainingResultActivity = new Intent(this, TestResultActivity.class);
         trainingResultActivity.putExtra(TestResultActivity.EXTRA_EXAM_TEST, mExamTest);
         startActivity(trainingResultActivity);
     }
 
+    /**
+     * Нажатие на кнопку завершить тренировку.
+     */
     @OnClick(R.id.btn_finish)
-    public void finishOnClick(View view) {
-        // TODO: Закончить тестирование и перейти на страницу с результатами.
+    public void onFinishClick(View view) {
+        onSubmitClick(view);
+        onGoToResultClick(view);
     }
 
     /**
