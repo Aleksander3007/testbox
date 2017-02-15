@@ -1,29 +1,16 @@
 package com.blackteam.testbox;
 
 import android.content.Context;
-import android.os.Environment;
-import android.util.Log;
 import android.util.Xml;
 
-import com.blackteam.testbox.utils.NavigationTree;
+import com.blackteam.testbox.utils.XmlParceable;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
-import org.xmlpull.v1.XmlPullParserFactory;
 import org.xmlpull.v1.XmlSerializer;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.Serializable;
-import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,17 +19,16 @@ import java.util.List;
 /**
  * Описывает данные связанные с экзамеционным тестом.
  */
-public class ExamTest implements Serializable {
+public class ExamTest implements Serializable, XmlParceable {
     /** Формат имени файла. Для получения имени файла использовать функции {@link #getFileName()}*/
     private static final String sFileNameFormat = "et%s.xml";
 
-    private static final String sSdDir = "testbox";
-
+    private static final String sExamTestTag = "examTest";
     private static final String sDescriptionTag = "description";
     private static final String sQuestionTag = "question";
     private static final String sExplanationTag = "explanation";
     private static final String sAnswerTag = "answer";
-    private static final String sTestTag = "test";
+    private static final String sTestingAttrsTag = "testingAttrs";
 
     private static final String sDescriptionAttr = "text";
     private static final String sQuestionTextAttr = "text";
@@ -100,55 +86,28 @@ public class ExamTest implements Serializable {
     }
 
     /**
-     * Загрузка данных об экзамеционном тесте.
-     * @param context {@link Context}.
-     * @return список экзамеционных вопросов.
-     * @throws IOException
-     * @throws XmlPullParserException
+     * Получить имя файла, содержащее информацию по данному тесту.
+     * @return Имя файла.
      */
-    public List<TestQuestion> load(Context context)
-            throws IOException, XmlPullParserException {
-
-        FileInputStream fileInputStream = context.openFileInput(getFileName());
-        readExamTestFile(fileInputStream);
-        fileInputStream.close();
-        return mQuestions;
+    public String getFileName() {
+        return String.format(sFileNameFormat, mName);
     }
 
     /**
-     * Чтение файла, содержащего данные о экзам. тесте.
-     * @param fileInputStream Поток файла, содержащего данные о экзам. тесте.
-     * @throws IOException
-     * @throws XmlPullParserException
+     * Удаление данных об экзамеционном тесте.
+     * @param context {@link Context}
+     * @return true если файл был успешно удалён.
      */
-    private void readExamTestFile(FileInputStream fileInputStream)
-            throws IOException, XmlPullParserException {
-
-        // Открываем reader и считываем всё в строку.
-        InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream);
-        char[] inputBuffer = new char[fileInputStream.available()];
-        inputStreamReader.read(inputBuffer);
-        String fileData = new String(inputBuffer);
-        inputStreamReader.close();
-
-        // Распарсиваем строку как xml.
-        XmlPullParser xmlParser = parseXml(fileData);
-
-        parseExamTest(xmlParser);
+    public boolean delete(Context context) {
+        return context.deleteFile(getFileName());
     }
 
     /**
-     * Парсит строку как xml файл.
-     * @param xmlStr строка.
-     * @return xmlParser.
+     * Перемешать вопросы и ответы.
      */
-    private static XmlPullParser parseXml(String xmlStr)
-            throws XmlPullParserException {
-        XmlPullParserFactory xmlFactory = XmlPullParserFactory.newInstance();
-        xmlFactory.setNamespaceAware(true);
-        XmlPullParser xmlParser = xmlFactory.newPullParser();
-        xmlParser.setInput(new StringReader(xmlStr));
-        return xmlParser;
+    public void shuffle() {
+        for (TestQuestion question : mQuestions) question.shuffleAnswers();
+        Collections.shuffle(mQuestions);
     }
 
     /**
@@ -156,7 +115,8 @@ public class ExamTest implements Serializable {
      * @param xmlParser xmlParser.
      * @throws XmlPullParserException
      */
-    private void parseExamTest(XmlPullParser xmlParser) throws XmlPullParserException, IOException {
+    @Override
+    public void parseData(XmlPullParser xmlParser) throws XmlPullParserException, IOException {
         TestQuestion question = null;
         List<TestAnswer> answers = new ArrayList<>();
         int eventType = xmlParser.getEventType();
@@ -183,7 +143,7 @@ public class ExamTest implements Serializable {
                     else if (xmlParser.getName().equals(sDescriptionTag)) {
                         setDescription(xmlParser.getAttributeValue(null, sDescriptionAttr));
                     }
-                    else if (xmlParser.getName().equals(sTestTag)) {
+                    else if (xmlParser.getName().equals(sTestingAttrsTag)) {
                         try {
                             setNumTestQuestions(Integer.parseInt(xmlParser
                                     .getAttributeValue(null, sNumTestQuestionsAttr)));
@@ -213,46 +173,18 @@ public class ExamTest implements Serializable {
     }
 
     /**
-     * Сохранение данных об экзамеционном тесте.
-     * @param context {@link Context}.
-     * @throws IOException
-     */
-    public void save(Context context) throws IOException {
-        writeExamTestFile(context);
-    }
-
-    /**
-     * Получить имя файла, содержащее информацию по данному тесту.
-     * @return Имя файла.
-     */
-    private String getFileName() {
-        return String.format(sFileNameFormat, mName);
-    }
-
-    private void writeExamTestFile(Context context) throws IOException {
-        String dataWrite = createXmlData();
-        try {
-            FileOutputStream fileOutputStream =
-                    context.openFileOutput(getFileName(), Context.MODE_PRIVATE);
-            fileOutputStream.write(dataWrite.getBytes());
-            fileOutputStream.close();
-        } catch (FileNotFoundException fnfex) {
-            // Такого быть не может, т.к. если файла не существует, openFileOutput() создаст файл.
-            fnfex.printStackTrace();
-            Log.e("FileNotFoundException", fnfex.getMessage());
-        }
-    }
-
-    /**
      * Создать строку в формате xml, содержащию данные об экзамеционном тесте.
      * @return Строка в формате xml.
      * @throws IOException
      */
-    private String createXmlData() throws IOException {
+    @Override
+    public String parseXmlString() throws IOException {
         XmlSerializer xmlSerializer = Xml.newSerializer();
         StringWriter stringWriter = new StringWriter();
         xmlSerializer.setOutput(stringWriter);
         xmlSerializer.startDocument("UTF-8", true);
+
+        xmlSerializer.startTag(null, sExamTestTag);
 
         if (mDescription != null) {
             xmlSerializer.startTag(null, sDescriptionTag);
@@ -260,10 +192,10 @@ public class ExamTest implements Serializable {
             xmlSerializer.endTag(null, sDescriptionTag);
         }
 
-        xmlSerializer.startTag(null, sTestTag);
+        xmlSerializer.startTag(null, sTestingAttrsTag);
         xmlSerializer.attribute(null, sNumTestQuestionsAttr, String.valueOf(mNumTestQuestions));
         xmlSerializer.attribute(null, sTestTimeLimitAttr, String.valueOf(mTestTimeLimit));
-        xmlSerializer.endTag(null, sTestTag);
+        xmlSerializer.endTag(null, sTestingAttrsTag);
 
         // Записываем все вопросы в тесте.
         for (TestQuestion testQuestion : mQuestions) {
@@ -287,89 +219,10 @@ public class ExamTest implements Serializable {
             xmlSerializer.endTag(null, sQuestionTag);
         }
 
+        xmlSerializer.endTag(null, sExamTestTag);
+
         xmlSerializer.flush();
 
         return stringWriter.toString();
-    }
-
-    /**
-     * Удаление данных об экзамеционном тесте.
-     * @param context {@link Context}
-     * @return true если файл был успешно удалён.
-     */
-    public boolean delete(Context context) {
-        return context.deleteFile(getFileName());
-    }
-
-    /**
-     * Перемешать вопросы и ответы.
-     */
-    public void shuffle() {
-        for (TestQuestion question : mQuestions) question.shuffleAnswers();
-        Collections.shuffle(mQuestions);
-    }
-
-    /**
-     * Сохранение на SD-карту.
-     * @return true - если успешно завершено, false - скорее всего отсутсвует SD карта.
-     * @throws IOException
-     */
-    public boolean saveToSdCard() throws IOException {
-        // Если SD-карта есть.
-        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-            // Получаем путь к SD.
-            File backupFile = getSdExamFile();
-            if (backupFile != null) {
-                if (backupFile.exists()) backupFile.delete();
-                backupFile.createNewFile();
-                BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(backupFile));
-                String dataWrite = createXmlData();
-                bufferedWriter.write(dataWrite);
-                bufferedWriter.close();
-                return true;
-            }
-            else
-                return false;
-        }
-        else
-            return false;
-    }
-
-    public boolean loadFromSdCard() throws IOException, XmlPullParserException {
-        // Если SD-карта есть.
-        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-            // Получаем путь к SD.
-            File recoveryFile = getSdExamFile();
-            if (recoveryFile != null) {
-                // открываем поток для чтения
-                BufferedReader bufferedReader = new BufferedReader(new FileReader(recoveryFile));
-                String str;
-                StringBuilder examDataStr = new StringBuilder();
-                // читаем содержимое
-                while ((str = bufferedReader.readLine()) != null) {
-                    examDataStr.append(str);
-                }
-
-                XmlPullParser xmlParser = parseXml(examDataStr.toString());
-                parseExamTest(xmlParser);
-
-                return true;
-            }
-            else
-                return false;
-        }
-        else
-            return false;
-    }
-
-    /**
-     * Получаем доступ к файлу (c данными теста) на SD.
-     * @return файл.
-     */
-    private File getSdExamFile() {
-        File sdPath = Environment.getExternalStorageDirectory();
-        sdPath = new File(sdPath.getAbsolutePath() + "/" + sSdDir);
-        sdPath.mkdirs();
-        return new File(sdPath, getFileName());
     }
 }

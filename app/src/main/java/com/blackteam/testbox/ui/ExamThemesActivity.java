@@ -21,11 +21,9 @@ import com.blackteam.testbox.ExamTest;
 import com.blackteam.testbox.ExamThemeData;
 import com.blackteam.testbox.R;
 import com.blackteam.testbox.TestBoxApp;
-import com.blackteam.testbox.utils.ExamLoader;
 import com.blackteam.testbox.utils.NavigationTree;
 import com.blackteam.testbox.utils.WideTree;
 
-import java.io.IOException;
 import java.util.Deque;
 
 import butterknife.BindView;
@@ -384,18 +382,10 @@ public class ExamThemesActivity extends BaseActivity
      * @return true - изменения успешно сохранены.
      */
     private boolean saveExamThemes() {
-        try {
-            ExamLoader.saveExam(getApplicationContext(),
-                    ((TestBoxApp)getApplicationContext()).getExamTree());
-            Toast.makeText(this, R.string.msg_successful_saving, Toast.LENGTH_SHORT).show();
-            mHasExamThemeChanged = false;
-            return true;
-        } catch (IOException ioex) {
-            Log.e("ExamThemesA", ioex.getMessage());
-            ioex.printStackTrace();
-            Toast.makeText(this, R.string.msg_error_saving, Toast.LENGTH_SHORT).show();
-            return false;
-        }
+        ((TestBoxApp)getApplicationContext()).saveExam();
+        Toast.makeText(this, R.string.msg_successful_saving, Toast.LENGTH_SHORT).show();
+        mHasExamThemeChanged = false;
+        return true;
     }
 
     /**
@@ -404,7 +394,7 @@ public class ExamThemesActivity extends BaseActivity
      */
     private boolean rollbackChanges() {
         // Загружаем последнюю информацию до текущих изменений (откатываемся).
-        boolean isLoaded = ((TestBoxApp)getApplicationContext()).loadExamTree();
+        boolean isLoaded = ((TestBoxApp)getApplicationContext()).loadExam();
         if (isLoaded) {
             // Возращаемся на место, откуда было начато редактирование.
             ((TestBoxApp)getApplicationContext()).getExamTree().setPath(mStartPathEdit);

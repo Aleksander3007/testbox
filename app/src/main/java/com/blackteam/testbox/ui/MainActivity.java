@@ -1,12 +1,9 @@
 package com.blackteam.testbox.ui;
 
-import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.TextView;
 
 import com.blackteam.testbox.R;
 import com.blackteam.testbox.TestBoxApp;
@@ -26,7 +23,7 @@ public class MainActivity extends BaseActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        ((TestBoxApp)getApplicationContext()).loadExamTree();
+        ((TestBoxApp)getApplicationContext()).loadExam();
     }
 
     /**

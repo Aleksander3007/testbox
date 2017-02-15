@@ -20,6 +20,7 @@ import com.blackteam.testbox.R;
 import com.blackteam.testbox.TestBoxApp;
 import com.blackteam.testbox.utils.NavigationTree;
 import com.blackteam.testbox.utils.UIHelper;
+import com.blackteam.testbox.utils.XmlLoaderInternal;
 
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -72,7 +73,7 @@ public class ExamTestStartActivity extends BaseActivity {
         // Загружаем данные о тесте.
         examTest = new ExamTest(mExamTheme.getData().getId());
         try {
-            examTest.load(getApplicationContext());
+            new XmlLoaderInternal().load(this, examTest.getFileName(), examTest);
             displayDescription(examTest.getDescription());
             mIsExistedTest = true;
 
@@ -145,7 +146,7 @@ public class ExamTestStartActivity extends BaseActivity {
     public void saveOnClick(View view) {
         try {
             packExamTest();
-            examTest.save(getApplicationContext());
+            new XmlLoaderInternal().save(this, examTest.getFileName(), examTest);
             displayDescription(examTest.getDescription());
             Toast.makeText(this, R.string.msg_successful_saving, Toast.LENGTH_SHORT).show();
         } catch (IOException ioex) {

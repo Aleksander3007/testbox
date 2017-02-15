@@ -14,8 +14,9 @@ import com.blackteam.testbox.ExamTest;
 import com.blackteam.testbox.ExamThemeData;
 import com.blackteam.testbox.R;
 import com.blackteam.testbox.TestBoxApp;
-import com.blackteam.testbox.utils.ExamLoader;
 import com.blackteam.testbox.utils.NavigationTree;
+import com.blackteam.testbox.utils.XmlLoaderExternal;
+import com.blackteam.testbox.utils.XmlLoaderInternal;
 
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -32,6 +33,9 @@ public class SettingsActivity extends Activity {
 
     public static final int PERMISSION_REQUEST_WRITE_FILE = 0;
     public static final int PERMISSION_REQUEST_READ_FILE = 1;
+
+    private XmlLoaderInternal mXmlLoaderInternal = new XmlLoaderInternal();
+    private XmlLoaderExternal mXmlLoaderExternal = new XmlLoaderExternal(TestBoxApp.DEFAULT_EXTERNAL_DIR);
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -111,9 +115,9 @@ public class SettingsActivity extends Activity {
      */
     private void backup() {
         try {
-            NavigationTree<ExamThemeData> examTree = ((TestBoxApp)getApplicationContext()).getExamTree();
-            boolean success = ExamLoader.saveToSdCard(examTree);
-            if (success) success = backupTests(examTree.getRootElement());
+            boolean success = ((TestBoxApp)getApplicationContext()).backupExam();
+            if (success) success = backupTests(((TestBoxApp)getApplicationContext())
+                    .getExamTree().getRootElement());
             if (success) {
                 Toast.makeText(this, R.string.msg_success_backup, Toast.LENGTH_SHORT).show();
             }
@@ -138,17 +142,20 @@ public class SettingsActivity extends Activity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         try {
-                            NavigationTree<ExamThemeData> examTree = ExamLoader.loadFromSdCard();
-                            ((TestBoxApp)getApplicationContext()).setExamTree(examTree);
-                            ((TestBoxApp)getApplicationContext()).saveExamTree();
-                            recoveryTests(examTree.getRootElement());
-                            Toast.makeText(getApplicationContext(),
+                            boolean success = ((TestBoxApp)getApplicationContext()).recoveryExam();
+                            if (success) success = recoveryTests(((TestBoxApp)getApplicationContext()).
+                                    getExamTree().getRootElement());
+                            if (success)
+                                Toast.makeText(getApplicationContext(),
                                     R.string.msg_success_recovery, Toast.LENGTH_SHORT).show();
+                            else
+                                Toast.makeText(getApplicationContext(),
+                                        R.string.msg_backup_sd_is_not_found, Toast.LENGTH_SHORT).show();
                         }
                         // Если файл не найден, то значит никогда не делалось резервной копии.
                         catch (FileNotFoundException fnfex) {
                             ((TestBoxApp)getApplicationContext()).setExamTree(null);
-                            ((TestBoxApp)getApplicationContext()).saveExamTree();
+                            ((TestBoxApp)getApplicationContext()).saveExam();
                             Toast.makeText(getApplicationContext(),
                                     R.string.msg_recovery_file_is_not_existed, Toast.LENGTH_SHORT).show();
                         }
@@ -183,8 +190,8 @@ public class SettingsActivity extends Activity {
             if (!success) return false;
             if (examTheme.getData().containsTest()) {
                 ExamTest examTest = new ExamTest(examTheme.getData().getId());
-                examTest.load(this); // загружаем данные из локального файла.
-                success = examTest.saveToSdCard();
+                mXmlLoaderInternal.load(this, examTest.getFileName(), examTest);
+                success =  mXmlLoaderExternal.save(this, examTest.getFileName(), examTest);
                 if (!success) return false;
             }
         }
@@ -207,9 +214,9 @@ public class SettingsActivity extends Activity {
             if (!success) return false;
             if (examTheme.getData().containsTest()) {
                 ExamTest examTest = new ExamTest(examTheme.getData().getId());
-                success = examTest.loadFromSdCard();
+                success = mXmlLoaderExternal.load(this, examTest.getFileName(), examTest);
                 if (success) {
-                    examTest.save(this);
+                    mXmlLoaderInternal.save(this, examTest.getFileName(), examTest);
                 }
                 return success;
             }

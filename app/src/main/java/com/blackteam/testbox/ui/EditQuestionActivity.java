@@ -23,6 +23,7 @@ import com.blackteam.testbox.R;
 import com.blackteam.testbox.TestAnswer;
 import com.blackteam.testbox.TestQuestion;
 import com.blackteam.testbox.utils.ListCursor;
+import com.blackteam.testbox.utils.XmlLoaderInternal;
 
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -359,7 +360,7 @@ public class EditQuestionActivity extends BaseActivity {
      */
     public void saveAllQuestions() {
         try {
-            mExamTest.save(getApplicationContext());
+            new XmlLoaderInternal().save(this, mExamTest.getFileName(), mExamTest);
             Toast.makeText(this, R.string.msg_successful_saving, Toast.LENGTH_SHORT).show();
         } catch (IOException ioex) {
             Log.e(TAG, ioex.getMessage());
@@ -392,7 +393,8 @@ public class EditQuestionActivity extends BaseActivity {
      */
     private boolean rollbackChanges() {
         try {
-            mExamTest.load(getApplicationContext());
+            new XmlLoaderInternal().load(this, mExamTest.getFileName(), mExamTest);
+            // Т.к. только загрузили, необходимо всё инициализовать по новой.
             init();
             return true;
         }

@@ -4,12 +4,14 @@ import android.app.Application;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.blackteam.testbox.utils.ExamLoader;
 import com.blackteam.testbox.utils.ExceptionHandler;
 import com.blackteam.testbox.utils.NavigationTree;
+import com.blackteam.testbox.utils.XmlLoaderExternal;
+import com.blackteam.testbox.utils.XmlLoaderInternal;
 
 import org.xmlpull.v1.XmlPullParserException;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 /**
@@ -17,10 +19,7 @@ import java.io.IOException;
  */
 public class TestBoxApp extends Application {
 
-    // Параметры для root элемента дерева, содержащего экзамен.
-    private static final String sExamRootStr = "Экзамен";
-    private static final String sExamRootId = "0";
-    private static final boolean sIsExamRootTest = false;
+    public static final String DEFAULT_EXTERNAL_DIR = "testbox";
 
     /**
      * Режимы пользователя, которые имеют те или иные возможности в приложении.
@@ -33,7 +32,7 @@ public class TestBoxApp extends Application {
     }
     private UserType mUserType = UserType.USER;
 
-    private NavigationTree<ExamThemeData> mExamTree;
+    private Exam mExam = new Exam();
 
     public UserType getUserType() {
         return mUserType;
@@ -44,27 +43,23 @@ public class TestBoxApp extends Application {
     }
 
     public NavigationTree<ExamThemeData> getExamTree() {
-        return mExamTree;
+        return mExam.getData();
     }
 
-    public void setExamTree(NavigationTree<ExamThemeData> examTree) {
-        mExamTree = examTree;
-    }
+    public void setExamTree(NavigationTree<ExamThemeData> examTree) { mExam = new Exam(examTree); }
 
-    public boolean loadExamTree() {
+    public boolean loadExam() {
         try {
-            NavigationTree<ExamThemeData> examTree =
-                    ExamLoader.loadExam(getApplicationContext());
-
-            if (examTree != null)
-                this.mExamTree = examTree;
-                // В случае, если приложение запускается впервые.
-            else
-                clearExamTree();
-
+            new XmlLoaderInternal().load(getApplicationContext(), mExam.getFileName(), mExam);
             return true;
 
-        } catch (IOException ioex) {
+        }
+        // Приложение заупущено впервые или еще ни разу не сохранялись данные.
+        catch (FileNotFoundException fnfex) {
+            mExam.init();
+            return true;
+        }
+        catch (IOException ioex) {
             Toast.makeText(this, R.string.msg_error_loading_exam_themes, Toast.LENGTH_LONG).show();
             Log.e("TestBoxApp", ioex.getMessage());
             ioex.printStackTrace();
@@ -77,10 +72,10 @@ public class TestBoxApp extends Application {
         }
     }
 
-    public boolean saveExamTree() {
-        if (mExamTree == null) clearExamTree();
+    public boolean saveExam() {
+        if (mExam.getData() == null) mExam.init();
         try {
-            ExamLoader.saveExam(getApplicationContext(), mExamTree);
+            new XmlLoaderInternal().save(getApplicationContext(), mExam.getFileName(), mExam);
             return true;
         } catch (IOException ioex) {
             Toast.makeText(this, R.string.msg_error_saving, Toast.LENGTH_LONG).show();
@@ -89,13 +84,37 @@ public class TestBoxApp extends Application {
         }
     }
 
-    /**
-     * Очищаем экзам. дерево до первоначального состония.
-     */
-    private void clearExamTree() {
-        mExamTree = new NavigationTree<>();
-        mExamTree.createRootElement(
-                new ExamThemeData(sExamRootStr, sExamRootId, sIsExamRootTest));
+    public boolean recoveryExam() {
+        try {
+            boolean isFileLoaded = new XmlLoaderExternal(DEFAULT_EXTERNAL_DIR)
+                    .load(getApplicationContext(), mExam.getFileName(), mExam);
+            if (isFileLoaded) saveExam();
+            return isFileLoaded;
+        }
+        // Если файл не найден, то значит никогда не делалось резервной копии.
+        catch (FileNotFoundException fnfex) {
+            Toast.makeText(getApplicationContext(),
+                    R.string.msg_recovery_file_is_not_existed, Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        catch (IOException ioex) {
+            ioex.printStackTrace();
+            return false;
+        } catch (XmlPullParserException xppex) {
+            xppex.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean backupExam() {
+        try {
+            boolean isFileSaved = new XmlLoaderExternal(DEFAULT_EXTERNAL_DIR)
+                    .save(getApplicationContext(), mExam.getFileName(), mExam);
+            return isFileSaved;
+        } catch (IOException ioex) {
+            ioex.printStackTrace();
+            return false;
+        }
     }
 
     @Override
