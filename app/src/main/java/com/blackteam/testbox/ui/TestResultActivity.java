@@ -77,12 +77,12 @@ public class TestResultActivity extends Activity {
     }
 
     private int getNumQuestions() {
-        return mExamTest.getAllQuestions().size();
+        return mExamTest.getActualNumQuestions();
     }
 
     private int geNumCorrectAnswers() {
         int numCorrectAnswers = 0;
-        for (TestQuestion question : mExamTest.getAllQuestions()) {
+        for (TestQuestion question : mExamTest.getQuestions()) {
             if (question.rightAnswer()) numCorrectAnswers++;
         }
         return numCorrectAnswers;
