@@ -104,7 +104,7 @@ public class SettingsActivity extends Activity {
 
                 } else {
                     Toast.makeText(this,
-                            R.string.msg_fail_permission_backup, Toast.LENGTH_SHORT).show();
+                            R.string.msg_fail_permission_recovery, Toast.LENGTH_SHORT).show();
                 }
                 break;
         }
