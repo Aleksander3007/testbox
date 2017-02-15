@@ -36,7 +36,7 @@ import butterknife.OnClick;
  */
 public class ExamTestStartActivity extends BaseActivity {
 
-    public static final String TAG = "ExamTestStartActivity";
+    private static final String TAG = ExamTestStartActivity.class.getSimpleName();
 
     @BindView(R.id.tv_testName) TextView mTestNameTextView;
     @BindView(R.id.et_testDescription) EditText mTestDescriptionEditText;
@@ -180,7 +180,7 @@ public class ExamTestStartActivity extends BaseActivity {
             examTest.setActualNumQuestions(mNumTrainingQuestionsSeekBar.getValue());
             Intent trainingIntent =
                     new Intent(this, TrainingQuestionActivity.class);
-            trainingIntent.putExtra(EditQuestionActivity.ARG_EXAM_TEST, examTest);
+            trainingIntent.putExtra(TrainingQuestionActivity.EXTRA_EXAM_TEST, examTest);
             startActivity(trainingIntent);
         }
         else
@@ -193,15 +193,15 @@ public class ExamTestStartActivity extends BaseActivity {
             case USER:
                 examTestQuestionIntent =
                         new Intent(getApplicationContext(), TestQuestionActivity.class);
+                examTestQuestionIntent.putExtra(TestQuestionActivity.EXTRA_EXAM_TEST, examTest);
                 break;
             case EDITOR:
                 examTestQuestionIntent =
                         new Intent(getApplicationContext(), EditQuestionActivity.class);
-
+                examTestQuestionIntent.putExtra(EditQuestionActivity.EXTRA_EXAM_TEST, examTest);
                 break;
         }
 
-        examTestQuestionIntent.putExtra(EditQuestionActivity.ARG_EXAM_TEST, examTest);
         startActivity(examTestQuestionIntent);
     }
 

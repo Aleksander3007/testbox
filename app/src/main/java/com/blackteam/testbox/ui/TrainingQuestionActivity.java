@@ -26,6 +26,8 @@ import butterknife.OnClick;
  */
 public class TrainingQuestionActivity extends Activity {
 
+    public static final String EXTRA_EXAM_TEST = "com.testbox.extras.EXTRA_EXAM_TEST";
+
     /** Состояние в котором находится ответ на вопрос. */
     enum QuestionState {
         /** Ответ на вопрос еще не был дан. */
@@ -53,7 +55,7 @@ public class TrainingQuestionActivity extends Activity {
         setContentView(R.layout.activity_training_question);
         ButterKnife.bind(this);
 
-        mExamTest = (ExamTest) getIntent().getExtras().getSerializable("ExamTest");
+        mExamTest = (ExamTest) getIntent().getExtras().getSerializable(EXTRA_EXAM_TEST);
         mExamTest.shuffle(); // Перемешиваем вопросы и ответы.
         mQuestionCursor = new ListCursor<>(mExamTest.getQuestions());
         displayQuestion(mQuestionCursor.getCurrent());
@@ -93,7 +95,7 @@ public class TrainingQuestionActivity extends Activity {
     @OnClick(R.id.btn_goToResult)
     public void goToResultOnClick(View view) {
         Intent trainingResultActivity = new Intent(this, TestResultActivity.class);
-        trainingResultActivity.putExtra("ExamTest", mExamTest);
+        trainingResultActivity.putExtra(TestResultActivity.EXTRA_EXAM_TEST, mExamTest);
         startActivity(trainingResultActivity);
     }
 

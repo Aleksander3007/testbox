@@ -23,12 +23,12 @@ import butterknife.OnClick;
  * Страница с результами прохожения теста/тренировки.
  */
 public class TestResultActivity extends Activity {
-    @BindView(R.id.tv_num_correct_answers)
-    TextView mCorrectAnswersTextView;
-    @BindView(R.id.tv_percent_correct_answers)
-    TextView mPercentCorrectAnswersTextView;
-    @BindView(R.id.ll_questions)
-    LinearLayout mQuestionsLinearLayout;
+
+    public static final String EXTRA_EXAM_TEST = "com.testbox.extras.EXTRA_EXAM_TEST";
+
+    @BindView(R.id.tv_num_correct_answers) TextView mCorrectAnswersTextView;
+    @BindView(R.id.tv_percent_correct_answers) TextView mPercentCorrectAnswersTextView;
+    @BindView(R.id.ll_questions) LinearLayout mQuestionsLinearLayout;
 
     private ExamTest mExamTest;
 
@@ -38,7 +38,7 @@ public class TestResultActivity extends Activity {
         setContentView(R.layout.activity_test_result);
         ButterKnife.bind(this);
 
-        mExamTest = (ExamTest) getIntent().getExtras().getSerializable("ExamTest");
+        mExamTest = (ExamTest) getIntent().getExtras().getSerializable(EXTRA_EXAM_TEST);
         verifQuestions();
         showResult();
         showQuestions();

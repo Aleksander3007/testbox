@@ -23,10 +23,10 @@ import butterknife.Unbinder;
  */
 public class EditThemeDialogFragment extends DialogFragment {
 
-    public static final String ARG_THEME_NAME = "ThemeName";
-    public static final String ARG_CONTAINS_TEST = "ContainsTest";
-    public static final String ARG_HAS_SUBTHEMES = "HasSubThemes";
-    public static final String ARG_IS_NEW_THEME = "IsNewTheme";
+    public static final String ARG_THEME_NAME = "ARG_THEME_NAME";
+    public static final String ARG_CONTAINS_TEST = "ARG_CONTAINS_TEST";
+    public static final String ARG_HAS_SUBTHEMES = "ARG_HAS_SUBTHEMES";
+    public static final String ARG_IS_NEW_THEME = "ARG_IS_NEW_THEME";
 
     @BindView(R.id.et_themeName) EditText mThemeNameEditText;
     @BindView(R.id.cb_containsTest) CheckBox mContainsTestCheckBox;

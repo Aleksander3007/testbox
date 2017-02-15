@@ -23,7 +23,7 @@ import butterknife.Unbinder;
  */
 public class TestQuestionFragment extends Fragment {
 
-    public static final String ARG_TEST_QUESTION = "testQuestion";
+    public static final String ARG_TEST_QUESTION = "ARG_TEST_QUESTION";
 
     @BindView(R.id.tv_question) TextView mQuestionTextView;
     @BindView(R.id.ll_answers) LinearLayout mAnswersLinearLayout;

@@ -4,16 +4,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.Menu;
 import android.widget.Toast;
 
 import com.blackteam.testbox.ExamTest;
 import com.blackteam.testbox.R;
-import com.blackteam.testbox.TestQuestion;
 import com.blackteam.testbox.TestQuestionAdapter;
-
-import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -22,6 +18,9 @@ import butterknife.ButterKnife;
  * Страница с экзамеционными вопросами в режиме "Пользователь" (тестируемый).
  */
 public class TestQuestionActivity extends BaseActivity {
+
+    public static final String EXTRA_EXAM_TEST = "com.testbox.extras.EXTRA_EXAM_TEST";
+
     @BindView(R.id.vp_questions) ViewPager mQuestionsViewPager;
 
     private ExamTest mExamTest;
@@ -39,7 +38,7 @@ public class TestQuestionActivity extends BaseActivity {
         setContentView(R.layout.activity_test_question);
         ButterKnife.bind(this);
 
-        mExamTest = (ExamTest) getIntent().getExtras().getSerializable("ExamTest");
+        mExamTest = (ExamTest) getIntent().getExtras().getSerializable(EXTRA_EXAM_TEST);
 
         // Перемешиваем вопросы и ответы.
         mExamTest.shuffle();
@@ -94,7 +93,7 @@ public class TestQuestionActivity extends BaseActivity {
             // Тест завершился, а значит таймер больше не нужен.
             mTestTimer.cancel();
             Intent trainingResultActivity = new Intent(this, TestResultActivity.class);
-            trainingResultActivity.putExtra("ExamTest", mExamTest);
+            trainingResultActivity.putExtra(TestResultActivity.EXTRA_EXAM_TEST, mExamTest);
             startActivity(trainingResultActivity);
         }
     }

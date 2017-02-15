@@ -13,8 +13,6 @@ import butterknife.OnClick;
 
 public class MainActivity extends BaseActivity {
 
-    private int mValue;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,7 +39,6 @@ public class MainActivity extends BaseActivity {
      */
     @OnClick(R.id.btn_settingsOpen)
     public void onExamSettingsClick(View view) {
-        SettingsActivity settingsActivity = new SettingsActivity();
         Intent settingsIntent = new Intent(this, SettingsActivity.class);
         startActivity(settingsIntent);
     }

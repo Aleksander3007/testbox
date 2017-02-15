@@ -39,9 +39,9 @@ import butterknife.OnClick;
  */
 public class EditQuestionActivity extends BaseActivity {
 
-    public static final String TAG = "EditQuestionActivity";
+    public static final String TAG = EditQuestionActivity.class.getSimpleName();
 
-    public static final String ARG_EXAM_TEST = "ExamTest";
+    public static final String EXTRA_EXAM_TEST = "com.testbox.extras.EXTRA_EXAM_TEST";
 
     @BindView(R.id.ll_answers) LinearLayout mAnswersLinearLayout;
     @BindView(R.id.et_question) EditText mQuestionEditText;
@@ -63,7 +63,7 @@ public class EditQuestionActivity extends BaseActivity {
         setContentView(R.layout.activity_edit_question);
         ButterKnife.bind(this);
 
-        mExamTest = (ExamTest) getIntent().getExtras().getSerializable(ARG_EXAM_TEST);
+        mExamTest = (ExamTest) getIntent().getExtras().getSerializable(EXTRA_EXAM_TEST);
 
         init();
     }

@@ -23,9 +23,9 @@ import butterknife.Unbinder;
  */
 public class EditAnswerDialogFragment extends DialogFragment {
 
-    public static final String ARG_ANSWER_TEXT = "AnswerText";
-    public static final String ARG_IS_RIGHT_ANSWER = "IsRightAnswer";
-    public static final String ARG_IS_NEW_ANSWER = "IsNewAnswer";
+    public static final String ARG_ANSWER_TEXT = "ARG_ANSWER_TEXT";
+    public static final String ARG_IS_RIGHT_ANSWER = "ARG_IS_RIGHT_ANSWER";
+    public static final String ARG_IS_NEW_ANSWER = "ARG_IS_NEW_ANSWER";
 
     @BindView(R.id.et_answerText) EditText mAnswerEditText;
     @BindView(R.id.cb_isRightAnswer) CheckBox mIsRightAnswerCheckBox;

@@ -6,12 +6,15 @@ import android.content.Intent;
 import android.os.Build;
 import android.util.Log;
 
+import com.blackteam.testbox.ui.EditQuestionActivity;
 import com.blackteam.testbox.ui.ErrorActivity;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
 public class ExceptionHandler implements Thread.UncaughtExceptionHandler {
+
+    public static final String TAG = EditQuestionActivity.class.getSimpleName();
 
     private static final String LINE_SEPARATOR = "\n";
 
@@ -63,10 +66,10 @@ public class ExceptionHandler implements Thread.UncaughtExceptionHandler {
 
         Intent intent = new Intent(mContext, ErrorActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        intent.putExtra(ErrorActivity.ERROR_DATA, errorReport.toString());
+        intent.putExtra(ErrorActivity.EXTRA_ERROR_DATA, errorReport.toString());
         mContext.startActivity(intent);
 
-        Log.e("ExceptionHandler", errorReport.toString());
+        Log.e(TAG, errorReport.toString());
 
         if (mOldHandler != null) // если есть ранее установленный...
             mOldHandler.uncaughtException(thread, exception); // ...вызовем его
