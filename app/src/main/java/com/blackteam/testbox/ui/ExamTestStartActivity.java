@@ -101,7 +101,7 @@ public class ExamTestStartActivity extends BaseActivity {
     }
 
     @Override
-    protected void setModeUser() {
+    protected void onModeEditorClick() {
         // Проверям были сделаны изменения, нужно ли сохрать и т.п.
         finishEditing();
     }
@@ -113,6 +113,15 @@ public class ExamTestStartActivity extends BaseActivity {
         UIHelper.enableEditText(mTestDescriptionEditText);
         mUserViewLinearLayout.setVisibility(View.INVISIBLE);
         mEditorViewLinearLayout.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    protected void setModeUser() {
+        super.setModeUser();
+        // При переходе из режима "Редактор", остается фокус на редактируемом поле (хотя его уже не видно).
+        UIHelper.disableEditText(mTestDescriptionEditText);
+        mUserViewLinearLayout.setVisibility(View.VISIBLE);
+        mEditorViewLinearLayout.setVisibility(View.INVISIBLE);
     }
 
     /**
@@ -325,10 +334,15 @@ public class ExamTestStartActivity extends BaseActivity {
         String newDesctiption = mTestDescriptionEditText.getText().toString();
         int newNumTestQuestions = mNumQuestionsSeekBar.getValue();
         int newTestTimeLimit = getTestTimeSeconds();
-        boolean isChanged = (!newDesctiption.equals(examTest.getDescription())) ||
-                (newNumTestQuestions != examTest.getNumTestQuestions()) ||
-                (newTestTimeLimit != examTest.getTimeLimit());
-        return isChanged;
+        if (examTest.getDescription() != null) {
+            return (!newDesctiption.equals(examTest.getDescription())) ||
+                    (newNumTestQuestions != examTest.getNumTestQuestions()) ||
+                    (newTestTimeLimit != examTest.getTimeLimit());
+        }
+        else {
+            // Если описание экзамена равно null, а новое описание не пустое, то было изменение.
+            return !newDesctiption.equals("");
+        }
     }
 
     /**
@@ -357,7 +371,7 @@ public class ExamTestStartActivity extends BaseActivity {
                         public void onClick(DialogInterface dialog, int which) {
                             saveExamTest();
                             dialog.cancel();
-                            forceSetModeUser();
+                            setModeUser();
                         }
                     })
                     // В противном случае ничего не делаем.
@@ -365,23 +379,12 @@ public class ExamTestStartActivity extends BaseActivity {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.cancel();
-                            forceSetModeUser();
+                            setModeUser();
                         }
                     }).show();
         }
         else {
-            forceSetModeUser();
+            setModeUser();
         }
-    }
-
-    /**
-     * Бесусловная установка в режим "Пользователя".
-     */
-    private void forceSetModeUser() {
-        ExamTestStartActivity.super.setModeUser();
-        // При переходе из режима "Редактор", остается фокус на редактируемом поле (хотя его уже не видно).
-        UIHelper.disableEditText(mTestDescriptionEditText);
-        mUserViewLinearLayout.setVisibility(View.VISIBLE);
-        mEditorViewLinearLayout.setVisibility(View.INVISIBLE);
     }
 }

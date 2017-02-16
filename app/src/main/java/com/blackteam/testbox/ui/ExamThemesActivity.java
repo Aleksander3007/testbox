@@ -96,7 +96,7 @@ public class ExamThemesActivity extends BaseActivity
     }
 
     @Override
-    protected void setModeUser() {
+    protected void onModeEditorClick() {
         finishEditing(true);
     }
 
@@ -112,6 +112,16 @@ public class ExamThemesActivity extends BaseActivity
         mExamThemesListView.setLayoutParams(layoutParams);
 
         mStartPathEdit = ((TestBoxApp)getApplicationContext()).getExamTree().getPath();
+    }
+
+    @Override
+    protected void setModeUser() {
+        super.setModeUser();
+        mBottomEditingBar.setVisibility(View.INVISIBLE);
+        RelativeLayout.LayoutParams layoutParams =
+                (RelativeLayout.LayoutParams) mExamThemesListView.getLayoutParams();
+        layoutParams.bottomMargin = 0;
+        mExamThemesListView.setLayoutParams(layoutParams);
     }
 
     /**
@@ -235,7 +245,7 @@ public class ExamThemesActivity extends BaseActivity
                         public void onClick(DialogInterface dialog, int which) {
                             saveExamThemes();
                             dialog.cancel();
-                            if (setModeUser) forceSetModeUser();
+                            if (setModeUser) setModeUser();
                             if (activityAfterSave != null) {
                                 Intent intent =
                                         new Intent(getApplicationContext(), activityAfterSave);
@@ -249,12 +259,12 @@ public class ExamThemesActivity extends BaseActivity
                         public void onClick(DialogInterface dialog, int which) {
                             rollbackChanges();
                             dialog.cancel();
-                            if (setModeUser) forceSetModeUser();
+                            if (setModeUser) setModeUser();
                         }
                     }).show();
         }
         else if (!mHasExamThemeChanged) {
-            if (setModeUser) forceSetModeUser();
+            if (setModeUser) setModeUser();
             if (activityIfNotChanges != null) {
                 Intent intent =
                         new Intent(getApplicationContext(), activityIfNotChanges);
@@ -270,18 +280,6 @@ public class ExamThemesActivity extends BaseActivity
      */
     private boolean isDialogShowing(AlertDialog dialog) {
         return dialog != null && dialog.isShowing();
-    }
-
-    /**
-     * Бесусловная установка в режим "Пользователя".
-     */
-    private void forceSetModeUser() {
-        super.setModeUser();
-        mBottomEditingBar.setVisibility(View.INVISIBLE);
-        RelativeLayout.LayoutParams layoutParams =
-                (RelativeLayout.LayoutParams) mExamThemesListView.getLayoutParams();
-        layoutParams.bottomMargin = 0;
-        mExamThemesListView.setLayoutParams(layoutParams);
     }
 
     /**

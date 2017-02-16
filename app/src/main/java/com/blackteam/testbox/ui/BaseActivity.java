@@ -39,46 +39,53 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        // Если приложение было уже запущено (и не было разрушено до тек. момента),
+        // то устанавливаем вид относительно типа пользователя,
+        // в противном случаи Меню еще не создано (null), поэтому всё переносится в
+        // onCreateOptionsMenu().
+        if (mUserTypeMenuItem != null)
+            setViewByUserType();
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        // Переключаем между режимами пользователь/редактор.
-        if (id == R.id.mi_userType) toggleViewByUserType();
+        // элеменент пользователь/редактор.
+        if (id == R.id.mi_userType) {
+            switch (((TestBoxApp)getApplicationContext()).getUserType()) {
+                // Если был пользователь, то переключаемся на редактора.
+                case USER:
+                    onModeUserClick();
+                    break;
+                case EDITOR:
+                    onModeEditorClick();
+                    break;
+            }
+        }
 
         return super.onOptionsItemSelected(item);
     }
 
     /**
-     * Переключение отображения в зависимости от типа пользователя (пользователь/редактор).
+     * Нажатие на элемент "Пользователь".
      */
-    private void toggleViewByUserType() {
-        switch (((TestBoxApp)getApplicationContext()).getUserType()) {
-            // Если был пользователь, то переключаемся на редактора.
-            case USER:
-                setModeEditor();
-                break;
-            case EDITOR:
-                setModeUser();
-                break;
-        }
+    protected void onModeUserClick() {
+        // переключаемся на режим "Редактор".
+        setModeEditor();
     }
 
     /**
-     * Установка отображения в зависимости от типа пользователя (пользователь/редактор).
+     * Нажатие на элемент "Редактор".
      */
-    private void setViewByUserType() {
-        switch (((TestBoxApp)getApplicationContext()).getUserType()) {
-            // Если был пользователь, то переключаемся на редактора.
-            case USER:
-                setModeUser();
-                break;
-            case EDITOR:
-                setModeEditor();
-                break;
-        }
+    protected void onModeEditorClick() {
+        // переключаемся на режим "Пользователь".
+        setModeUser();
     }
 
     /**
@@ -97,14 +104,18 @@ public class BaseActivity extends AppCompatActivity {
         mUserTypeMenuItem.setTitle(R.string.user_type_editor);
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        // Если приложение было уже запущено (и не было разрушено до тек. момента),
-        // то устанавливаем вид относительно типа пользователя,
-        // в противном случаи Меню еще не создано (null), поэтому всё переносится в
-        // onCreateOptionsMenu().
-        if (mUserTypeMenuItem != null)
-            setViewByUserType();
+    /**
+     * Установка отображения в зависимости от типа пользователя (пользователь/редактор).
+     */
+    private void setViewByUserType() {
+        switch (((TestBoxApp)getApplicationContext()).getUserType()) {
+            // Если был пользователь, то переключаемся на редактора.
+            case USER:
+                setModeUser();
+                break;
+            case EDITOR:
+                setModeEditor();
+                break;
+        }
     }
 }
