@@ -97,13 +97,7 @@ public class ExamThemesActivity extends BaseActivity
 
     @Override
     protected void setModeUser() {
-        finishEditing();
-        super.setModeUser();
-        mBottomEditingBar.setVisibility(View.INVISIBLE);
-        RelativeLayout.LayoutParams layoutParams =
-                (RelativeLayout.LayoutParams) mExamThemesListView.getLayoutParams();
-        layoutParams.bottomMargin = 0;
-        mExamThemesListView.setLayoutParams(layoutParams);
+        finishEditing(true);
     }
 
     @Override
@@ -137,9 +131,8 @@ public class ExamThemesActivity extends BaseActivity
      * @param view нажатый элемент.
      */
     @OnClick(R.id.btn_finish)
-    public void finishEditingOnClick(View view) {
-        finishEditing();
-        setModeUser();
+    public void onFinishEditingClick(View view) {
+        finishEditing(true);
     }
 
     /**
@@ -205,9 +198,10 @@ public class ExamThemesActivity extends BaseActivity
 
     /**
      * Завершить редактирование.
+     * @param setModeUser Устанавливать ли в режим "Пользователь" после завершения.
      */
-    private void finishEditing() {
-        finishEditing(null, null);
+    private void finishEditing(boolean setModeUser) {
+        finishEditing(setModeUser, null, null);
     }
 
     /**
@@ -216,6 +210,18 @@ public class ExamThemesActivity extends BaseActivity
      * @param activityIfNotChanges класс Activity который необходимо открыть если изменений не было.
      */
     private void finishEditing(final Class<?> activityAfterSave,
+                               final Class<?>  activityIfNotChanges) {
+        finishEditing(false, activityAfterSave, activityIfNotChanges);
+    }
+
+    /**
+     * Завершить редактирование, с последующим открытием новой Activity, в определненных случаях.
+     * А также с возможностью переключением на режим "Пользователь".
+     * @param activityAfterSave класс Activity который необходимо открыть после сохранения изменений.
+     * @param activityIfNotChanges класс Activity который необходимо открыть если изменений не было.
+     */
+    private void finishEditing(final boolean setModeUser,
+                               final Class<?> activityAfterSave,
                                final Class<?>  activityIfNotChanges) {
         // Отображаем диалог изменений только в том случае, если изменения имеются и
         // данный диалог еще не был отображен.
@@ -229,6 +235,7 @@ public class ExamThemesActivity extends BaseActivity
                         public void onClick(DialogInterface dialog, int which) {
                             saveExamThemes();
                             dialog.cancel();
+                            if (setModeUser) forceSetModeUser();
                             if (activityAfterSave != null) {
                                 Intent intent =
                                         new Intent(getApplicationContext(), activityAfterSave);
@@ -242,15 +249,17 @@ public class ExamThemesActivity extends BaseActivity
                         public void onClick(DialogInterface dialog, int which) {
                             rollbackChanges();
                             dialog.cancel();
+                            if (setModeUser) forceSetModeUser();
                         }
-                    });
-            mConfirmChangesDialog = confirmChangesDialogBuilder.create();
-            mConfirmChangesDialog.show();
+                    }).show();
         }
-        else if (!mHasExamThemeChanged && activityIfNotChanges != null) {
-            Intent intent =
-                    new Intent(getApplicationContext(), activityIfNotChanges);
-            startActivity(intent);
+        else if (!mHasExamThemeChanged) {
+            if (setModeUser) forceSetModeUser();
+            if (activityIfNotChanges != null) {
+                Intent intent =
+                        new Intent(getApplicationContext(), activityIfNotChanges);
+                startActivity(intent);
+            }
         }
     }
 
@@ -261,6 +270,18 @@ public class ExamThemesActivity extends BaseActivity
      */
     private boolean isDialogShowing(AlertDialog dialog) {
         return dialog != null && dialog.isShowing();
+    }
+
+    /**
+     * Бесусловная установка в режим "Пользователя".
+     */
+    private void forceSetModeUser() {
+        super.setModeUser();
+        mBottomEditingBar.setVisibility(View.INVISIBLE);
+        RelativeLayout.LayoutParams layoutParams =
+                (RelativeLayout.LayoutParams) mExamThemesListView.getLayoutParams();
+        layoutParams.bottomMargin = 0;
+        mExamThemesListView.setLayoutParams(layoutParams);
     }
 
     /**
