@@ -13,6 +13,8 @@ import com.blackteam.testbox.TestBoxApp;
  */
 public class BaseActivity extends AppCompatActivity {
 
+    private static final String TAG = BaseActivity.class.getSimpleName();
+
     protected MenuItem mUserTypeMenuItem;
     protected MenuItem mTimerMenuItem;
 
@@ -30,7 +32,7 @@ public class BaseActivity extends AppCompatActivity {
             setViewByUserType();
         }
         catch (Exception ex) {
-            Log.i("BaseActivity", ex.getMessage());
+            Log.i(TAG, ex.getMessage());
         }
 
         return true;
