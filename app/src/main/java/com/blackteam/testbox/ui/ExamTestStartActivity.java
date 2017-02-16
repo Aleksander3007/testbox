@@ -1,5 +1,7 @@
 package com.blackteam.testbox.ui;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -100,11 +102,7 @@ public class ExamTestStartActivity extends BaseActivity {
 
     @Override
     protected void setModeUser() {
-        super.setModeUser();
-        // При переходе из режима "Редактор", остается фокус на редактируемом поле (хотя его уже не видно).
-        UIHelper.disableEditText(mTestDescriptionEditText);
-        mUserViewLinearLayout.setVisibility(View.VISIBLE);
-        mEditorViewLinearLayout.setVisibility(View.INVISIBLE);
+        finishEditing();
     }
 
     @Override
@@ -143,16 +141,7 @@ public class ExamTestStartActivity extends BaseActivity {
      */
     @OnClick(R.id.btn_save)
     public void saveOnClick(View view) {
-        try {
-            packExamTest();
-            new XmlLoaderInternal().save(this, examTest.getFileName(), examTest);
-            displayDescription(examTest.getDescription());
-            Toast.makeText(this, R.string.msg_success_saving, Toast.LENGTH_SHORT).show();
-        } catch (IOException ioex) {
-            Log.e(TAG, ioex.getMessage());
-            ioex.printStackTrace();
-            Toast.makeText(this, R.string.msg_fail_saving, Toast.LENGTH_SHORT).show();
-        }
+        saveExamTest();
     }
 
     @OnCheckedChanged(R.id.rb_testing)
@@ -305,6 +294,19 @@ public class ExamTestStartActivity extends BaseActivity {
         mNumTrainingQuestionsSeekBar.setValue(examTest.getAllQuestions().size());
     }
 
+    private void saveExamTest() {
+        try {
+            packExamTest();
+            new XmlLoaderInternal().save(this, examTest.getFileName(), examTest);
+            displayDescription(examTest.getDescription());
+            Toast.makeText(this, R.string.msg_success_saving, Toast.LENGTH_SHORT).show();
+        } catch (IOException ioex) {
+            Log.e(TAG, ioex.getMessage());
+            ioex.printStackTrace();
+            Toast.makeText(this, R.string.msg_fail_saving, Toast.LENGTH_SHORT).show();
+        }
+    }
+
     /**
      * Собрать введенные данные для теста.
      */
@@ -312,6 +314,20 @@ public class ExamTestStartActivity extends BaseActivity {
         examTest.setDescription(mTestDescriptionEditText.getText().toString());
         examTest.setNumTestQuestions(mNumQuestionsSeekBar.getValue());
         examTest.setTimeLimit(getTestTimeSeconds());
+    }
+
+    /**
+     * Изменились ли данные для теста.
+     * @return true - изменились.
+     */
+    private boolean haveChangedTestData() {
+        String newDesctiption = mTestDescriptionEditText.getText().toString();
+        int newNumTestQuestions = mNumQuestionsSeekBar.getValue();
+        int newTestTimeLimit = getTestTimeSeconds();
+        boolean isChanged = (!newDesctiption.equals(examTest.getDescription())) ||
+                (newNumTestQuestions != examTest.getNumTestQuestions()) ||
+                (newTestTimeLimit != examTest.getTimeLimit());
+        return isChanged;
     }
 
     /**
@@ -324,5 +340,48 @@ public class ExamTestStartActivity extends BaseActivity {
         int nSeconds = Integer.parseInt(mTestTimeSecondsEditText.getText().toString());
         int testTimeLimit = nHours * 3600 + nMinutes * 60 + nSeconds;
         return testTimeLimit;
+    }
+
+    /**
+     * Завершить редактирование.
+     */
+    private void finishEditing() {
+        if (haveChangedTestData()) {
+            AlertDialog.Builder confirmChangesDialog = new AlertDialog.Builder(this);
+            confirmChangesDialog.setTitle(R.string.title_finish_editing)
+                    .setMessage(R.string.msg_do_editing_save)
+                    // Если сохранить изменения.
+                    .setPositiveButton(R.string.btn_save, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            saveExamTest();
+                            dialog.cancel();
+                            ExamTestStartActivity.super.setModeUser();
+                            // При переходе из режима "Редактор", остается фокус на редактируемом поле (хотя его уже не видно).
+                            UIHelper.disableEditText(mTestDescriptionEditText);
+                            mUserViewLinearLayout.setVisibility(View.VISIBLE);
+                            mEditorViewLinearLayout.setVisibility(View.INVISIBLE);
+                        }
+                    })
+                    // В противном случае ничего не делаем.
+                    .setNegativeButton(R.string.btn_rollback, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                            ExamTestStartActivity.super.setModeUser();
+                            // При переходе из режима "Редактор", остается фокус на редактируемом поле (хотя его уже не видно).
+                            UIHelper.disableEditText(mTestDescriptionEditText);
+                            mUserViewLinearLayout.setVisibility(View.VISIBLE);
+                            mEditorViewLinearLayout.setVisibility(View.INVISIBLE);
+                        }
+                    }).show();
+        }
+        else {
+            ExamTestStartActivity.super.setModeUser();
+            // При переходе из режима "Редактор", остается фокус на редактируемом поле (хотя его уже не видно).
+            UIHelper.disableEditText(mTestDescriptionEditText);
+            mUserViewLinearLayout.setVisibility(View.VISIBLE);
+            mEditorViewLinearLayout.setVisibility(View.INVISIBLE);
+        }
     }
 }
