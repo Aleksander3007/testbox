@@ -311,11 +311,18 @@ public class ExamTestStartActivity extends BaseActivity {
     private void packExamTest() {
         examTest.setDescription(mTestDescriptionEditText.getText().toString());
         examTest.setNumTestQuestions(mNumQuestionsSeekBar.getValue());
+        examTest.setTimeLimit(getTestTimeSeconds());
+    }
 
+    /**
+     * Получить время в секудах.
+     * @return
+     */
+    private int getTestTimeSeconds() {
         int nHours = Integer.parseInt(mTestTimeHoursEditText.getText().toString());;
         int nMinutes = Integer.parseInt(mTestTimeMinutesEditText.getText().toString());
         int nSeconds = Integer.parseInt(mTestTimeSecondsEditText.getText().toString());
         int testTimeLimit = nHours * 3600 + nMinutes * 60 + nSeconds;
-        examTest.setTimeLimit(testTimeLimit);
+        return testTimeLimit;
     }
 }
