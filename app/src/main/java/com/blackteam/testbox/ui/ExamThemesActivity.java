@@ -60,6 +60,15 @@ public class ExamThemesActivity extends BaseActivity
     /** Диалоговое окно подтверждения изменений. */
     private AlertDialog mConfirmChangesDialog;
 
+    /**
+     * Событие, которые послужит завершению редактирования.
+     */
+    private enum EventEndEdit {
+        ON_FINISH,
+        ON_TEST,
+        ON_BACK
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,13 +100,13 @@ public class ExamThemesActivity extends BaseActivity
         }
         // Предыдущий активити как раз корневой узел.
         else {
-            super.onBackPressed();
+            finishEditing(EventEndEdit.ON_BACK);
         }
     }
 
     @Override
     protected void onModeEditorClick() {
-        finishEditing(true);
+        finishEditing(EventEndEdit.ON_FINISH);
     }
 
     @Override
@@ -142,7 +151,7 @@ public class ExamThemesActivity extends BaseActivity
      */
     @OnClick(R.id.btn_finish)
     public void onFinishEditingClick(View view) {
-        finishEditing(true);
+        finishEditing(EventEndEdit.ON_FINISH);
     }
 
     /**
@@ -179,7 +188,7 @@ public class ExamThemesActivity extends BaseActivity
         // Если данная тема содержит тест, то переход на стартовую страницу теста.
         else {
             // ... но сначало необходимо проверить бы ли изменения.
-            finishEditing(ExamTestStartActivity.class, ExamTestStartActivity.class);
+            finishEditing(EventEndEdit.ON_TEST);
         }
     }
 
@@ -208,31 +217,9 @@ public class ExamThemesActivity extends BaseActivity
 
     /**
      * Завершить редактирование.
-     * @param setModeUser Устанавливать ли в режим "Пользователь" после завершения.
+     * @param eventEndEdit событие которое послужило причиной завершения редактирования.
      */
-    private void finishEditing(boolean setModeUser) {
-        finishEditing(setModeUser, null, null);
-    }
-
-    /**
-     * Завершить редактирование, с последующим открытием новой Activity, в определненных случаях.
-     * @param activityAfterSave класс Activity который необходимо открыть после сохранения изменений.
-     * @param activityIfNotChanges класс Activity который необходимо открыть если изменений не было.
-     */
-    private void finishEditing(final Class<?> activityAfterSave,
-                               final Class<?>  activityIfNotChanges) {
-        finishEditing(false, activityAfterSave, activityIfNotChanges);
-    }
-
-    /**
-     * Завершить редактирование, с последующим открытием новой Activity, в определненных случаях.
-     * А также с возможностью переключением на режим "Пользователь".
-     * @param activityAfterSave класс Activity который необходимо открыть после сохранения изменений.
-     * @param activityIfNotChanges класс Activity который необходимо открыть если изменений не было.
-     */
-    private void finishEditing(final boolean setModeUser,
-                               final Class<?> activityAfterSave,
-                               final Class<?>  activityIfNotChanges) {
+    private void finishEditing(final EventEndEdit eventEndEdit) {
         // Отображаем диалог изменений только в том случае, если изменения имеются и
         // данный диалог еще не был отображен.
         if (mHasExamThemeChanged && !isDialogShowing(mConfirmChangesDialog)) {
@@ -244,13 +231,8 @@ public class ExamThemesActivity extends BaseActivity
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             saveExamThemes();
-                            dialog.cancel();
-                            if (setModeUser) setModeUser();
-                            if (activityAfterSave != null) {
-                                Intent intent =
-                                        new Intent(getApplicationContext(), activityAfterSave);
-                                startActivity(intent);
-                            }
+                            dialog.dismiss();
+                            finishEditingCallback(eventEndEdit);
                         }
                     })
                     // В противном случае откат.
@@ -258,18 +240,16 @@ public class ExamThemesActivity extends BaseActivity
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             rollbackChanges();
-                            dialog.cancel();
-                            if (setModeUser) setModeUser();
+                            dialog.dismiss();
+                            finishEditingCallback(eventEndEdit);
                         }
-                    }).show();
+                    });
+            // Необходимо создавать, чтобы можно было проверить его статус.
+            mConfirmChangesDialog = confirmChangesDialogBuilder.create();
+            mConfirmChangesDialog.show();
         }
         else if (!mHasExamThemeChanged) {
-            if (setModeUser) setModeUser();
-            if (activityIfNotChanges != null) {
-                Intent intent =
-                        new Intent(getApplicationContext(), activityIfNotChanges);
-                startActivity(intent);
-            }
+            finishEditingCallback(eventEndEdit);
         }
     }
 
@@ -280,6 +260,26 @@ public class ExamThemesActivity extends BaseActivity
      */
     private boolean isDialogShowing(AlertDialog dialog) {
         return dialog != null && dialog.isShowing();
+    }
+
+    /**
+     * Callback после звершение редактирования.
+     * @param eventEndEdit событие которое послужило причиной завершения редактирования.
+     */
+    private void finishEditingCallback(EventEndEdit eventEndEdit) {
+        switch (eventEndEdit) {
+            case ON_FINISH:
+                setModeUser();
+                break;
+            case ON_TEST:
+                Intent intent =
+                        new Intent(getApplicationContext(), ExamTestStartActivity.class);
+                startActivity(intent);
+                break;
+            case ON_BACK:
+                super.onBackPressed();
+                break;
+        }
     }
 
     /**

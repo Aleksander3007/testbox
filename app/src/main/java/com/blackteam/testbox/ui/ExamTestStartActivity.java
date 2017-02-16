@@ -61,6 +61,14 @@ public class ExamTestStartActivity extends BaseActivity {
     /** Существует ли тест вообще (Был ли он создан ранее). */
     private boolean mIsExistedTest = false;
 
+    /**
+     * Событие, которые послужит завершению редактирования.
+     */
+    private enum EventEndEdit {
+        ON_FINISH,
+        ON_BACK
+    }
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,14 +104,13 @@ public class ExamTestStartActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        ((TestBoxApp)getApplicationContext()).getExamTree().prev();
-        super.onBackPressed();
+        finishEditing(EventEndEdit.ON_BACK);
     }
 
     @Override
     protected void onModeEditorClick() {
         // Проверям были сделаны изменения, нужно ли сохрать и т.п.
-        finishEditing();
+        finishEditing(EventEndEdit.ON_FINISH);
     }
 
     @Override
@@ -359,8 +366,9 @@ public class ExamTestStartActivity extends BaseActivity {
 
     /**
      * Завершить редактирование.
+     * @param eventEndEdit событие которое послужило причиной завершения редактирования.
      */
-    private void finishEditing() {
+    private void finishEditing(final EventEndEdit eventEndEdit) {
         if (haveChangedTestData()) {
             AlertDialog.Builder confirmChangesDialog = new AlertDialog.Builder(this);
             confirmChangesDialog.setTitle(R.string.title_finish_editing)
@@ -370,21 +378,37 @@ public class ExamTestStartActivity extends BaseActivity {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             saveExamTest();
-                            dialog.cancel();
-                            setModeUser();
+                            dialog.dismiss();
+                            finishEditingCallback(eventEndEdit);
                         }
                     })
                     // В противном случае ничего не делаем.
                     .setNegativeButton(R.string.btn_rollback, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            dialog.cancel();
-                            setModeUser();
+                            dialog.dismiss();
+                            finishEditingCallback(eventEndEdit);
                         }
                     }).show();
         }
         else {
-            setModeUser();
+            finishEditingCallback(eventEndEdit);
+        }
+    }
+
+    /**
+     * Callback после звершение редактирования.
+     * @param eventEndEdit событие которое послужило причиной завершения редактирования.
+     */
+    private void finishEditingCallback(EventEndEdit eventEndEdit) {
+        switch (eventEndEdit) {
+            case ON_FINISH:
+                setModeUser();
+                break;
+            case ON_BACK:
+                ((TestBoxApp)getApplicationContext()).getExamTree().prev();
+                super.onBackPressed();
+                break;
         }
     }
 }
