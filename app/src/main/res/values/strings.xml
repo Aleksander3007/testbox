@@ -55,6 +55,7 @@
     <string name="msg_fail_recovery">Не удалось восстановить данные</string>
     <string name="msg_fail_permission_recovery">Без разрешение на чтение из SD-карты невозможно выполнить восстановление данных</string>
     <string name="msg_recovery_data_will_remove">После восстановления текущие данные будут утерены. Продолжить?</string>
+    <string name="msg_do_you_want_to_get_out_of_training">Вы уверены, что хотите выйти из режима тренировки?</string>
     <string name="hint_test_description">Описание</string>
     <string name="hint_question_text">Вопрос</string>
     <string name="hint_question_explanation">Объяснение</string>
@@ -62,6 +63,7 @@
     <string name="title_delete_exam_theme">Удаление темы</string>
     <string name="title_finish_editing">Завершение редактирования</string>
     <string name="title_recovery">Восстановление данных</string>
+    <string name="title_finish_training">Завершение тренировки</string>
 
     <string name="test_time_hours_default">00</string>
     <string name="test_time_minutes_default">20</string>

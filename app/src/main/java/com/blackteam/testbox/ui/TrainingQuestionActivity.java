@@ -1,6 +1,8 @@
 package com.blackteam.testbox.ui;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -78,6 +80,28 @@ public class TrainingQuestionActivity extends BaseActivity {
 
         return menuDisplayed;
     }
+
+    @Override
+    public void onBackPressed() {
+        AlertDialog.Builder confirmExitDialog = new AlertDialog.Builder(this);
+        confirmExitDialog.setTitle(R.string.title_finish_training)
+                .setMessage(R.string.msg_do_you_want_to_get_out_of_training)
+                .setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        TrainingQuestionActivity.super.onBackPressed();
+                        dialog.dismiss();
+                    }
+                })
+                .setNegativeButton(R.string.btn_cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .show();
+    }
+
 
     @OnClick(R.id.btn_submit)
     public void onSubmitClick(View view) {
