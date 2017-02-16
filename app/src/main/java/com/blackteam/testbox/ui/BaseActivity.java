@@ -4,7 +4,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.blackteam.testbox.R;
 import com.blackteam.testbox.TestBoxApp;
@@ -28,7 +27,7 @@ public class BaseActivity extends AppCompatActivity {
         mTimerMenuItem.setVisible(false);
 
         try {
-            setViewByUserType();
+            toggleViewByUserType();
         }
         catch (Exception ex) {
             Log.i("BaseActivity", ex.getMessage());
@@ -45,31 +44,22 @@ public class BaseActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         // Переключаем между режимами пользователь/редактор.
-        if (id == R.id.mi_userType) {
-            switch (((TestBoxApp)getApplicationContext()).getUserType()) {
-                case USER:
-                    ((TestBoxApp)getApplicationContext()).setsUserType(TestBoxApp.UserType.EDITOR);
-                    break;
-                case EDITOR:
-                    ((TestBoxApp)getApplicationContext()).setsUserType(TestBoxApp.UserType.USER);
-                    break;
-            }
-            setViewByUserType();
-        }
+        if (id == R.id.mi_userType) toggleViewByUserType();
 
         return super.onOptionsItemSelected(item);
     }
 
     /**
-     * Устанавливаем правильное отображение состояния пользователя (пользователь/редактор).
+     * Переключение отображения в зависимости от типа пользователя (пользователь/редактор).
      */
-    private void setViewByUserType() {
+    private void toggleViewByUserType() {
         switch (((TestBoxApp)getApplicationContext()).getUserType()) {
+            // Если был пользователь, то переключаемся на редактора.
             case USER:
-                setModeUser();
+                setModeEditor();
                 break;
             case EDITOR:
-                setModeEditor();
+                setModeUser();
                 break;
         }
     }
@@ -98,6 +88,6 @@ public class BaseActivity extends AppCompatActivity {
         // в противном случаи Меню еще не создано (null), поэтому всё переносится в
         // onCreateOptionsMenu().
         if (mUserTypeMenuItem != null)
-            setViewByUserType();
+            toggleViewByUserType();
     }
 }

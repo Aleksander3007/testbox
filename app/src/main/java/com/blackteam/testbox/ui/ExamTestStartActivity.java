@@ -102,6 +102,7 @@ public class ExamTestStartActivity extends BaseActivity {
 
     @Override
     protected void setModeUser() {
+        // Проверям были сделаны изменения, нужно ли сохрать и т.п.
         finishEditing();
     }
 
@@ -356,11 +357,7 @@ public class ExamTestStartActivity extends BaseActivity {
                         public void onClick(DialogInterface dialog, int which) {
                             saveExamTest();
                             dialog.cancel();
-                            ExamTestStartActivity.super.setModeUser();
-                            // При переходе из режима "Редактор", остается фокус на редактируемом поле (хотя его уже не видно).
-                            UIHelper.disableEditText(mTestDescriptionEditText);
-                            mUserViewLinearLayout.setVisibility(View.VISIBLE);
-                            mEditorViewLinearLayout.setVisibility(View.INVISIBLE);
+                            forceSetModeUser();
                         }
                     })
                     // В противном случае ничего не делаем.
@@ -368,20 +365,23 @@ public class ExamTestStartActivity extends BaseActivity {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.cancel();
-                            ExamTestStartActivity.super.setModeUser();
-                            // При переходе из режима "Редактор", остается фокус на редактируемом поле (хотя его уже не видно).
-                            UIHelper.disableEditText(mTestDescriptionEditText);
-                            mUserViewLinearLayout.setVisibility(View.VISIBLE);
-                            mEditorViewLinearLayout.setVisibility(View.INVISIBLE);
+                            forceSetModeUser();
                         }
                     }).show();
         }
         else {
-            ExamTestStartActivity.super.setModeUser();
-            // При переходе из режима "Редактор", остается фокус на редактируемом поле (хотя его уже не видно).
-            UIHelper.disableEditText(mTestDescriptionEditText);
-            mUserViewLinearLayout.setVisibility(View.VISIBLE);
-            mEditorViewLinearLayout.setVisibility(View.INVISIBLE);
+            forceSetModeUser();
         }
+    }
+
+    /**
+     * Бесусловная установка в режим "Пользователя".
+     */
+    private void forceSetModeUser() {
+        ExamTestStartActivity.super.setModeUser();
+        // При переходе из режима "Редактор", остается фокус на редактируемом поле (хотя его уже не видно).
+        UIHelper.disableEditText(mTestDescriptionEditText);
+        mUserViewLinearLayout.setVisibility(View.VISIBLE);
+        mEditorViewLinearLayout.setVisibility(View.INVISIBLE);
     }
 }
