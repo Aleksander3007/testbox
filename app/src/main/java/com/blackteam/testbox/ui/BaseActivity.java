@@ -27,7 +27,7 @@ public class BaseActivity extends AppCompatActivity {
         mTimerMenuItem.setVisible(false);
 
         try {
-            toggleViewByUserType();
+            setViewByUserType();
         }
         catch (Exception ex) {
             Log.i("BaseActivity", ex.getMessage());
@@ -65,6 +65,21 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     /**
+     * Установка отображения в зависимости от типа пользователя (пользователь/редактор).
+     */
+    private void setViewByUserType() {
+        switch (((TestBoxApp)getApplicationContext()).getUserType()) {
+            // Если был пользователь, то переключаемся на редактора.
+            case USER:
+                setModeUser();
+                break;
+            case EDITOR:
+                setModeEditor();
+                break;
+        }
+    }
+
+    /**
      * Устанавливаем режим отображения для пользователя.
      */
     protected void setModeUser() {
@@ -88,6 +103,6 @@ public class BaseActivity extends AppCompatActivity {
         // в противном случаи Меню еще не создано (null), поэтому всё переносится в
         // onCreateOptionsMenu().
         if (mUserTypeMenuItem != null)
-            toggleViewByUserType();
+            setViewByUserType();
     }
 }
