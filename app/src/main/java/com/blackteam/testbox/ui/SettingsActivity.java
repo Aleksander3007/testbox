@@ -164,13 +164,13 @@ public class SettingsActivity extends Activity {
                                     R.string.msg_fail_recovery, Toast.LENGTH_SHORT).show();
                             ioex.printStackTrace();
                         }
-                        dialog.cancel();
+                        dialog.dismiss();
                     }
                 })
                 .setNegativeButton(R.string.btn_cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
+                        dialog.dismiss();
                     }
                 }).show();
     }

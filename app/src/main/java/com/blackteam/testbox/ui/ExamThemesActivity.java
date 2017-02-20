@@ -342,7 +342,7 @@ public class ExamThemesActivity extends BaseActivity
                     public void onClick(DialogInterface dialog, int i) {
                         // Удаляем тему и все его подтемы.
                         deleteExamTheme(mEditingExamTheme);
-                        dialog.cancel();
+                        dialog.dismiss();
                     }
                 })
                 .setNegativeButton(R.string.btn_cancel, new DialogInterface.OnClickListener() {
@@ -357,7 +357,7 @@ public class ExamThemesActivity extends BaseActivity
                                         false);
                         editThemeDialog.show(getFragmentManager(), "editingThemeDialog");
                         // Закрываем диалог удаления темы.
-                        dialog.cancel();
+                        dialog.dismiss();
                     }
                 });
         confirmDeletionDialog.create().show();

@@ -125,7 +125,7 @@ public class EditQuestionActivity extends BaseActivity {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             saveAllQuestions();
-                            dialog.cancel();
+                            dialog.dismiss();
                         }
                     })
                     // В противном случае откат.
@@ -134,7 +134,7 @@ public class EditQuestionActivity extends BaseActivity {
                         public void onClick(DialogInterface dialog, int which) {
                             // Если удалось откатиться, то возращается на начальное окно теста.
                             if (rollbackChanges()) onBackPressed();
-                            dialog.cancel();
+                            dialog.dismiss();
                         }
                     }).show();
         }
