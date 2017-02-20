@@ -1,6 +1,7 @@
 package com.blackteam.testbox.ui;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.view.Menu;
@@ -46,6 +47,11 @@ public class TestResultActivity extends BaseActivity {
     }
 
     @Override
+    public void onBackPressed() {
+        this.close();
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
         // INFO: onCreateOptionsMenu() вызывается после Activity.onResume().
@@ -73,9 +79,19 @@ public class TestResultActivity extends BaseActivity {
      */
     @OnClick(R.id.btn_close_test_result)
     public void closeResultOnClick(View view) {
-        // Закрываем Activity (и переходим к странице старта теста, страница прохождения теста
-        // недоступна, т.к. у неё стоит параметр noHistory, см. AndroidManifest.xml).
-        this.finish();
+        this.close();
+    }
+
+    /**
+     * Закрываем Acitivity.
+     */
+    public void close() {
+        // Закрываем Activity (и переходим к странице старта теста, страница прохождения теста/тренировки
+        // недоступна, см. флаги ниже).
+        Intent testStartActivity = new Intent(this, ExamTestStartActivity.class);
+        // Возращение к окну прохождения теста/тренировки заапрещено.
+        testStartActivity.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(testStartActivity);
     }
 
     /**

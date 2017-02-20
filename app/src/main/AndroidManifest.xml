@@ -33,13 +33,11 @@
             android:name=".ui.EditQuestionActivity"
             android:windowSoftInputMode="adjustPan"/>
 
-        <!-- Данные Activity не сохраняются в истории backstack по след. причине:
-            пользователь не должен иметь возможности вернутся к тесту после его прохождения.-->
-        <activity
-            android:name=".ui.TrainingQuestionActivity"
-             android:noHistory="true"/>
-        <activity android:name=".ui.TestQuestionActivity"
-            android:noHistory="true"/>
+        <!-- Данные Activity ДОЛЖНЫ сохрянться в истории backstack по след. причине (noHistory=false):
+            пользователь не должен иметь возможности вернутся к тесту после его прохождения,
+            но если пользователь свернул приложение, то тест дожен восстановится. -->
+        <activity android:name=".ui.TrainingQuestionActivity"/>
+        <activity android:name=".ui.TestQuestionActivity"/>
 
         <activity android:name=".ui.SettingsActivity"
             android:label="Preferences"/>
