@@ -149,11 +149,22 @@ public class EditQuestionActivity extends BaseActivity {
     public void prevQuestionOnClick(View view) {
         // Если вызвана данная функция, значит кнопка перехода на предыдущий доступна.
 
-        boolean success = makeExamTestChanges();
-        // Если предыдущий вопрос существует, то отображаем его.
-        if (mQuestionCursor.hasPrevious()) {
-            if (success) displayQuestion(mQuestionCursor.previous());
+        if (!mIsNewQuestion || !isDataEmpty()) {
+            boolean success = makeExamTestChanges();
+            if (success) {
+                // Если предыдущий вопрос существует, то отображаем его.
+                if (mQuestionCursor.hasPrevious()) displayQuestion(mQuestionCursor.previous());
+            }
+
         }
+        // Если новый вопрос и данные не были заполнены, то просто отображаем предыдущий.
+        else {
+            // ... который в списке текущий.
+            displayQuestion(mQuestionCursor.getCurrent());
+            mIsNewQuestion = false;
+        }
+
+
     }
 
     /**
@@ -198,6 +209,7 @@ public class EditQuestionActivity extends BaseActivity {
     private void clearDisplay() {
         mQuestionEditText.setText("");
         mAnswersLinearLayout.removeAllViews();
+        mQuestionEditText.setError(null);
     }
 
     /**
@@ -211,13 +223,12 @@ public class EditQuestionActivity extends BaseActivity {
             if (success) {
                 // Переходим к только что добавленному (он уже отображен на экране).
                 mQuestionCursor.next();
+                mIsNewQuestion = false;
             }
         }
         else {
             success = editCurrentQuestion();
         }
-
-        mIsNewQuestion = false;
 
         return success;
     }
@@ -227,6 +238,7 @@ public class EditQuestionActivity extends BaseActivity {
      * @param question экзамеционный вопрос, который необходимо отобразить.
      */
     private void displayQuestion(TestQuestion question) {
+        clearDisplay();
         mQuestionEditText.setText(question.getText());
         mExplanationEditText.setText(question.getExplanation());
         displayAnswer(question.getAnswers());
@@ -309,6 +321,21 @@ public class EditQuestionActivity extends BaseActivity {
     private boolean isAnswerValid(TextView answerTextView) {
         return answerTextView.getText().length() != 0;
     }
+
+    /**
+     * Пользователь не ввел никаких данных вполя.
+     * @return true - если все поля пустые.
+     */
+    private boolean isDataEmpty() {
+        String questionText = mQuestionEditText.getText().toString();
+        if (isQuestionTextValid()) return false;
+
+        if (mExplanationEditText.getText().toString().length() != 0) return false;
+        if (mAnswersLinearLayout.getChildCount() != 0) return false;
+
+        return true;
+    }
+
     /**
      * Добавить элемент, отображающий редактируемый возможный вариант ответа в Activity.
      * @param answer Текст ответа.
