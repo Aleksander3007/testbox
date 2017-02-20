@@ -195,12 +195,18 @@ public class EditQuestionActivity extends BaseActivity {
     private void init() {
         mQuestionCursor = new ListCursor<>(mExamTest.getAllQuestions());
 
-        if (!mQuestionCursor.isEmpty()) displayQuestion(mQuestionCursor.getCurrent());
-        else clearDisplay();
-
-        if (!mQuestionCursor.hasPrevious()) mPreviousQuestionBtn.setVisibility(View.INVISIBLE);
-        /** Если в тесте нет ни одного вопроса, то первый отображаемый вопрос новый. */
-        mIsNewQuestion = mQuestionCursor.isEmpty();
+        // Если в тесте еще нет вопросов.
+        if (mQuestionCursor.isEmpty()) {
+            mIsNewQuestion = true;
+            clearDisplay();
+        }
+        else {
+            mIsNewQuestion = false;
+            // Отображаем последний вопрос.
+            while (mQuestionCursor.hasNext()) mQuestionCursor.next();
+            if (!mQuestionCursor.hasPrevious()) mPreviousQuestionBtn.setVisibility(View.INVISIBLE);
+            displayQuestion(mQuestionCursor.getCurrent());
+        }
     }
 
     /**
