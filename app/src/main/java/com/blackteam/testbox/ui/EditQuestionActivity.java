@@ -37,7 +37,8 @@ import butterknife.OnClick;
 /**
  * Страница с вопросами, которые разрешено редактировать.
  */
-public class EditQuestionActivity extends BaseActivity {
+public class EditQuestionActivity extends BaseActivity
+        implements EditAnswerDialogFragment.NoticeDialogListener {
 
     public static final String TAG = EditQuestionActivity.class.getSimpleName();
 
@@ -187,6 +188,41 @@ public class EditQuestionActivity extends BaseActivity {
             mPreviousQuestionBtn.setVisibility(View.VISIBLE);
             mIsNewQuestion = true;
         }
+    }
+
+    /**
+     * Добавить новый ответ в список.
+     * @param answer текст ответа.
+     */
+    @Override
+    public void addNewAnswer(String answer, boolean isRightAnswer) {
+        try {
+            addEditableAnswerView(new TestAnswer(answer, isRightAnswer));
+        }
+        catch (Exception ex) {
+            Log.d(TAG, ex.getMessage());
+        }
+    }
+
+    /**
+     * Изменить выбранный вариант ответа.
+     * @param answerNewText новый текст вариант ответа.
+     * @param isRight правильный ли это вариант?
+     */
+    @Override
+    public void editAnswer(String answerNewText, boolean isRight) {
+        CheckBox answerCheckBox = (CheckBox) mEditingAnswerView.findViewById(R.id.cb_isRightAnswer);
+        TextView answerTextView = (TextView) mEditingAnswerView.findViewById(R.id.tv_answerText);
+        answerTextView.setText(answerNewText);
+        answerCheckBox.setChecked(isRight);
+    }
+
+    /**
+     * Удалить выбранный вариант ответа.
+     */
+    @Override
+    public void deleteAnswer() {
+        mAnswersLinearLayout.removeView(mEditingAnswerView);
     }
 
     /**
@@ -374,19 +410,6 @@ public class EditQuestionActivity extends BaseActivity {
     }
 
     /**
-     * Добавить новый ответ в список.
-     * @param answer текст ответа.
-     */
-    public void addNewAnswer(String answer, boolean isRightAnswer) {
-        try {
-            addEditableAnswerView(new TestAnswer(answer, isRightAnswer));
-        }
-        catch (Exception ex) {
-            Log.d(TAG, ex.getMessage());
-        }
-    }
-
-    /**
      * Сохранить все вопросы для теста.
      */
     public void saveAllQuestions() {
@@ -398,25 +421,6 @@ public class EditQuestionActivity extends BaseActivity {
             ioex.printStackTrace();
             Toast.makeText(this, R.string.msg_fail_saving, Toast.LENGTH_SHORT).show();
         }
-    }
-
-    /**
-     * Изменить выбранный вариант ответа.
-     * @param answerNewText новый текст вариант ответа.
-     * @param isRight правильный ли это вариант?
-     */
-    public void editAnswer(String answerNewText, boolean isRight) {
-        CheckBox answerCheckBox = (CheckBox) mEditingAnswerView.findViewById(R.id.cb_isRightAnswer);
-        TextView answerTextView = (TextView) mEditingAnswerView.findViewById(R.id.tv_answerText);
-        answerTextView.setText(answerNewText);
-        answerCheckBox.setChecked(isRight);
-    }
-
-    /**
-     * Удалить выбранный вариант ответа.
-     */
-    public void deleteAnswer() {
-        mAnswersLinearLayout.removeView(mEditingAnswerView);
     }
 
     /**

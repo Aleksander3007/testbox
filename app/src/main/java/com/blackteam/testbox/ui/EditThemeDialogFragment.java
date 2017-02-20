@@ -1,6 +1,7 @@
 package com.blackteam.testbox.ui;
 
 import android.app.DialogFragment;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -27,6 +28,18 @@ public class EditThemeDialogFragment extends DialogFragment {
     public static final String ARG_CONTAINS_TEST = "ARG_CONTAINS_TEST";
     public static final String ARG_HAS_SUBTHEMES = "ARG_HAS_SUBTHEMES";
     public static final String ARG_IS_NEW_THEME = "ARG_IS_NEW_THEME";
+
+    /**
+     * Activity, которое создаст данное диалоговое окно должна реализовать
+     * этот интерфейс (чтобы получать и обрабатывать callback-и диалогового окна).
+     */
+    public interface NoticeDialogListener {
+        boolean addNewExamTheme(String newExamThemeName, boolean isTest);
+        boolean editTheme(String examThemeNewName, boolean isTest);
+        void deleteTheme();
+    }
+    // Для отправки callback-ов Activity.
+    NoticeDialogListener mListener;
 
     @BindView(R.id.et_themeName) EditText mThemeNameEditText;
     @BindView(R.id.cb_containsTest) CheckBox mContainsTestCheckBox;
@@ -72,6 +85,12 @@ public class EditThemeDialogFragment extends DialogFragment {
         dialog.setArguments(args);
 
         return dialog;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mListener = (NoticeDialogListener) context;
     }
 
     @Nullable
@@ -135,14 +154,13 @@ public class EditThemeDialogFragment extends DialogFragment {
      */
     @OnClick(R.id.btn_delete)
     public void deleteOnClcik(View view) {
-        ((ExamThemesActivity)getActivity()).deleteTheme();
+        mListener.deleteTheme();
         dismiss();
     }
 
     private boolean editTheme()
     {
-        boolean success = ((ExamThemesActivity)getActivity())
-                .editTheme(mThemeNameEditText.getText().toString(),
+        boolean success = mListener.editTheme(mThemeNameEditText.getText().toString(),
                         mContainsTestCheckBox.isChecked());
         // Если не удалось переименовать тему.
         if (!success) {
@@ -155,8 +173,7 @@ public class EditThemeDialogFragment extends DialogFragment {
 
     private boolean createTheme()
     {
-        boolean success = ((ExamThemesActivity)getActivity())
-                .addNewExamTheme(mThemeNameEditText.getText().toString(),
+        boolean success = mListener.addNewExamTheme(mThemeNameEditText.getText().toString(),
                         mContainsTestCheckBox.isChecked());
         // Если не удалось создать тему.
         if (!success) {

@@ -1,6 +1,7 @@
 package com.blackteam.testbox.ui;
 
 import android.app.DialogFragment;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -26,6 +27,18 @@ public class EditAnswerDialogFragment extends DialogFragment {
     public static final String ARG_ANSWER_TEXT = "ARG_ANSWER_TEXT";
     public static final String ARG_IS_RIGHT_ANSWER = "ARG_IS_RIGHT_ANSWER";
     public static final String ARG_IS_NEW_ANSWER = "ARG_IS_NEW_ANSWER";
+
+    /**
+     * Activity, которое создаст данное диалоговое окно должна реализовать
+     * этот интерфейс (чтобы получать и обрабатывать callback-и диалогового окна).
+     */
+    public interface NoticeDialogListener {
+        void addNewAnswer(String answer, boolean isRightAnswer);
+        void editAnswer(String answerNewText, boolean isRight);
+        void deleteAnswer();
+    }
+    // Для отправки callback-ов Activity.
+    NoticeDialogListener mListener;
 
     @BindView(R.id.et_answerText) EditText mAnswerEditText;
     @BindView(R.id.cb_isRightAnswer) CheckBox mIsRightAnswerCheckBox;
@@ -68,6 +81,12 @@ public class EditAnswerDialogFragment extends DialogFragment {
         dialog.setArguments(args);
 
         return dialog;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mListener = (NoticeDialogListener) context;
     }
 
     @Nullable
@@ -128,21 +147,19 @@ public class EditAnswerDialogFragment extends DialogFragment {
      */
     @OnClick(R.id.btn_delete)
     public void deleteOnClcik(View view) {
-        ((EditQuestionActivity)getActivity()).deleteAnswer();
+        mListener.deleteAnswer();
         dismiss();
     }
 
     private void editAnswer()
     {
-        ((EditQuestionActivity)getActivity())
-                .editAnswer(mAnswerEditText.getText().toString(),
+        mListener.editAnswer(mAnswerEditText.getText().toString(),
                         mIsRightAnswerCheckBox.isChecked());
     }
 
     private void createAnswer()
     {
-        ((EditQuestionActivity)getActivity())
-                .addNewAnswer(mAnswerEditText.getText().toString(),
+        mListener.addNewAnswer(mAnswerEditText.getText().toString(),
                         mIsRightAnswerCheckBox.isChecked());
     }
 }
