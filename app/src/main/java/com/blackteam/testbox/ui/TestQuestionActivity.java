@@ -1,5 +1,7 @@
 package com.blackteam.testbox.ui;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -76,9 +78,30 @@ public class TestQuestionActivity extends BaseActivity {
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mTestTimer != null) mTestTimer.cancel();
+    }
+
+    @Override
     public void onBackPressed() {
-        mTestTimer.cancel();
-        super.onBackPressed();
+        AlertDialog.Builder confirmExitTest = new AlertDialog.Builder(this);
+        confirmExitTest.setTitle(R.string.title_finish_testing)
+                .setMessage(R.string.msg_do_you_want_to_get_out_of_testing)
+                .setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finishTest();
+                        dialog.dismiss();
+                    }
+                })
+                .setNegativeButton(R.string.btn_cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .show();
     }
 
     /**
