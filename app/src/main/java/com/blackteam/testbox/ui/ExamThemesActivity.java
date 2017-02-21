@@ -42,6 +42,7 @@ public class ExamThemesActivity extends BaseActivity
     @BindView(R.id.bottom_editing_bar) LinearLayout mBottomEditingBar;
     @BindView(R.id.btn_prevPage) ImageButton mPrevPageButton;
     @BindView(R.id.btn_nextPage) ImageButton mNextPageButton;
+    @BindView(R.id.btn_delete) ImageButton mDeleteButton;
     @BindView(R.id.l_buttons_bar) View mButtonsBarView;
 
     /** Имитируем анимацию перехода между активити, т.к. у нас одно активити, а переходы между
@@ -80,6 +81,9 @@ public class ExamThemesActivity extends BaseActivity
         mPrevPageButton.setVisibility(View.INVISIBLE);
         // Если отображено несколько тем, для кого из них отображать детей по нажатию кнопки.
         mNextPageButton.setVisibility(View.INVISIBLE);
+        // Если отображено несколько тем, кого именно удалять.
+        mDeleteButton.setVisibility(View.INVISIBLE);
+
 
         mExamTheme = ((TestBoxApp)getApplicationContext()).getExamTree().getRootElement();
         updateView();

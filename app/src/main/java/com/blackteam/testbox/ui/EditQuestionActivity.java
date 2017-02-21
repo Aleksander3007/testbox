@@ -111,6 +111,24 @@ public class EditQuestionActivity extends BaseActivity
     }
 
     /**
+     * Нажатие на кнопку удаления вопроса.
+     */
+    @OnClick(R.id.btn_delete)
+    public void onDeleteClick() {
+        mQuestionCursor.removeCurrent();
+        if (mQuestionCursor.hasPrevious())
+            displayQuestion(mQuestionCursor.previous());
+        // Если есть следующий.
+        else if (!mQuestionCursor.isEmpty())
+            // После удаления бывший предыдущий стал текущим следующим.
+            displayQuestion(mQuestionCursor.getCurrent());
+        else {
+            mQuestionCursor.reset();
+            displayEmptyTest();
+        }
+    }
+
+    /**
      * Нажатие на кнопку "Завершить".
      * @param view нажатый элемент.
      */
@@ -233,8 +251,7 @@ public class EditQuestionActivity extends BaseActivity
 
         // Если в тесте еще нет вопросов.
         if (mQuestionCursor.isEmpty()) {
-            mIsNewQuestion = true;
-            clearDisplay();
+            displayEmptyTest();
         }
         else {
             mIsNewQuestion = false;
@@ -243,6 +260,15 @@ public class EditQuestionActivity extends BaseActivity
             if (!mQuestionCursor.hasPrevious()) mPreviousQuestionBtn.setVisibility(View.INVISIBLE);
             displayQuestion(mQuestionCursor.getCurrent());
         }
+    }
+
+    /**
+     * Отображаем пустой тест (тест без вопросов).
+     */
+    private void displayEmptyTest() {
+        mIsNewQuestion = true;
+        clearDisplay();
+        mPreviousQuestionBtn.setVisibility(View.INVISIBLE);
     }
 
     /**

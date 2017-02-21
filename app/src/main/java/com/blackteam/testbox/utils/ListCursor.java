@@ -21,7 +21,7 @@ public class ListCursor<E> {
      */
     public ListCursor(List<E> list) {
         mList = list;
-        mCursor = isEmpty() ? -1 : 0;
+        this.reset();
     }
 
     /**
@@ -55,6 +55,13 @@ public class ListCursor<E> {
             throw new NoSuchElementException("Previous element is not existed.");
 
         return mList.get(--mCursor);
+    }
+
+    /**
+     * Переход на начало списка.
+     */
+    public void reset() {
+        mCursor = isEmpty() ? -1 : 0;
     }
 
     /**
@@ -96,4 +103,9 @@ public class ListCursor<E> {
     public void set(E element) {
         mList.set(mCursor, element);
     }
+
+    /**
+     * Удалить текущий элемент.
+     */
+    public void removeCurrent() { mList.remove(mCursor); }
 }
