@@ -1,5 +1,8 @@
 package com.blackteam.testbox.ui;
 
+import android.os.Bundle;
+import android.os.PersistableBundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -7,6 +10,8 @@ import android.view.MenuItem;
 
 import com.blackteam.testbox.R;
 import com.blackteam.testbox.TestBoxApp;
+
+import icepick.Icepick;
 
 /**
  * Базовая активити, содержит общие для всех активити элементы, действия и т.д.
@@ -17,6 +22,18 @@ public class BaseActivity extends AppCompatActivity {
 
     protected MenuItem mUserTypeMenuItem;
     protected MenuItem mTimerMenuItem;
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Icepick.restoreInstanceState(this, savedInstanceState);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Icepick.saveInstanceState(this, outState);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

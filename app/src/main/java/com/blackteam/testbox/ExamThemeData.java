@@ -1,9 +1,11 @@
 package com.blackteam.testbox;
 
+import java.io.Serializable;
+
 /**
  * Данные для экзамеционной темы.
  */
-public class ExamThemeData {
+public class ExamThemeData implements Serializable {
 
     /** Название темы. */
     private String mName;

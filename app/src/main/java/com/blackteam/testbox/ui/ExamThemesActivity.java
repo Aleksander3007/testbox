@@ -24,6 +24,8 @@ import com.blackteam.testbox.TestBoxApp;
 import com.blackteam.testbox.utils.NavigationTree;
 import com.blackteam.testbox.utils.WideTree;
 
+import java.io.Serializable;
+import java.util.ArrayDeque;
 import java.util.Deque;
 
 import butterknife.BindView;
@@ -37,6 +39,8 @@ import butterknife.OnClick;
 public class ExamThemesActivity extends BaseActivity
         implements EditThemeDialogFragment.NoticeDialogListener,
         AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener {
+
+    public static final String BUNDLE_START_PATH_EDIT = "BUNDLE_START_PATH_EDIT";
 
     @BindView(R.id.lv_exam_themes) ListView mExamThemesListView;
     @BindView(R.id.bottom_editing_bar) LinearLayout mBottomEditingBar;
@@ -54,9 +58,9 @@ public class ExamThemesActivity extends BaseActivity
     private ArrayAdapter<WideTree.Node<ExamThemeData>> mExamThemesListAdapter;
 
     /** Были изменения в экзамеционных темах. */
-    private boolean mHasExamThemeChanged = false;
+    @icepick.State boolean mHasExamThemeChanged = false;
     /** Редактируемая экзамеционная тема. */
-    private WideTree.Node<ExamThemeData> mEditingExamTheme;
+    @icepick.State WideTree.Node<ExamThemeData> mEditingExamTheme;
     /** Сохраняем путь откуда было начато редактирование. */
     private Deque<ExamThemeData> mStartPathEdit;
     /** Диалоговое окно подтверждения изменений. */
@@ -85,7 +89,7 @@ public class ExamThemesActivity extends BaseActivity
         mDeleteButton.setVisibility(View.INVISIBLE);
 
 
-        mExamTheme = ((TestBoxApp)getApplicationContext()).getExamTree().getRootElement();
+        mExamTheme = ((TestBoxApp)getApplicationContext()).getExamTree().getCurElem();
         updateView();
 
         /** Добавляем слушателя нажатий на list. */
@@ -94,6 +98,19 @@ public class ExamThemesActivity extends BaseActivity
 
         mFlipinAnimation = AnimationUtils.loadAnimation(this, R.anim.flipin);
         mFlipoutAnimation = AnimationUtils.loadAnimation(this, R.anim.flipout);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putSerializable(BUNDLE_START_PATH_EDIT, (Serializable) mStartPathEdit);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        mStartPathEdit = (ArrayDeque<ExamThemeData>) savedInstanceState
+                .getSerializable(BUNDLE_START_PATH_EDIT);
+        super.onRestoreInstanceState(savedInstanceState);
     }
 
     @Override
@@ -115,6 +132,14 @@ public class ExamThemesActivity extends BaseActivity
     }
 
     @Override
+    protected void onModeUserClick() {
+        super.onModeUserClick();
+        // Только по нажатию пользователем сохраняем путь,
+        // при повороте экрана или пересоздании окна он не должен переписываться.
+        mStartPathEdit = ((TestBoxApp)getApplicationContext()).getExamTree().getPath();
+    }
+
+    @Override
     protected void setModeEditor() {
         super.setModeEditor();
 
@@ -124,8 +149,6 @@ public class ExamThemesActivity extends BaseActivity
                 (RelativeLayout.LayoutParams) mExamThemesListView.getLayoutParams();
         layoutParams.bottomMargin = mBottomEditingBar.getHeight() - mButtonsBarView.getHeight();
         mExamThemesListView.setLayoutParams(layoutParams);
-
-        mStartPathEdit = ((TestBoxApp)getApplicationContext()).getExamTree().getPath();
     }
 
     @Override
