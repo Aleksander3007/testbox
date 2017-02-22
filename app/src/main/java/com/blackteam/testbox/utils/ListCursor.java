@@ -1,5 +1,6 @@
 package com.blackteam.testbox.utils;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -8,7 +9,7 @@ import java.util.NoSuchElementException;
  * А также предоставляет доступ к текущему элементу.
  * В случае пустого списка, курсор будет находится в несуществующей позиции (равной -1).
  */
-public class ListCursor<E> {
+public class ListCursor<E> implements Serializable {
 
     private List<E> mList;
     /** Текущая позиция в списке. */

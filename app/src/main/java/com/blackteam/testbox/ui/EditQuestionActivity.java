@@ -9,6 +9,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -17,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.blackteam.testbox.ExamTest;
+import com.blackteam.testbox.ExamThemeData;
 import com.blackteam.testbox.R;
 import com.blackteam.testbox.TestAnswer;
 import com.blackteam.testbox.TestQuestion;
@@ -27,6 +29,8 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.Serializable;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,12 +55,14 @@ public class EditQuestionActivity extends BaseActivity
     @BindView(R.id.bottom_editing_bar) LinearLayout mBottomEditingBar;
     @BindView(R.id.btn_prevPage) ImageButton mPreviousQuestionBtn;
 
-    private ExamTest mExamTest;
-    private ListCursor<TestQuestion> mQuestionCursor;
+    @icepick.State ExamTest mExamTest;
+    @icepick.State ListCursor<TestQuestion> mQuestionCursor;
     /** Отображаемый в текущий момент вопрос новый, т.е. еще не был добавлен в экзамен. тест. */
-    private boolean mIsNewQuestion;
-    /** Редактируемый элемент из списка вопросов. */
-    private View mEditingAnswerView;
+    @icepick.State boolean mIsNewQuestion;
+    /** Редактируемый элемент из списка вопросов, его порядковый номер в списке. */
+    @icepick.State int mEditingAnswerViewIndex;
+    /** Редактируемый в текущий момент вопрос. */
+    @icepick.State TestQuestion mEdtitingTestQuestion;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -64,9 +70,28 @@ public class EditQuestionActivity extends BaseActivity
         setContentView(R.layout.activity_edit_question);
         ButterKnife.bind(this);
 
-        mExamTest = (ExamTest) getIntent().getExtras().getSerializable(EXTRA_EXAM_TEST);
+        if (savedInstanceState == null)
+            mExamTest = (ExamTest) getIntent().getExtras().getSerializable(EXTRA_EXAM_TEST);
 
-        init();
+        init(savedInstanceState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        // Функция отображения сохраненного состояния View здесь, т.к. если переместить эту функции
+        // в onCreate(), то получится:
+        // в onCreate() мы заполняем всё View, в том числе и состояния CheckBox-ов;
+        // в родном адроидовском onRestoreInstanceState() идет восстановление вида,
+        // и почему то все CheckBox выставляются по последнему.
+        if (mEdtitingTestQuestion != null) displayQuestion(mEdtitingTestQuestion);
+    }
+
+    @Override
+    protected void onPause() {
+        // Сохраняем редактируемый в данный момент вопрос.
+        mEdtitingTestQuestion = packQuestionData();
+        super.onPause();
     }
 
     @Override
@@ -81,12 +106,6 @@ public class EditQuestionActivity extends BaseActivity
         }
 
         return menuDisplayed;
-    }
-
-    @Override
-    protected void onStop() {
-        // Сохраняем состояние потом востанавливаем.
-        super.onStop();
     }
 
     /**
@@ -182,8 +201,6 @@ public class EditQuestionActivity extends BaseActivity
             displayQuestion(mQuestionCursor.getCurrent());
             mIsNewQuestion = false;
         }
-
-
     }
 
     /**
@@ -229,8 +246,9 @@ public class EditQuestionActivity extends BaseActivity
      */
     @Override
     public void editAnswer(String answerNewText, boolean isRight) {
-        CheckBox answerCheckBox = (CheckBox) mEditingAnswerView.findViewById(R.id.cb_isRightAnswer);
-        TextView answerTextView = (TextView) mEditingAnswerView.findViewById(R.id.tv_answerText);
+        View editingAnswerView = mAnswersLinearLayout.getChildAt(mEditingAnswerViewIndex);
+        CheckBox answerCheckBox = (CheckBox) editingAnswerView.findViewById(R.id.cb_isRightAnswer);
+        TextView answerTextView = (TextView) editingAnswerView.findViewById(R.id.tv_answerText);
         answerTextView.setText(answerNewText);
         answerCheckBox.setChecked(isRight);
     }
@@ -240,14 +258,25 @@ public class EditQuestionActivity extends BaseActivity
      */
     @Override
     public void deleteAnswer() {
-        mAnswersLinearLayout.removeView(mEditingAnswerView);
+        mAnswersLinearLayout.removeViewAt(mEditingAnswerViewIndex);
     }
 
     /**
      * Инициализация.
      */
     private void init() {
-        mQuestionCursor = new ListCursor<>(mExamTest.getAllQuestions());
+        init(null);
+    }
+
+    /**
+     * Инициализация.
+     * @param savedInstanceState If the activity is being re-initialized after previously being
+     *                           shut down then this Bundle contains the data it most recently
+     *                           supplied in onSaveInstanceState. <b>Note: Otherwise it is null.<b/>
+     */
+    private void init(@Nullable Bundle savedInstanceState) {
+        if (savedInstanceState == null)
+            mQuestionCursor = new ListCursor<>(mExamTest.getAllQuestions());
 
         // Если в тесте еще нет вопросов.
         if (mQuestionCursor.isEmpty()) {
@@ -255,10 +284,14 @@ public class EditQuestionActivity extends BaseActivity
         }
         else {
             mIsNewQuestion = false;
-            // Отображаем последний вопрос.
-            while (mQuestionCursor.hasNext()) mQuestionCursor.next();
+
+            if (savedInstanceState == null) {
+                // Отображаем последний вопрос.
+                while (mQuestionCursor.hasNext()) mQuestionCursor.next();
+            }
+
             if (!mQuestionCursor.hasPrevious()) mPreviousQuestionBtn.setVisibility(View.INVISIBLE);
-            displayQuestion(mQuestionCursor.getCurrent());
+            if (savedInstanceState == null) displayQuestion(mQuestionCursor.getCurrent());
         }
     }
 
@@ -285,17 +318,20 @@ public class EditQuestionActivity extends BaseActivity
      * @return true- если измения успешно внесены.
      */
     private boolean makeExamTestChanges() {
-        boolean success;
+
+        TestQuestion question = packQuestionData();
+
+        boolean success = validateTestQuestion(question);
+        if (!success) return false;
+
         if (mIsNewQuestion) {
-            success = addQuestion();
-            if (success) {
-                // Переходим к только что добавленному (он уже отображен на экране).
-                mQuestionCursor.next();
-                mIsNewQuestion = false;
-            }
+            mQuestionCursor.add(question);
+            // Переходим к только что добавленному (он уже отображен на экране).
+            mQuestionCursor.next();
+            mIsNewQuestion = false;
         }
         else {
-            success = editCurrentQuestion();
+            mQuestionCursor.set(question);
         }
 
         return success;
@@ -325,69 +361,40 @@ public class EditQuestionActivity extends BaseActivity
     }
 
     /**
-     * Внести изменения в текущей вопрос.
-     * @return true - если успешно отредактирован.
-     */
-    private boolean editCurrentQuestion() {
-        TestQuestion question = packQuestionData();
-        if (question != null)
-            mQuestionCursor.set(question);
-        return (question != null);
-    }
-
-    /**
-     * Добавить вопрос в список.
-     * @return true - если успешно добавлен.
-     */
-    private boolean addQuestion() {
-        TestQuestion question = packQuestionData();
-        if (question != null)
-            mQuestionCursor.add(question);
-        return (question != null);
-    }
-
-    /**
      * Собрать введенные данные для экзамеционного вопроса.
      * @return экзамеционный вопрос, null - если были введены неккоректные данные.
      */
     private TestQuestion packQuestionData() {
         String questionText = mQuestionEditText.getText().toString();
-        if (!isQuestionTextValid()) {
-            mQuestionEditText.setError(getResources().getText(R.string.question_text_empty));
-            return null;
-        }
-
         String explanationText = mExplanationEditText.getText().toString();
 
         List<TestAnswer> answers = new ArrayList<>();
         int nAnswerViews = mAnswersLinearLayout.getChildCount();
-        if (nAnswerViews > 0) {
-            // Считываем возможные ответы.
-            for (int iAnswerView = 0; iAnswerView < nAnswerViews; iAnswerView++) {
-                final View answerView = mAnswersLinearLayout.getChildAt(iAnswerView);
-                TextView answerTextView = (TextView) answerView.findViewById(R.id.tv_answerText);
-                CheckBox isRightAnswerCheckBox = (CheckBox) answerView.findViewById(R.id.cb_isRightAnswer);
-                answers.add(new TestAnswer(answerTextView.getText().toString(),
-                        isRightAnswerCheckBox.isChecked()));
-            }
-            return new TestQuestion(questionText, answers, explanationText);
+        // Считываем возможные ответы.
+        for (int iAnswerView = 0; iAnswerView < nAnswerViews; iAnswerView++) {
+            final View answerView = mAnswersLinearLayout.getChildAt(iAnswerView);
+            TextView answerTextView = (TextView) answerView.findViewById(R.id.tv_answerText);
+            CheckBox isRightAnswerCheckBox = (CheckBox) answerView.findViewById(R.id.cb_isRightAnswer);
+            answers.add(new TestAnswer(answerTextView.getText().toString(),
+                    isRightAnswerCheckBox.isChecked()));
         }
-        else {
-            Toast.makeText(this, R.string.msg_zero_answers, Toast.LENGTH_SHORT).show();
-            return null;
-        }
+        return new TestQuestion(questionText, answers, explanationText);
     }
 
     /**
-     * Проверка, что данные для вопроса заполнены правильно.
+     * Проверить, что данные для вопроса заполнены правильно.
      * @return true - правильно.
      */
-    private boolean isQuestionTextValid() {
-        return mQuestionEditText.getText().length() != 0;
-    }
-
-    private boolean isAnswerValid(TextView answerTextView) {
-        return answerTextView.getText().length() != 0;
+    private boolean validateTestQuestion(TestQuestion question) {
+        if (question.getText().length() == 0) {
+            mQuestionEditText.setError(getResources().getText(R.string.question_text_empty));
+            return false;
+        }
+        if (question.getAnswers().size() == 0) {
+            Toast.makeText(this, R.string.msg_zero_answers, Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -395,13 +402,9 @@ public class EditQuestionActivity extends BaseActivity
      * @return true - если все поля пустые.
      */
     private boolean isDataEmpty() {
-        String questionText = mQuestionEditText.getText().toString();
-        if (isQuestionTextValid()) return false;
-
-        if (mExplanationEditText.getText().toString().length() != 0) return false;
-        if (mAnswersLinearLayout.getChildCount() != 0) return false;
-
-        return true;
+        return (mQuestionEditText.getText().length() == 0) &&
+                (mExplanationEditText.getText().toString().length() == 0) &&
+                (mAnswersLinearLayout.getChildCount() == 0);
     }
 
     /**
@@ -409,7 +412,7 @@ public class EditQuestionActivity extends BaseActivity
      * @param answer Текст ответа.
      */
     private void addEditableAnswerView(TestAnswer answer) {
-        final View answerView = getLayoutInflater().inflate(R.layout.listview_elem_edit_answer, null);
+        final ViewGroup answerView = (ViewGroup) getLayoutInflater().inflate(R.layout.listview_elem_edit_answer, null);
         final CheckBox answerCheckBox = (CheckBox) answerView.findViewById(R.id.cb_isRightAnswer);
         final TextView answerTextView = (TextView) answerView.findViewById(R.id.tv_answerText);
         answerCheckBox.setChecked(answer.isRight());
@@ -421,7 +424,7 @@ public class EditQuestionActivity extends BaseActivity
         answerView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                mEditingAnswerView = answerView;
+                mEditingAnswerViewIndex = answerIndex;
                 view.setSelected(true);
                 EditAnswerDialogFragment editAnswerDialog = EditAnswerDialogFragment.newInstance(
                         answerTextView.getText().toString(),
