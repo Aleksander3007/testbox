@@ -14,7 +14,7 @@ import java.io.StringWriter;
 
 public class ExceptionHandler implements Thread.UncaughtExceptionHandler {
 
-    public static final String TAG = EditQuestionActivity.class.getSimpleName();
+    public static final String TAG = ExceptionHandler.class.getSimpleName();
 
     private static final String LINE_SEPARATOR = "\n";
 
