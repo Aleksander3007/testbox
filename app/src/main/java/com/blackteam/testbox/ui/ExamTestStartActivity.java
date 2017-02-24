@@ -230,8 +230,9 @@ public class ExamTestStartActivity extends BaseActivity {
 
     private void displayTestTime() {
 
+        int minutes = (examTest.getTimeLimit() / 60);
         mTestTimeHoursEditText.setText(String.format("%02d", examTest.getTimeLimit() / 3600));
-        mTestTimeMinutesEditText.setText(String.format("%02d", examTest.getTimeLimit() / 60));
+        mTestTimeMinutesEditText.setText(String.format("%02d", minutes % 60));
         mTestTimeSecondsEditText.setText(String.format("%02d", examTest.getTimeLimit() % 60));
 
         mTestTimeHoursEditText.addTextChangedListener(new TextWatcher() {
