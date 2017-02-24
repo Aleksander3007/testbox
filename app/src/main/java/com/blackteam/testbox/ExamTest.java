@@ -117,8 +117,12 @@ public class ExamTest implements Serializable, XmlParceable {
      */
     @Override
     public void parseData(XmlPullParser xmlParser) throws XmlPullParserException, IOException {
+
+        this.reset();
+
         TestQuestion question = null;
         List<TestAnswer> answers = new ArrayList<>();
+
         int eventType = xmlParser.getEventType();
         while (eventType != XmlPullParser.END_DOCUMENT) {
             switch (eventType) {
@@ -224,5 +228,16 @@ public class ExamTest implements Serializable, XmlParceable {
         xmlSerializer.flush();
 
         return stringWriter.toString();
+    }
+
+    /**
+     * Сброс теста в начальное состояние.
+     */
+    private void reset() {
+        mDescription = null;
+        mQuestions = new ArrayList<>();
+        mTestTimeLimit = sTestTimeLimitDefault;
+        mNumTestQuestions = 0;
+        mActualNumQuestions = 0;
     }
 }
