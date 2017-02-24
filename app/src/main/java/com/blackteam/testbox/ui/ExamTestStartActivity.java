@@ -40,6 +40,8 @@ public class ExamTestStartActivity extends BaseActivity {
 
     private static final String TAG = ExamTestStartActivity.class.getSimpleName();
 
+    public static final int REQUEST_CODE_EXAM_TEST = 1;
+
     @BindView(R.id.tv_testName) TextView mTestNameTextView;
     @BindView(R.id.et_testDescription) EditText mTestDescriptionEditText;
     @BindView(R.id.tv_testDescription) TextView mTestDescriptionTextView;
@@ -62,7 +64,7 @@ public class ExamTestStartActivity extends BaseActivity {
     private boolean mIsExistedTest = false;
 
     /**
-     * Событие, которые послужит завершению редактирования.
+     * Событие, которые послужило завершению редактирования.
      */
     private enum EventEndEdit {
         ON_FINISH,
@@ -147,7 +149,7 @@ public class ExamTestStartActivity extends BaseActivity {
      * @param view
      */
     @OnClick(R.id.btn_createQuestions)
-    public void createQuestionsOnClick(View view) {
+    public void onCreateQuestionsClick(View view) {
         packExamTest();
         startTestQuestionActivity();
     }
@@ -173,6 +175,19 @@ public class ExamTestStartActivity extends BaseActivity {
             mTrainingSettingsView.setVisibility(View.VISIBLE);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        if (requestCode == REQUEST_CODE_EXAM_TEST) {
+            if (resultCode == RESULT_OK) {
+                if (data != null) {
+                    examTest = (ExamTest) data.getSerializableExtra(EditQuestionActivity.EXTRA_EXAM_TEST);
+                    displayNumTestQuestions();
+                    displayNumTrainingQuestionsView();
+                }
+            }
+        }
+    }
 
     public void startTest() {
         if (mIsExistedTest)
@@ -200,15 +215,15 @@ public class ExamTestStartActivity extends BaseActivity {
                 examTestQuestionIntent =
                         new Intent(getApplicationContext(), TestQuestionActivity.class);
                 examTestQuestionIntent.putExtra(TestQuestionActivity.EXTRA_EXAM_TEST, examTest);
+                startActivity(examTestQuestionIntent);
                 break;
             case EDITOR:
                 examTestQuestionIntent =
                         new Intent(getApplicationContext(), EditQuestionActivity.class);
                 examTestQuestionIntent.putExtra(EditQuestionActivity.EXTRA_EXAM_TEST, examTest);
+                startActivityForResult(examTestQuestionIntent, REQUEST_CODE_EXAM_TEST);
                 break;
         }
-
-        startActivity(examTestQuestionIntent);
     }
 
     /**

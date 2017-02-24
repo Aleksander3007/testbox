@@ -3,6 +3,7 @@ package com.blackteam.testbox.ui;
 import android.app.AlertDialog;
 import android.app.FragmentManager;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -18,7 +19,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.blackteam.testbox.ExamTest;
-import com.blackteam.testbox.ExamThemeData;
 import com.blackteam.testbox.R;
 import com.blackteam.testbox.TestAnswer;
 import com.blackteam.testbox.TestQuestion;
@@ -29,8 +29,6 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.Serializable;
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,6 +62,14 @@ public class EditQuestionActivity extends BaseActivity
     /** Редактируемый в текущий момент вопрос. */
     @icepick.State TestQuestion mEdtitingTestQuestion;
 
+    /**
+     * Событие, которые послужило завершению редактирования.
+     */
+    private enum EventEndEdit {
+        ON_FINISH,
+        ON_BACK
+    }
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,6 +98,12 @@ public class EditQuestionActivity extends BaseActivity
         // Сохраняем редактируемый в данный момент вопрос.
         mEdtitingTestQuestion = packQuestionData();
         super.onPause();
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        finishEditing(EventEndEdit.ON_BACK);
     }
 
     @Override
@@ -152,31 +164,8 @@ public class EditQuestionActivity extends BaseActivity
      * @param view нажатый элемент.
      */
     @OnClick(R.id.btn_finish)
-    public void finishOnClick(View view) {
-        boolean success = makeExamTestChanges();
-        if (success) {
-            AlertDialog.Builder confirmChangesDialog = new AlertDialog.Builder(this);
-            confirmChangesDialog.setTitle(R.string.title_finish_editing)
-                    .setMessage(R.string.msg_do_editing_save)
-                    // Если сохранить изменения.
-                    .setPositiveButton(R.string.btn_save, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            saveAllQuestions();
-                            dialog.dismiss();
-                        }
-                    })
-                    // В противном случае откат.
-                    .setNegativeButton(R.string.btn_rollback, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            // Если удалось откатиться, то возращается на начальное окно теста.
-                            if (rollbackChanges()) onBackPressed();
-                            dialog.dismiss();
-                        }
-                    }).show();
-        }
-
+    public void onFinishClick(View view) {
+        finishEditing(EventEndEdit.ON_FINISH);
     }
 
     /**
@@ -293,6 +282,17 @@ public class EditQuestionActivity extends BaseActivity
             if (!mQuestionCursor.hasPrevious()) mPreviousQuestionBtn.setVisibility(View.INVISIBLE);
             if (savedInstanceState == null) displayQuestion(mQuestionCursor.getCurrent());
         }
+    }
+
+    /**
+     * Устанавливаем результат для принимающей Activity.
+     */
+    private void setResult() {
+        Intent intent = new Intent();
+        // Необходимо передать созданные вопросы в предыдущую Activity,
+        // т.к. там хранятся теперь старое состояние вопросов.
+        intent.putExtra(EXTRA_EXAM_TEST, mExamTest);
+        setResult(RESULT_OK, intent);
     }
 
     /**
@@ -473,6 +473,53 @@ public class EditQuestionActivity extends BaseActivity
             Toast.makeText(getApplicationContext(), R.string.msg_fail_loading_test, Toast.LENGTH_SHORT)
                     .show();
             return false;
+        }
+    }
+
+    /**
+     * Завершить редактирование.
+     * @param eventEndEdit событие которое послужило причиной завершения редактирования.
+     */
+    private void finishEditing(final EventEndEdit eventEndEdit) {
+        boolean success = makeExamTestChanges();
+        if (success) {
+            AlertDialog.Builder confirmChangesDialog = new AlertDialog.Builder(this);
+            confirmChangesDialog.setTitle(R.string.title_finish_editing)
+                    .setMessage(R.string.msg_do_editing_save)
+                    // Если сохранить изменения.
+                    .setPositiveButton(R.string.btn_save, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            saveAllQuestions();
+                            dialog.dismiss();
+                            finishEditingCallback(eventEndEdit);
+                        }
+                    })
+                    // В противном случае откат.
+                    .setNegativeButton(R.string.btn_rollback, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                            if (rollbackChanges()) finishEditingCallback(eventEndEdit);
+                        }
+                    }).show();
+        }
+    }
+
+    /**
+     * Callback после звершение редактирования.
+     * @param eventEndEdit событие которое послужило причиной завершения редактирования.
+     */
+    private void finishEditingCallback(EventEndEdit eventEndEdit) {
+        setResult();
+        switch (eventEndEdit) {
+            case ON_FINISH:
+                setModeUser();
+                finish();
+                break;
+            case ON_BACK:
+                super.onBackPressed();
+                break;
         }
     }
 }
