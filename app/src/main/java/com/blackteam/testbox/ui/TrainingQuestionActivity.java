@@ -67,7 +67,6 @@ public class TrainingQuestionActivity extends BaseActivity {
             mExamTest = (ExamTest) getIntent().getExtras().getSerializable(EXTRA_EXAM_TEST);
             mExamTest.shuffle(); // Перемешиваем вопросы и ответы.
             mQuestionCursor = new ListCursor<>(mExamTest.getQuestions());
-            hideQuestionExplanation();
             mQuestionState = QuestionState.THINKING;
         }
 
@@ -83,7 +82,6 @@ public class TrainingQuestionActivity extends BaseActivity {
                 case COMPLETED:
                     restoreSelectedAnswers();
                     verifAnswers();
-                    showQuestionExplanation();
                     break;
             }
         }
@@ -144,7 +142,6 @@ public class TrainingQuestionActivity extends BaseActivity {
             Toast.makeText(this, R.string.msg_right_answer, Toast.LENGTH_SHORT).show();
         }
         else {
-            showQuestionExplanation();
             Toast.makeText(this, R.string.msg_wrong_answer, Toast.LENGTH_SHORT).show();
         }
     }
@@ -193,13 +190,16 @@ public class TrainingQuestionActivity extends BaseActivity {
         switch (questionState) {
             case THINKING:
                 mSubmitBtn.setVisibility(View.VISIBLE);
+                hideQuestionExplanation();
                 break;
             case ANSWERED:
                 mNextQuestionBtn.setVisibility(View.VISIBLE);
+                showQuestionExplanation();
                 break;
             case COMPLETED:
                 mGoToResultBtn.setVisibility(View.VISIBLE);
                 mFinishBtn.setVisibility(View.INVISIBLE);
+                showQuestionExplanation();
                 break;
         }
 
