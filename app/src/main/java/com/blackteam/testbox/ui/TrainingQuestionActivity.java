@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
@@ -18,7 +19,9 @@ import com.blackteam.testbox.TestAnswer;
 import com.blackteam.testbox.TestQuestion;
 import com.blackteam.testbox.utils.ListCursor;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -40,6 +43,7 @@ public class TrainingQuestionActivity extends BaseActivity {
         /** На все вопросы был получен ответ. */
         COMPLETED
     }
+    @icepick.State QuestionState mQuestionState;
 
     @BindView(R.id.btn_finish) Button mFinishBtn;
     @BindView(R.id.tv_question) TextView mQuestionTextView;
@@ -49,8 +53,9 @@ public class TrainingQuestionActivity extends BaseActivity {
     @BindView(R.id.btn_nextQuestion) Button mNextQuestionBtn;
     @BindView(R.id.btn_goToResult) Button mGoToResultBtn;
 
-    private ExamTest mExamTest;
-    private ListCursor<TestQuestion> mQuestionCursor;
+    @icepick.State ExamTest mExamTest;
+    @icepick.State ListCursor<TestQuestion> mQuestionCursor;
+    @icepick.State HashMap<Integer, Boolean> selectedAnswers = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,12 +63,30 @@ public class TrainingQuestionActivity extends BaseActivity {
         setContentView(R.layout.activity_training_question);
         ButterKnife.bind(this);
 
-        mExamTest = (ExamTest) getIntent().getExtras().getSerializable(EXTRA_EXAM_TEST);
-        mExamTest.shuffle(); // Перемешиваем вопросы и ответы.
-        mQuestionCursor = new ListCursor<>(mExamTest.getQuestions());
+        if (savedInstanceState == null) {
+            mExamTest = (ExamTest) getIntent().getExtras().getSerializable(EXTRA_EXAM_TEST);
+            mExamTest.shuffle(); // Перемешиваем вопросы и ответы.
+            mQuestionCursor = new ListCursor<>(mExamTest.getQuestions());
+            hideQuestionExplanation();
+            mQuestionState = QuestionState.THINKING;
+        }
+
+        updateView(mQuestionState);
         displayQuestion(mQuestionCursor.getCurrent());
-        updateView(QuestionState.THINKING);
-        hideQuestionExplanation();
+
+        if (savedInstanceState != null) {
+            switch (mQuestionState) {
+                case THINKING:
+                    restoreSelectedAnswers();
+                    break;
+                case ANSWERED:
+                case COMPLETED:
+                    restoreSelectedAnswers();
+                    verifAnswers();
+                    showQuestionExplanation();
+                    break;
+            }
+        }
     }
 
     @Override
@@ -79,6 +102,13 @@ public class TrainingQuestionActivity extends BaseActivity {
         }
 
         return menuDisplayed;
+    }
+
+    @Override
+    protected void onPause()
+    {
+        super.onPause();
+        saveSelectedAnswers();
     }
 
     @Override
@@ -101,7 +131,6 @@ public class TrainingQuestionActivity extends BaseActivity {
                 })
                 .show();
     }
-
 
     @OnClick(R.id.btn_submit)
     public void onSubmitClick(View view) {
@@ -173,6 +202,8 @@ public class TrainingQuestionActivity extends BaseActivity {
                 mFinishBtn.setVisibility(View.INVISIBLE);
                 break;
         }
+
+        mQuestionState = questionState;
     }
     /**
      * Отобразить указанный экзамеционный вопрос.
@@ -251,5 +282,25 @@ public class TrainingQuestionActivity extends BaseActivity {
         }
 
         return mQuestionCursor.getCurrent().verify();
+    }
+
+    /**
+     * Сохраняем состояние выделенных ответов.
+     */
+    private void saveSelectedAnswers() {
+        for (int iAnswer = 0; iAnswer < mAnswersLinearLayout.getChildCount(); iAnswer++) {
+            View answerView = mAnswersLinearLayout.getChildAt(iAnswer);
+            selectedAnswers.put(iAnswer, answerView.isSelected());
+        }
+    }
+
+    /**
+     * Восстанавливаем состояние выделенных ответов.
+     */
+    private void restoreSelectedAnswers() {
+        for (int iAnswer = 0; iAnswer < mAnswersLinearLayout.getChildCount(); iAnswer++) {
+            View answerView = mAnswersLinearLayout.getChildAt(iAnswer);
+            answerView.setSelected(selectedAnswers.get(iAnswer));
+        }
     }
 }

@@ -64,7 +64,13 @@ public class ExamTest implements Serializable, XmlParceable {
 
     public List<TestQuestion> getAllQuestions() { return mQuestions; }
     /** Возращает только те вопросы, которые будут учавствовать в тестировании или тренировки. */
-    public List<TestQuestion> getQuestions() {return mQuestions.subList(0, mActualNumQuestions);}
+    public List<TestQuestion> getQuestions() {
+        List<TestQuestion> questions = new ArrayList<>();
+        for (int iQuestion = 0; iQuestion < mActualNumQuestions; iQuestion++) {
+            questions.add(mQuestions.get(iQuestion));
+        }
+        return questions;
+    }
 
     public int getNumTestQuestions() {return mNumTestQuestions; }
     public void setNumTestQuestions(int numTestQuestions) { mNumTestQuestions = numTestQuestions; }
