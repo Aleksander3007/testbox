@@ -23,6 +23,7 @@ import com.blackteam.testbox.R;
 import com.blackteam.testbox.TestAnswer;
 import com.blackteam.testbox.TestQuestion;
 import com.blackteam.testbox.utils.ListCursor;
+import com.blackteam.testbox.utils.UIHelper;
 import com.blackteam.testbox.utils.XmlLoaderInternal;
 
 import org.xmlpull.v1.XmlPullParserException;
@@ -52,6 +53,7 @@ public class EditQuestionActivity extends BaseActivity
     @BindView(R.id.fab_createNewItem) FloatingActionButton mCreateAnswerFab;
     @BindView(R.id.bottom_editing_bar) LinearLayout mBottomEditingBar;
     @BindView(R.id.btn_prevPage) ImageButton mPreviousQuestionBtn;
+    @BindView(R.id.btn_delete) ImageButton mDeleteQuestionBtn;
 
     @icepick.State ExamTest mExamTest;
     @icepick.State ListCursor<TestQuestion> mQuestionCursor;
@@ -90,7 +92,10 @@ public class EditQuestionActivity extends BaseActivity
         // в onCreate() мы заполняем всё View, в том числе и состояния CheckBox-ов;
         // в родном адроидовском onRestoreInstanceState() идет восстановление вида,
         // и почему то все CheckBox выставляются по последнему.
-        if (mEdtitingTestQuestion != null) displayQuestion(mEdtitingTestQuestion);
+        if (mEdtitingTestQuestion != null) {
+            displayQuestion(mEdtitingTestQuestion);
+            updateEditingBar();
+        }
     }
 
     @Override
@@ -139,6 +144,7 @@ public class EditQuestionActivity extends BaseActivity
     public void saveOnClick(View view) {
         boolean success = makeExamTestChanges();
         if (success) saveAllQuestions();
+        updateEditingBar();
     }
 
     /**
@@ -157,6 +163,7 @@ public class EditQuestionActivity extends BaseActivity
             mQuestionCursor.reset();
             displayEmptyTest();
         }
+        updateEditingBar();
     }
 
     /**
@@ -166,6 +173,7 @@ public class EditQuestionActivity extends BaseActivity
     @OnClick(R.id.btn_finish)
     public void onFinishClick(View view) {
         finishEditing(EventEndEdit.ON_FINISH);
+        updateEditingBar();
     }
 
     /**
@@ -190,6 +198,8 @@ public class EditQuestionActivity extends BaseActivity
             displayQuestion(mQuestionCursor.getCurrent());
             mIsNewQuestion = false;
         }
+
+        updateEditingBar();
     }
 
     /**
@@ -205,13 +215,13 @@ public class EditQuestionActivity extends BaseActivity
         if (mQuestionCursor.hasNext()) {
             // ... то переходим к следующему.
             displayQuestion(mQuestionCursor.next());
-            mPreviousQuestionBtn.setVisibility(View.VISIBLE);
         }
         else {
             clearDisplay();
-            mPreviousQuestionBtn.setVisibility(View.VISIBLE);
             mIsNewQuestion = true;
         }
+
+        updateEditingBar();
     }
 
     /**
@@ -279,9 +289,10 @@ public class EditQuestionActivity extends BaseActivity
                 while (mQuestionCursor.hasNext()) mQuestionCursor.next();
             }
 
-            if (!mQuestionCursor.hasPrevious()) mPreviousQuestionBtn.setVisibility(View.INVISIBLE);
             if (savedInstanceState == null) displayQuestion(mQuestionCursor.getCurrent());
         }
+
+        updateEditingBar();
     }
 
     /**
@@ -301,7 +312,7 @@ public class EditQuestionActivity extends BaseActivity
     private void displayEmptyTest() {
         mIsNewQuestion = true;
         clearDisplay();
-        mPreviousQuestionBtn.setVisibility(View.INVISIBLE);
+        updateEditingBar();
     }
 
     /**
@@ -346,9 +357,6 @@ public class EditQuestionActivity extends BaseActivity
         mQuestionEditText.setText(question.getText());
         mExplanationEditText.setText(question.getExplanation());
         displayAnswer(question.getAnswers());
-        // не отображать кнопка "предыдущий вопрос", если его не существует.
-        if (!mQuestionCursor.hasPrevious())
-            mPreviousQuestionBtn.setVisibility(View.INVISIBLE);
     }
 
     /**
@@ -520,6 +528,28 @@ public class EditQuestionActivity extends BaseActivity
             case ON_BACK:
                 super.onBackPressed();
                 break;
+        }
+    }
+
+    /**
+     * Обновить состояние панели редактирования.
+     */
+    private void updateEditingBar() {
+
+        if (mQuestionCursor == null || mQuestionCursor.isEmpty()) {
+            UIHelper.disableImageButton(mPreviousQuestionBtn);
+            UIHelper.disableImageButton(mDeleteQuestionBtn);
+        }
+        else {
+            if (mQuestionCursor.hasPrevious())
+                UIHelper.enableImageButton(mPreviousQuestionBtn);
+            else
+                UIHelper.disableImageButton(mPreviousQuestionBtn);
+
+            if (!mIsNewQuestion)
+                UIHelper.enableImageButton(mDeleteQuestionBtn);
+            else
+                UIHelper.disableImageButton(mDeleteQuestionBtn);
         }
     }
 }
