@@ -198,6 +198,8 @@ public class TestResultActivity extends BaseActivity {
         View answerIndicator = answerView.findViewById(R.id.indicator);
 
         answerView.setSelected(answer.isMarked());
+        // Затемняем невыбранные ответы пользователем.
+        answerView.setAlpha(answer.isMarked() ? 1f : 0.5f);
         // Устанавливаем цвет индикатора правильный/неправильный ответ.
         answerIndicator.setBackgroundResource(answer.isRight() ?
                 R.color.answer_indicator_success :
