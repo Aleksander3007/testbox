@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.Menu;
 import android.widget.Toast;
 
@@ -25,14 +26,14 @@ public class TestQuestionActivity extends BaseActivity {
 
     @BindView(R.id.vp_questions) ViewPager mQuestionsViewPager;
 
-    private ExamTest mExamTest;
+    @icepick.State ExamTest mExamTest;
     /** Время обновления отображения таймера, c. */
     private static final int sTimeUpdateInterval = 1;
     /** Время на прохождение теста, с. */
-    private int mTestTime;
+    @icepick.State int mTestTime;
     /** Таймер обратного отсчета времени прохождения теста. */
     private CountDownTimer mTestTimer;
-    private boolean mIsTestFinished;
+    @icepick.State boolean mIsTestFinished;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,13 +41,15 @@ public class TestQuestionActivity extends BaseActivity {
         setContentView(R.layout.activity_test_question);
         ButterKnife.bind(this);
 
-        mExamTest = (ExamTest) getIntent().getExtras().getSerializable(EXTRA_EXAM_TEST);
+        if (savedInstanceState == null) {
+            mExamTest = (ExamTest) getIntent().getExtras().getSerializable(EXTRA_EXAM_TEST);
 
-        // Перемешиваем вопросы и ответы.
-        mExamTest.shuffle();
-        mExamTest.setTest();
+            // Перемешиваем вопросы и ответы.
+            mExamTest.shuffle();
+            mExamTest.setTest();
 
-        mTestTime = mExamTest.getTimeLimit();
+            mTestTime = mExamTest.getTimeLimit();
+        }
 
         TestQuestionAdapter testQuestionAdapter = new TestQuestionAdapter(
                 getSupportFragmentManager(),
@@ -139,7 +142,8 @@ public class TestQuestionActivity extends BaseActivity {
         mTestTimer = new CountDownTimer(testTotalTime * 1000, updateIterval * 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
-                mTimerMenuItem.setTitle(formatTime((int) (millisUntilFinished / 1000)));
+                mTestTime = (int) (millisUntilFinished / 1000);
+                mTimerMenuItem.setTitle(formatTime(mTestTime));
             }
 
             @Override
