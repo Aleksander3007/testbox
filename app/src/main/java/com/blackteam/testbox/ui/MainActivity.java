@@ -29,7 +29,7 @@ public class MainActivity extends BaseActivity {
      * @param view
      */
     @OnClick(R.id.btn_examOpen)
-    public void examOpenOnClick(View view) {
+    public void onExamOpenClick(View view) {
         Intent examThemesActivity = new Intent(this, ExamThemesActivity.class);
         startActivity(examThemesActivity);
     }

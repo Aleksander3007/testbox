@@ -130,7 +130,7 @@ public class EditQuestionActivity extends BaseActivity
      * @param view нажатый элемент.
      */
     @OnClick(R.id.fab_createNewItem)
-    public void createNewAnswerOnClick(View view) {
+    public void onCreateNewAnswerClick(View view) {
         FragmentManager fragmentManager = getFragmentManager();
         EditAnswerDialogFragment creatingAnswerDialog = EditAnswerDialogFragment.newInstance();
         creatingAnswerDialog.show(fragmentManager, "creatingAnswerDialog");
@@ -141,7 +141,7 @@ public class EditQuestionActivity extends BaseActivity
      * @param view нажатый элемент.
      */
     @OnClick(R.id.btn_save)
-    public void saveOnClick(View view) {
+    public void onSaveClick(View view) {
         boolean success = makeExamTestChanges();
         if (success) saveAllQuestions();
         updateEditingBar();
@@ -181,7 +181,7 @@ public class EditQuestionActivity extends BaseActivity
      * @param view нажатый элемент.
      */
     @OnClick(R.id.btn_prevPage)
-    public void prevQuestionOnClick(View view) {
+    public void onPrevQuestionClick(View view) {
         // Если вызвана данная функция, значит кнопка перехода на предыдущий доступна.
 
         if (!mIsNewQuestion || !isDataEmpty()) {
@@ -207,7 +207,7 @@ public class EditQuestionActivity extends BaseActivity
      * @param view нажатый элемент.
      */
     @OnClick(R.id.btn_nextPage)
-    public void nextQuestionOnClick(View view) {
+    public void onNextQuestionClick(View view) {
         boolean success = makeExamTestChanges();
         if (!success) return;
 

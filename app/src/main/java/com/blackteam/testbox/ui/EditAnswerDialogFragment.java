@@ -123,7 +123,7 @@ public class EditAnswerDialogFragment extends DialogFragment {
      * @param view нажатый элемент.
      */
     @OnClick(R.id.btn_ok)
-    public void confirmOnClick(View view) {
+    public void onConfirmClick(View view) {
 
         if (mIsNewAnswer)
             createAnswer();
@@ -137,7 +137,7 @@ public class EditAnswerDialogFragment extends DialogFragment {
      * @param view нажатый элемент.
      */
     @OnClick(R.id.btn_cancel)
-    public void cancelOnClick(View view) {
+    public void onCancelClick(View view) {
         dismiss();
     }
 
@@ -146,7 +146,7 @@ public class EditAnswerDialogFragment extends DialogFragment {
      * @param view нажатый элемент.
      */
     @OnClick(R.id.btn_delete)
-    public void deleteOnClcik(View view) {
+    public void onDeleteClcik(View view) {
         mListener.deleteAnswer();
         dismiss();
     }

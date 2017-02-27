@@ -137,7 +137,7 @@ public class ExamTestStartActivity extends BaseActivity {
      * Обработка нажатия на кнопку "Начать".
      */
     @OnClick(R.id.btn_start)
-    public void startOnClick() {
+    public void onStartClick() {
         if (mTestingRadioButton.isChecked())
             startTest();
         else
@@ -159,7 +159,7 @@ public class ExamTestStartActivity extends BaseActivity {
      * @param view нажатый элемент.
      */
     @OnClick(R.id.btn_save)
-    public void saveOnClick(View view) {
+    public void onSaveClick(View view) {
         saveExamTest();
     }
 

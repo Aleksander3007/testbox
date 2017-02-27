@@ -187,7 +187,7 @@ public class ExamThemesActivity extends BaseActivity
      * @param view нажатый элемент.
      */
     @OnClick(R.id.btn_save)
-    public void saveOnClick(View view) {
+    public void onSaveClick(View view) {
         saveExamThemes();
     }
 

@@ -147,7 +147,7 @@ public class TrainingQuestionActivity extends BaseActivity {
     }
 
     @OnClick(R.id.btn_nextQuestion)
-    public void nextQuestionOnClick(View view) {
+    public void onNextQuestionClick(View view) {
         if (mQuestionCursor.hasNext()) {
             updateView(QuestionState.THINKING);
             hideQuestionExplanation();

@@ -78,7 +78,7 @@ public class TestResultActivity extends BaseActivity {
      * @param view
      */
     @OnClick(R.id.btn_close_test_result)
-    public void closeResultOnClick(View view) {
+    public void onCloseResultClick(View view) {
         this.close();
     }
 
