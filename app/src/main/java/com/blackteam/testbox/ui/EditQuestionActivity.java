@@ -490,7 +490,18 @@ public class EditQuestionActivity extends BaseActivity
      * @param eventEndEdit событие которое послужило причиной завершения редактирования.
      */
     private void finishEditing(final EventEndEdit eventEndEdit) {
-        boolean success = makeExamTestChanges();
+
+        boolean isDataEmpty = isDataEmpty();
+
+        // Если тест пустой и данные пользователем не вводились, то завершаем редактировани.
+        if (mQuestionCursor.isEmpty() && isDataEmpty) {
+            finishEditingCallback(eventEndEdit);
+            return;
+        }
+
+        // Если пользователь не вводил никакие данные, то текущий вопрос не сохранится,
+        // а остальные вопросы уже проверены, поэтому true.
+        boolean success = (!isDataEmpty) ? makeExamTestChanges() : true;
         if (success) {
             AlertDialog.Builder confirmChangesDialog = new AlertDialog.Builder(this);
             confirmChangesDialog.setTitle(R.string.title_finish_editing)
