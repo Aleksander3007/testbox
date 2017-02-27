@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.Menu;
 import android.widget.Toast;
 
@@ -34,6 +33,10 @@ public class TestQuestionActivity extends BaseActivity {
     /** Таймер обратного отсчета времени прохождения теста. */
     private CountDownTimer mTestTimer;
     @icepick.State boolean mIsTestFinished;
+    /** Видима ли Activity. */
+    private boolean mIsVisible;
+    /** Был ли открыто окно результата тестирования. */
+    @icepick.State boolean mIsResultActivityOpened = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +84,19 @@ public class TestQuestionActivity extends BaseActivity {
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        mIsVisible = true;
+        if (mIsTestFinished) startTestResultActivity();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mIsVisible = false;
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         if (mTestTimer != null) mTestTimer.cancel();
@@ -118,9 +134,20 @@ public class TestQuestionActivity extends BaseActivity {
             mIsTestFinished = true;
             // Тест завершился, а значит таймер больше не нужен.
             mTestTimer.cancel();
+            // Отображаем окно результатов только в том случае, если мы в foreground-е.
+            if (this.mIsVisible) startTestResultActivity();
+        }
+    }
+
+    /**
+     * Открыть окно результатов тестирования.
+     */
+    public synchronized void startTestResultActivity() {
+        if (!mIsResultActivityOpened) {
             Intent trainingResultActivity = new Intent(this, TestResultActivity.class);
             trainingResultActivity.putExtra(TestResultActivity.EXTRA_EXAM_TEST, mExamTest);
             startActivity(trainingResultActivity);
+            mIsResultActivityOpened = true;
         }
     }
 
