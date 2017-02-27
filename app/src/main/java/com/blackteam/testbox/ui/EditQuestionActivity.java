@@ -542,7 +542,8 @@ public class EditQuestionActivity extends BaseActivity
             UIHelper.disableImageButton(mDeleteQuestionBtn);
         }
         else {
-            if (mQuestionCursor.hasPrevious())
+            if (mQuestionCursor.hasPrevious() ||
+                    (mIsNewQuestion && mQuestionCursor.getCurrent() != null))
                 UIHelper.enableImageButton(mPreviousQuestionBtn);
             else
                 UIHelper.disableImageButton(mPreviousQuestionBtn);
