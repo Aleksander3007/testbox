@@ -247,13 +247,17 @@ public class TrainingQuestionActivity extends BaseActivity {
         final View answerView = getLayoutInflater().inflate(R.layout.listview_elem_answer, null);
         TextView answerTextView = (TextView) answerView.findViewById(R.id.tv_answerText);
         answerTextView.setText(answer.getText());
+
         // Обработка нажатия на ответ.
-        answerView.setOnClickListener(new View.OnClickListener() {
+        View.OnClickListener onAnswerClickListener = new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                view.setSelected(!view.isSelected());
+            public void onClick(View v) {
+                answerView.setSelected(!answerView.isSelected());
             }
-        });
+        };
+        answerView.setOnClickListener(onAnswerClickListener);
+        answerTextView.setOnClickListener(onAnswerClickListener);
+
         mAnswersLinearLayout.addView(answerView);
     }
 

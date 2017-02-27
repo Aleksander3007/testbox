@@ -85,14 +85,18 @@ public class TestQuestionFragment extends Fragment {
         TextView answerTextView = (TextView) answerView.findViewById(R.id.tv_answerText);
         answerTextView.setText(answer.getText());
         answerView.setSelected(answer.isMarked());
+
         // Обработка нажатия на ответ.
-        answerView.setOnClickListener(new View.OnClickListener() {
+        View.OnClickListener onAnswerClickListener = new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                view.setSelected(!view.isSelected());
-                answer.setMark(view.isSelected());
+            public void onClick(View v) {
+                answerView.setSelected(!answerView.isSelected());
+                answer.setMark(answerView.isSelected());
             }
-        });
+        };
+        answerView.setOnClickListener(onAnswerClickListener);
+        answerTextView.setOnClickListener(onAnswerClickListener);
+
         mAnswersLinearLayout.addView(answerView);
     }
 }
