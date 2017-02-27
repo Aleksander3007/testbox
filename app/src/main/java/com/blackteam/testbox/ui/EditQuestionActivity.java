@@ -322,6 +322,7 @@ public class EditQuestionActivity extends BaseActivity
         mQuestionEditText.setText("");
         mAnswersLinearLayout.removeAllViews();
         mQuestionEditText.setError(null);
+        mExplanationEditText.setText("");
     }
 
     /**
