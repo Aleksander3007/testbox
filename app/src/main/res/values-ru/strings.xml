@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">testbox</string>
+    <string name="app_name">Testbox</string>
     <string name="user_type_user">Пользователь</string>
     <string name="user_type_editor">Редактор</string>
     <string name="number_correct_answers">Правильных ответов</string>
