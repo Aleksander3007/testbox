@@ -28,6 +28,7 @@
             android:id="@+id/btn_prevPage"
             android:src="@drawable/ic_arrow_back_black_24dp"
             style="?android:attr/buttonBarButtonStyle"
+            android:contentDescription="@string/cd_previous_page"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="0.2"/>
@@ -36,6 +37,7 @@
             android:id="@+id/btn_finish"
             android:src="@drawable/ic_check_black_24dp"
             style="?android:attr/buttonBarButtonStyle"
+            android:contentDescription="@string/cd_finish"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="0.2"/>
@@ -44,6 +46,7 @@
             android:id="@+id/btn_delete"
             android:src="@drawable/ic_delete_forever_black_24dp"
             style="?android:attr/buttonBarButtonStyle"
+            android:contentDescription="@string/cd_delete"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="0.2"/>
@@ -52,6 +55,7 @@
             android:id="@+id/btn_save"
             android:src="@drawable/ic_save_black_24dp"
             style="?android:attr/buttonBarButtonStyle"
+            android:contentDescription="@string/cd_save"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="0.2"/>
@@ -60,6 +64,7 @@
             android:id="@+id/btn_nextPage"
             android:src="@drawable/ic_arrow_forward_black_24dp"
             style="?android:attr/buttonBarButtonStyle"
+            android:contentDescription="@string/cd_next_page"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="0.2"/>

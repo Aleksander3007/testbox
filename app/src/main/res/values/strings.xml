@@ -70,4 +70,11 @@
     <string name="test_time_hours_default">00</string>
     <string name="test_time_minutes_default">20</string>
     <string name="test_time_seconds_default">00</string>
+    
+    <string name="cd_previous_page">Предыдущий(ая)</string>
+    <string name="cd_next_page">Следующий(ая)</string>
+    <string name="cd_finish">Завершить</string>
+    <string name="cd_save">Сохранить</string>
+    <string name="cd_delete">Удалить</string>
+    <string name="cd_expand">Развернуть/Свернуть</string>
 </resources>

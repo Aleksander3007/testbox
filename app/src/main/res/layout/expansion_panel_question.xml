@@ -22,6 +22,7 @@
             <ImageView
                 android:id="@+id/iv_question_indicator"
                 android:src="@drawable/ic_check_black_24dp"
+                android:contentDescription="@string/cd_finish"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="@dimen/expansion_panel_content_right_margin" />
@@ -38,6 +39,7 @@
             android:id="@+id/btn_expand"
             android:src="@drawable/ic_expand_more_black_24dp"
             android:alpha="0.38"
+            android:contentDescription="@string/cd_expand"
             android:background="@null"
             android:clickable="false"
             android:layout_width="wrap_content"
