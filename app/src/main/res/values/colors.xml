@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Главный цвет приложения. Обычно в него красят AppBar -->
-    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimary">#673AB7</color>
     <!-- Более темная версия главного цвета — используется для статус-бара -->
-    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorPrimaryDark">#4527A0</color>
     <!-- Акцентный цвет приложения. Используется косвенным образом для кнопок, SeekBar, ProgressBar -->
-    <color name="colorAccent">#FF4081</color>
-    <color name="colorBottomEditingBar">#F0F0F0</color>
+    <color name="colorAccent">#FFA000</color>
+    <color name="colorBottomEditingBar">#0A673AB7</color>
 
     <color name="answer_indicator_error">#FF0000</color>
     <color name="answer_indicator_success">#00FF00</color>
