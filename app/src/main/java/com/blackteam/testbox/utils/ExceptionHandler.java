@@ -1,12 +1,10 @@
 package com.blackteam.testbox.utils;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.util.Log;
 
-import com.blackteam.testbox.ui.EditQuestionActivity;
 import com.blackteam.testbox.ui.ErrorActivity;
 
 import java.io.PrintWriter;
@@ -19,7 +17,7 @@ public class ExceptionHandler implements Thread.UncaughtExceptionHandler {
     private static final String LINE_SEPARATOR = "\n";
 
     private final Context mContext;
-    private Thread.UncaughtExceptionHandler mOldHandler;
+    private final Thread.UncaughtExceptionHandler mOldHandler;
 
     public ExceptionHandler(Context context) {
         mContext = context;

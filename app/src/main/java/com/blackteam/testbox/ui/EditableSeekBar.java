@@ -128,7 +128,7 @@ public class EditableSeekBar extends RelativeLayout
      */
     public int getValue() { return mValue; }
 
-    private boolean isInRange(int value) {
+    private boolean isInRange() {
         return (mValue >= mMinValue) && (mValue <= mMaxValue);
     }
 
@@ -136,7 +136,7 @@ public class EditableSeekBar extends RelativeLayout
      * Нормализация величины (чтобы находилась в заданном диапазоне).
      */
     private void normalizationValue() {
-        if (!isInRange(mValue)) {
+        if (!isInRange()) {
             if (mValue > mMaxValue) mValue = mMaxValue;
             if (mValue < mMinValue) mValue = mMinValue;
         }

@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.widget.Toast;
@@ -34,8 +35,8 @@ public class SettingsActivity extends Activity {
     public static final int PERMISSION_REQUEST_WRITE_FILE = 0;
     public static final int PERMISSION_REQUEST_READ_FILE = 1;
 
-    private XmlLoaderInternal mXmlLoaderInternal = new XmlLoaderInternal();
-    private XmlLoaderExternal mXmlLoaderExternal = new XmlLoaderExternal(TestBoxApp.DEFAULT_EXTERNAL_DIR);
+    private final XmlLoaderInternal mXmlLoaderInternal = new XmlLoaderInternal();
+    private final XmlLoaderExternal mXmlLoaderExternal = new XmlLoaderExternal(TestBoxApp.DEFAULT_EXTERNAL_DIR);
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -81,7 +82,8 @@ public class SettingsActivity extends Activity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
         switch (requestCode) {
             case PERMISSION_REQUEST_WRITE_FILE:
                 // Если запрос был отменен, то grantResults будет пустым.
@@ -178,6 +180,7 @@ public class SettingsActivity extends Activity {
     /**
      * Резервное копирование всех тестов. (Рекурсия!)
      * @param parentExamTheme главная тема, с которой необходимо начать сохранения тестов.
+     * @return true - если резервное копирование тестов успешно завершено.
      * @throws IOException
      */
     private boolean backupTests(NavigationTree.Node<ExamThemeData> parentExamTheme)
@@ -186,8 +189,8 @@ public class SettingsActivity extends Activity {
         for (NavigationTree.Node<ExamThemeData> examTheme : parentExamTheme.getChildren()) {
 
             success = backupTests(examTheme);
-
             if (!success) return false;
+
             if (examTheme.getData().containsTest()) {
                 ExamTest examTest = new ExamTest(examTheme.getData().getId());
                 mXmlLoaderInternal.load(this, examTest.getFileName(), examTest);
@@ -201,7 +204,7 @@ public class SettingsActivity extends Activity {
     /**
      * Восстановление всех тестов из резервных копий. (Рекурсия!)
      * @param parentExamTheme главная тема, с которой необходимо начать загрузку тестов.
-     * @return
+     * @return true - если успешно восстановлены тесты.
      * @throws IOException
      */
     private boolean recoveryTests(NavigationTree.Node<ExamThemeData> parentExamTheme)
@@ -210,8 +213,8 @@ public class SettingsActivity extends Activity {
         for (NavigationTree.Node<ExamThemeData> examTheme : parentExamTheme.getChildren()) {
 
             success = recoveryTests(examTheme);
-
             if (!success) return false;
+
             if (examTheme.getData().containsTest()) {
                 ExamTest examTest = new ExamTest(examTheme.getData().getId());
                 success = mXmlLoaderExternal.load(this, examTest.getFileName(), examTest);

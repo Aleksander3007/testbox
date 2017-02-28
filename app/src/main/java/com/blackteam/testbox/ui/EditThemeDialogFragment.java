@@ -119,7 +119,11 @@ public class EditThemeDialogFragment extends DialogFragment {
 
         // Запрос фокуса и отображение soft keyboard принудительно.
         mThemeNameEditText.requestFocus();
-        getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+        /* getWindow() возращает null в случае, если activity невидна;
+         *  если activity невидна, просто не отображаем клавиатуру.
+         */
+        if (getDialog().getWindow() != null) getDialog().getWindow()
+                .setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 
         return editDialogView;
     }
@@ -132,28 +136,25 @@ public class EditThemeDialogFragment extends DialogFragment {
 
     /**
      * Нажатие на кнопку подтверждения введенных данных.
-     * @param view нажатый элемент.
      */
     @OnClick(R.id.btn_ok)
-    public void onConfirmClick(View view) {
+    public void onConfirmClick() {
         boolean success = (mIsNewTheme) ? createTheme() : editTheme();
         if (success) dismiss();
     }
     /**
      * Нажатие на кнопку отмены введенных данных.
-     * @param view нажатый элемент.
      */
     @OnClick(R.id.btn_cancel)
-    public void onCancelClick(View view) {
+    public void onCancelClick() {
         dismiss();
     }
 
     /**
      * Нажатие на кнопку удаления редактируемого элемента.
-     * @param view нажатый элемент.
      */
     @OnClick(R.id.btn_delete)
-    public void onDeleteClcik(View view) {
+    public void onDeleteClick() {
         mListener.deleteTheme();
         dismiss();
     }

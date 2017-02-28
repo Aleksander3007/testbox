@@ -2,12 +2,8 @@ package com.blackteam.testbox.utils;
 
 import java.io.Serializable;
 import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.Deque;
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Stack;
 
 /**
  * Дерево навигации. Позволяет выстраивать иерархичное дерево с одним родителем,
@@ -19,7 +15,7 @@ public class NavigationTree<E> extends WideTree<E> implements Serializable {
     /**
      * Цепочка узлов от текущего элемента до корня.
      */
-    Deque<WideTree.Node<E>> mBreadCrumbs = new ArrayDeque<>();
+    private Deque<WideTree.Node<E>> mBreadCrumbs = new ArrayDeque<>();
 
     /**
      * Создать пустое дерево.
@@ -88,7 +84,6 @@ public class NavigationTree<E> extends WideTree<E> implements Serializable {
     /**
      * Проход по указанному пути.
      * Если в пути будут содержаться неккоректные данные, то будет выдано исключение.
-     * @return указанный путь.
      * @throws IllegalArgumentException - указанный узел не существует (возможно текущий узел - конечный).
      */
     public void setPath(Deque<E> path) throws IllegalArgumentException {
@@ -106,7 +101,7 @@ public class NavigationTree<E> extends WideTree<E> implements Serializable {
      * @return путь.
      */
     public Deque<E> getPath() {
-        Deque<E> path = new ArrayDeque<E>();
+        Deque<E> path = new ArrayDeque<>();
         for (WideTree.Node<E> node : mBreadCrumbs) {
             path.add(node.getData());
         }

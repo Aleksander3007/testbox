@@ -41,7 +41,7 @@ public class ExamTest implements Serializable, XmlParceable {
     /** 20 минут. */
     private static final int sTestTimeLimitDefault = 1200;
 
-    private String mName;
+    private final String mName;
     private String mDescription;
     private List<TestQuestion> mQuestions = new ArrayList<>();
     /** Время на прохождение теста, с. */

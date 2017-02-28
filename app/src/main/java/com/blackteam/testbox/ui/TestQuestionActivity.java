@@ -78,7 +78,7 @@ public class TestQuestionActivity extends BaseActivity {
         mIsTestFinished = false;
         // Запускаем таймер здесь, т.к. нам необходимо дождаться инициализации меню,
         // чтобы отображать оставшиеся время в пункт меню.
-        startTimer(mTestTime, sTimeUpdateInterval);
+        startTimer(mTestTime);
 
         return menuDisplayed;
     }
@@ -142,7 +142,7 @@ public class TestQuestionActivity extends BaseActivity {
     /**
      * Открыть окно результатов тестирования.
      */
-    public synchronized void startTestResultActivity() {
+    private synchronized void startTestResultActivity() {
         if (!mIsResultActivityOpened) {
             Intent trainingResultActivity = new Intent(this, TestResultActivity.class);
             trainingResultActivity.putExtra(TestResultActivity.EXTRA_EXAM_TEST, mExamTest);
@@ -163,10 +163,9 @@ public class TestQuestionActivity extends BaseActivity {
     /**
      * Запустить таймер обратного отсчета.
      * @param testTotalTime время на прохождение теста, с.
-     * @param updateIterval время обновления отображения таймера, с.
      */
-    private void startTimer(int testTotalTime, int updateIterval) {
-        mTestTimer = new CountDownTimer(testTotalTime * 1000, updateIterval * 1000) {
+    private void startTimer(int testTotalTime) {
+        mTestTimer = new CountDownTimer(testTotalTime * 1000, sTimeUpdateInterval * 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
                 mTestTime = (int) (millisUntilFinished / 1000);

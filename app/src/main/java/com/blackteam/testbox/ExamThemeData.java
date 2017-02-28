@@ -8,7 +8,7 @@ import java.io.Serializable;
 public class ExamThemeData implements Serializable {
 
     /** Название темы. */
-    private String mName;
+    private final String mName;
     /** Идентификатор темы. */
     private String mId;
     /** Содержит ли тема тест. */

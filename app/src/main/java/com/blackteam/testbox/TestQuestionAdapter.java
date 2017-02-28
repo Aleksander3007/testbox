@@ -6,7 +6,6 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.blackteam.testbox.ui.TestQuestionFragment;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**

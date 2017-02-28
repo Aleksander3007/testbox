@@ -1,6 +1,5 @@
 package com.blackteam.testbox.ui;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -75,17 +74,16 @@ public class TestResultActivity extends BaseActivity {
 
     /**
      * Нажатие на кнопку "Закрыть окно результата теста".
-     * @param view
      */
     @OnClick(R.id.btn_close_test_result)
-    public void onCloseResultClick(View view) {
+    public void onCloseResultClick() {
         this.close();
     }
 
     /**
-     * Закрываем Acitivity.
+     * Закрываем Activity.
      */
-    public void close() {
+    private void close() {
         // Закрываем Activity (и переходим к странице старта теста, страница прохождения теста/тренировки
         // недоступна, см. флаги ниже).
         Intent testStartActivity = new Intent(this, ExamTestStartActivity.class);
@@ -135,8 +133,8 @@ public class TestResultActivity extends BaseActivity {
      * Отобразить вопрос.
      */
     private void showQuestion(TestQuestion question) {
-        final View questionContentView =
-                getLayoutInflater().inflate(R.layout.expansion_panel_question, null);
+        final View questionContentView = getLayoutInflater()
+                .inflate(R.layout.expansion_panel_question, mQuestionsLinearLayout, false);
         final TextView questionTitleTextView =
                 (TextView) questionContentView.findViewById(R.id.tv_question_title);
         final ImageView indicatorImageView =
@@ -193,7 +191,8 @@ public class TestResultActivity extends BaseActivity {
     }
 
     private void showAnswer(TestAnswer answer, LinearLayout answersLinearLayout) {
-        View answerView = getLayoutInflater().inflate(R.layout.listview_elem_answer, null);
+        View answerView = getLayoutInflater()
+                .inflate(R.layout.listview_elem_answer, answersLinearLayout, false);
         TextView answerTextView = (TextView) answerView.findViewById(R.id.tv_answerText);
         View answerIndicator = answerView.findViewById(R.id.indicator);
 

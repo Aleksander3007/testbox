@@ -166,7 +166,7 @@ public class ExamThemesActivity extends BaseActivity
      * @param view нажатый элемент.
      */
     @OnClick(R.id.fab_createNewItem)
-    public void createNewExamThemeOnClick(View view) {
+    public void onCreateNewExamThemeClick(View view) {
         FragmentManager fragmentManager = getFragmentManager();
         EditThemeDialogFragment creatingThemeDialog = EditThemeDialogFragment
                 .newInstance();
@@ -193,10 +193,6 @@ public class ExamThemesActivity extends BaseActivity
 
     /**
      * Нажатие на элемент списка (т.е. на экзамеционную тему).
-     * @param parent
-     * @param itemClicked объект, который был нажат.
-     * @param position позиция нажатого объекта в списке.
-     * @param id
      */
     @Override
     public void onItemClick(AdapterView<?> parent, View itemClicked, int position, long id) {
@@ -388,7 +384,7 @@ public class ExamThemesActivity extends BaseActivity
 
     /**
      * Переход к родителю текущих подтем.
-     * @return
+     * @return родителя текущей подтемы.
      */
     private WideTree.Node<ExamThemeData> goToParent() {
         return ((TestBoxApp)getApplicationContext()).getExamTree().prev();
@@ -441,20 +437,17 @@ public class ExamThemesActivity extends BaseActivity
 
     /**
      * Сохранить все экзам. темы.
-     * @return true - изменения успешно сохранены.
      */
-    private boolean saveExamThemes() {
-        ((TestBoxApp)getApplicationContext()).saveExam();
-        Toast.makeText(this, R.string.msg_success_saving, Toast.LENGTH_SHORT).show();
+    private void saveExamThemes() {
+        boolean successSave = ((TestBoxApp)getApplicationContext()).saveExam();
+        if (successSave) Toast.makeText(this, R.string.msg_success_saving, Toast.LENGTH_SHORT).show();
         mHasExamThemeChanged = false;
-        return true;
     }
 
     /**
      * Откат изменений до сохраненных.
-     * @return true - откат успешно завершен.
      */
-    private boolean rollbackChanges() {
+    private void rollbackChanges() {
         // Загружаем последнюю информацию до текущих изменений (откатываемся).
         boolean isLoaded = ((TestBoxApp)getApplicationContext()).loadExam();
         if (isLoaded) {
@@ -465,7 +458,6 @@ public class ExamThemesActivity extends BaseActivity
             updateView();
             mHasExamThemeChanged = false;
         }
-        return  isLoaded;
     }
 
     /**

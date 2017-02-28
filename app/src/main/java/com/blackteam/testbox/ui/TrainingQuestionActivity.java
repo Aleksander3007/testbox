@@ -1,11 +1,9 @@
 package com.blackteam.testbox.ui;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
@@ -21,7 +19,6 @@ import com.blackteam.testbox.utils.ListCursor;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -55,7 +52,7 @@ public class TrainingQuestionActivity extends BaseActivity {
 
     @icepick.State ExamTest mExamTest;
     @icepick.State ListCursor<TestQuestion> mQuestionCursor;
-    @icepick.State HashMap<Integer, Boolean> selectedAnswers = new HashMap<>();
+    @icepick.State HashMap<Integer, Boolean> mSelectedAnswers = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -130,8 +127,11 @@ public class TrainingQuestionActivity extends BaseActivity {
                 .show();
     }
 
+    /**
+     * Нажатие на кнопку подтверждения ответа.
+     */
     @OnClick(R.id.btn_submit)
-    public void onSubmitClick(View view) {
+    public void onSubmitClick() {
         if (mQuestionCursor.hasNext())
             updateView(QuestionState.ANSWERED);
         else
@@ -146,8 +146,11 @@ public class TrainingQuestionActivity extends BaseActivity {
         }
     }
 
+    /**
+     * Нажатие на кнопку перехода на следующий вопрос.
+     */
     @OnClick(R.id.btn_nextQuestion)
-    public void onNextQuestionClick(View view) {
+    public void onNextQuestionClick() {
         if (mQuestionCursor.hasNext()) {
             updateView(QuestionState.THINKING);
             hideQuestionExplanation();
@@ -162,7 +165,7 @@ public class TrainingQuestionActivity extends BaseActivity {
      * Нажатие на кнопку перехода к результатам.
      */
     @OnClick(R.id.btn_goToResult)
-    public void onGoToResultClick(View view) {
+    public void onGoToResultClick() {
         Intent trainingResultActivity = new Intent(this, TestResultActivity.class);
         trainingResultActivity.putExtra(TestResultActivity.EXTRA_EXAM_TEST, mExamTest);
         startActivity(trainingResultActivity);
@@ -172,9 +175,9 @@ public class TrainingQuestionActivity extends BaseActivity {
      * Нажатие на кнопку завершить тренировку.
      */
     @OnClick(R.id.btn_finish)
-    public void onFinishClick(View view) {
-        onSubmitClick(view);
-        onGoToResultClick(view);
+    public void onFinishClick() {
+        onSubmitClick();
+        onGoToResultClick();
     }
 
     /**
@@ -244,7 +247,8 @@ public class TrainingQuestionActivity extends BaseActivity {
      * @param answer Текст ответа.
      */
     private void addAnswerView(TestAnswer answer) {
-        final View answerView = getLayoutInflater().inflate(R.layout.listview_elem_answer, null);
+        final View answerView = getLayoutInflater()
+                .inflate(R.layout.listview_elem_answer, mAnswersLinearLayout, false);
         TextView answerTextView = (TextView) answerView.findViewById(R.id.tv_answerText);
         answerTextView.setText(answer.getText());
 
@@ -294,7 +298,7 @@ public class TrainingQuestionActivity extends BaseActivity {
     private void saveSelectedAnswers() {
         for (int iAnswer = 0; iAnswer < mAnswersLinearLayout.getChildCount(); iAnswer++) {
             View answerView = mAnswersLinearLayout.getChildAt(iAnswer);
-            selectedAnswers.put(iAnswer, answerView.isSelected());
+            mSelectedAnswers.put(iAnswer, answerView.isSelected());
         }
     }
 
@@ -304,7 +308,7 @@ public class TrainingQuestionActivity extends BaseActivity {
     private void restoreSelectedAnswers() {
         for (int iAnswer = 0; iAnswer < mAnswersLinearLayout.getChildCount(); iAnswer++) {
             View answerView = mAnswersLinearLayout.getChildAt(iAnswer);
-            answerView.setSelected(selectedAnswers.get(iAnswer));
+            answerView.setSelected(mSelectedAnswers.get(iAnswer));
         }
     }
 }

@@ -26,10 +26,9 @@ public class MainActivity extends BaseActivity {
 
     /**
      * Открыть окно с доступными темами для экзамена.
-     * @param view
      */
     @OnClick(R.id.btn_examOpen)
-    public void onExamOpenClick(View view) {
+    public void onExamOpenClick() {
         Intent examThemesActivity = new Intent(this, ExamThemesActivity.class);
         startActivity(examThemesActivity);
     }
@@ -38,7 +37,7 @@ public class MainActivity extends BaseActivity {
      * Нажатие на кнопку настроек.
      */
     @OnClick(R.id.btn_settingsOpen)
-    public void onExamSettingsClick(View view) {
+    public void onExamSettingsClick() {
         Intent settingsIntent = new Intent(this, SettingsActivity.class);
         startActivity(settingsIntent);
     }

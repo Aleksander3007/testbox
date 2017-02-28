@@ -3,15 +3,13 @@ package com.blackteam.testbox;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Экзамеционный вопрос из теста с вариантами ответа.
  */
 public class TestQuestion implements Serializable {
-    private String mQuestion;
+    private final String mQuestion;
     private List<TestAnswer> mAnswers = new ArrayList<>();
     private String mExplanation;
 

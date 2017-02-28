@@ -27,11 +27,9 @@ public class TestQuestionFragment extends Fragment {
 
     @BindView(R.id.tv_question) TextView mQuestionTextView;
     @BindView(R.id.ll_answers) LinearLayout mAnswersLinearLayout;
-    @BindView(R.id.tv_explanation) TextView mExpalantionTextView;
+    @BindView(R.id.tv_explanation) TextView mExplanationTextView;
 
     private Unbinder unbinder;
-
-    private TestQuestion mQuestion;
 
     /**
      * Создание экземпляра {@link TestQuestionFragment}
@@ -50,8 +48,8 @@ public class TestQuestionFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_test_question, container, false);
         unbinder = ButterKnife.bind(this, rootView);
-        mQuestion = (TestQuestion) getArguments().getSerializable(ARG_TEST_QUESTION);
-        displayQuestion(mQuestion);
+        TestQuestion question = (TestQuestion) getArguments().getSerializable(ARG_TEST_QUESTION);
+        displayQuestion(question);
         return rootView;
     }
 
@@ -63,16 +61,15 @@ public class TestQuestionFragment extends Fragment {
 
     /**
      * Нажатие на кнопку завершения тестирования.
-     * @param view нажатый элемент.
      */
     @OnClick(R.id.btn_finish_test)
-    public void finishTestOnClick(View view) {
+    public void finishTestOnClick() {
         ((TestQuestionActivity)getActivity()).finishTest();
     }
 
     private void displayQuestion(TestQuestion question) {
         mQuestionTextView.setText(question.getText());
-        mExpalantionTextView.setVisibility(View.INVISIBLE);
+        mExplanationTextView.setVisibility(View.INVISIBLE);
         for (TestAnswer answer : question.getAnswers()) addAnswerView(answer);
     }
 
@@ -81,7 +78,8 @@ public class TestQuestionFragment extends Fragment {
      * @param answer Текст ответа.
      */
     private void addAnswerView(final TestAnswer answer) {
-        final View answerView = getLayoutInflater(null).inflate(R.layout.listview_elem_answer, null);
+        final View answerView = getLayoutInflater(null)
+                .inflate(R.layout.listview_elem_answer, mAnswersLinearLayout, false);
         TextView answerTextView = (TextView) answerView.findViewById(R.id.tv_answerText);
         answerTextView.setText(answer.getText());
         answerView.setSelected(answer.isMarked());

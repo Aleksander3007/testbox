@@ -96,7 +96,6 @@ public class XmlLoaderExternal extends XmlLoader {
         File sdPath = Environment.getExternalStorageDirectory();
         sdPath = new File(sdPath.getAbsolutePath() + "/" + mDirName);
         sdPath.mkdirs();
-        File sdFile = new File(sdPath, mFileName);
-        return sdFile;
+        return new File(sdPath, mFileName);
     }
 }

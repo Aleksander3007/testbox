@@ -346,7 +346,7 @@ public class EditQuestionActivity extends BaseActivity
             mQuestionCursor.set(question);
         }
 
-        return success;
+        return true;
     }
 
     /**
@@ -421,7 +421,8 @@ public class EditQuestionActivity extends BaseActivity
      * @param answer Текст ответа.
      */
     private void addEditableAnswerView(TestAnswer answer) {
-        final ViewGroup answerView = (ViewGroup) getLayoutInflater().inflate(R.layout.listview_elem_edit_answer, null);
+        final ViewGroup answerView = (ViewGroup) getLayoutInflater()
+                .inflate(R.layout.listview_elem_edit_answer, mAnswersLinearLayout, false);
         final CheckBox answerCheckBox = (CheckBox) answerView.findViewById(R.id.cb_isRightAnswer);
         final TextView answerTextView = (TextView) answerView.findViewById(R.id.tv_answerText);
         answerCheckBox.setChecked(answer.isRight());
@@ -450,7 +451,7 @@ public class EditQuestionActivity extends BaseActivity
     /**
      * Сохранить все вопросы для теста.
      */
-    public void saveAllQuestions() {
+    private void saveAllQuestions() {
         try {
             new XmlLoaderInternal().save(this, mExamTest.getFileName(), mExamTest);
             Toast.makeText(this, R.string.msg_success_saving, Toast.LENGTH_SHORT).show();
@@ -499,9 +500,8 @@ public class EditQuestionActivity extends BaseActivity
             return;
         }
 
-        // Если пользователь не вводил никакие данные, то текущий вопрос не сохранится,
-        // а остальные вопросы уже проверены, поэтому true.
-        boolean success = (!isDataEmpty) ? makeExamTestChanges() : true;
+        // Если пользователь не вводил никакие данные или введеные данные являются корректными.
+        boolean success = isDataEmpty || makeExamTestChanges();
         if (success) {
             AlertDialog.Builder confirmChangesDialog = new AlertDialog.Builder(this);
             confirmChangesDialog.setTitle(R.string.title_finish_editing)

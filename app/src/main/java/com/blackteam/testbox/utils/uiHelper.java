@@ -1,6 +1,5 @@
 package com.blackteam.testbox.utils;
 
-import android.graphics.Color;
 import android.widget.EditText;
 import android.widget.ImageButton;
 

@@ -57,9 +57,7 @@ public class ExamTestStartActivity extends BaseActivity {
     @BindView(R.id.et_test_time_minutes) EditText mTestTimeMinutesEditText;
     @BindView(R.id.et_test_time_seconds) EditText mTestTimeSecondsEditText;
 
-    private NavigationTree.Node<ExamThemeData> mExamTheme;
     private ExamTest examTest;
-
     /** Существует ли тест вообще (Был ли он создан ранее). */
     private boolean mIsExistedTest = false;
 
@@ -77,12 +75,13 @@ public class ExamTestStartActivity extends BaseActivity {
         setContentView(R.layout.activity_exam_test_start);
         ButterKnife.bind(this);
 
-        mExamTheme = ((TestBoxApp)getApplicationContext()).getExamTree().getCurElem();
+        NavigationTree.Node<ExamThemeData> examTheme =
+                ((TestBoxApp) getApplicationContext()).getExamTree().getCurElem();
 
-        mTestNameTextView.setText(mExamTheme.getData().getName());
+        mTestNameTextView.setText(examTheme.getData().getName());
 
         // Загружаем данные о тесте.
-        examTest = new ExamTest(mExamTheme.getData().getId());
+        examTest = new ExamTest(examTheme.getData().getId());
         try {
             new XmlLoaderInternal().load(this, examTest.getFileName(), examTest);
             displayDescription(examTest.getDescription());
@@ -91,12 +90,9 @@ public class ExamTestStartActivity extends BaseActivity {
         } catch (FileNotFoundException fnfex) {
             // Если файл не найден значит он еще не был создан.
             mIsExistedTest = false;
-        } catch (IOException ioex) {
+        } catch (IOException | XmlPullParserException ioex) {
             Log.e(TAG, ioex.getMessage());
             ioex.printStackTrace();
-        } catch (XmlPullParserException xppex) {
-            Log.e(TAG, xppex.getMessage());
-            xppex.printStackTrace();
         }
 
         displayNumTestQuestions();
@@ -146,20 +142,18 @@ public class ExamTestStartActivity extends BaseActivity {
 
     /**
      * Обработка нажатия на кнопку создания и редактирования вопросов.
-     * @param view
      */
     @OnClick(R.id.btn_createQuestions)
-    public void onCreateQuestionsClick(View view) {
+    public void onCreateQuestionsClick() {
         packExamTest();
         startTestQuestionActivity();
     }
 
     /**
      * Обработка нажатия на кнопку сохранить.
-     * @param view нажатый элемент.
      */
     @OnClick(R.id.btn_save)
-    public void onSaveClick(View view) {
+    public void onSaveClick() {
         saveExamTest();
     }
 
@@ -189,14 +183,14 @@ public class ExamTestStartActivity extends BaseActivity {
         }
     }
 
-    public void startTest() {
+    private void startTest() {
         if (mIsExistedTest)
             startTestQuestionActivity();
         else
             Toast.makeText(this, R.string.msg_test_isnt_existed, Toast.LENGTH_SHORT).show();
     }
 
-    public void startTraining() {
+    private void startTraining() {
         if (mIsExistedTest) {
             examTest.setActualNumQuestions(mNumTrainingQuestionsSeekBar.getValue());
             Intent trainingIntent =
@@ -209,7 +203,7 @@ public class ExamTestStartActivity extends BaseActivity {
     }
 
     private void startTestQuestionActivity() {
-        Intent examTestQuestionIntent = null;
+        Intent examTestQuestionIntent;
         switch (((TestBoxApp)getApplicationContext()).getUserType()) {
             case USER:
                 examTestQuestionIntent =
@@ -354,30 +348,29 @@ public class ExamTestStartActivity extends BaseActivity {
      * @return true - изменились.
      */
     private boolean haveChangedTestData() {
-        String newDesctiption = mTestDescriptionEditText.getText().toString();
+        String newDescription = mTestDescriptionEditText.getText().toString();
         int newNumTestQuestions = mNumQuestionsSeekBar.getValue();
         int newTestTimeLimit = getTestTimeSeconds();
         if (examTest.getDescription() != null) {
-            return (!newDesctiption.equals(examTest.getDescription())) ||
+            return (!newDescription.equals(examTest.getDescription())) ||
                     (newNumTestQuestions != examTest.getNumTestQuestions()) ||
                     (newTestTimeLimit != examTest.getTimeLimit());
         }
         else {
             // Если описание экзамена равно null, а новое описание не пустое, то было изменение.
-            return !newDesctiption.equals("");
+            return !newDescription.equals("");
         }
     }
 
     /**
-     * Получить время в секудах.
-     * @return
+     * Получить время теста в секундах.
+     * @return время в секундах.
      */
     private int getTestTimeSeconds() {
-        int nHours = Integer.parseInt(mTestTimeHoursEditText.getText().toString());;
+        int nHours = Integer.parseInt(mTestTimeHoursEditText.getText().toString());
         int nMinutes = Integer.parseInt(mTestTimeMinutesEditText.getText().toString());
         int nSeconds = Integer.parseInt(mTestTimeSecondsEditText.getText().toString());
-        int testTimeLimit = nHours * 3600 + nMinutes * 60 + nSeconds;
-        return testTimeLimit;
+        return nHours * 3600 + nMinutes * 60 + nSeconds;
     }
 
     /**

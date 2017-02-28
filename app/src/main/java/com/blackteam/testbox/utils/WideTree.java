@@ -66,7 +66,7 @@ public class WideTree<E>  implements Serializable {
          * @param data данные узла.
          */
         public Node<E> addChild(E data) {
-            Node<E> childNode = new Node(data);
+            Node<E> childNode = new Node<>(data);
             mChildren.add(childNode);
             return childNode;
         }
@@ -91,7 +91,7 @@ public class WideTree<E>  implements Serializable {
          */
         public void addChildren(List<E> childrenData) {
             for (E childData : childrenData) {
-                mChildren.add(new Node<E>(childData));
+                mChildren.add(new Node<>(childData));
             }
         }
 

@@ -115,9 +115,8 @@ public class Exam implements XmlParceable {
         createXmlExamTheme(xmlSerializer, mExamTree.getRootElement());
 
         xmlSerializer.flush();
-        String dataXml = stringWriter.toString();
 
-        return dataXml;
+        return stringWriter.toString();
     }
 
     /**

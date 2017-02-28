@@ -6,9 +6,9 @@ import java.io.Serializable;
  * Вариант ответа на вопрос.
  */
 public class TestAnswer implements Serializable {
-    private String mAnswerText;
+    private final String mAnswerText;
     /** Данный ответ является верным. */
-    private boolean mIsRight;
+    private final boolean mIsRight;
     /** Данный ответ был помечен (например, пользователем) как правильный. */
     private boolean mMarked;
 
@@ -25,8 +25,6 @@ public class TestAnswer implements Serializable {
     public String getText() { return mAnswerText; }
     public boolean isRight() { return mIsRight; }
 
-    public void mark() { mMarked = true; }
-    public void removeMark() { mMarked = false; }
     public void setMark(boolean marked) { mMarked = marked; }
     public boolean isMarked() { return mMarked; }
 
