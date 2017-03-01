@@ -184,14 +184,14 @@ public class ExamTestStartActivity extends BaseActivity {
     }
 
     private void startTest() {
-        if (mIsExistedTest)
+        if (isExistedTest() && examTest.getNumTestQuestions() > 0)
             startTestQuestionActivity();
         else
             Toast.makeText(this, R.string.msg_test_isnt_existed, Toast.LENGTH_SHORT).show();
     }
 
     private void startTraining() {
-        if (mIsExistedTest) {
+        if (isExistedTest()) {
             examTest.setActualNumQuestions(mNumTrainingQuestionsSeekBar.getValue());
             Intent trainingIntent =
                     new Intent(this, TrainingQuestionActivity.class);
@@ -201,6 +201,14 @@ public class ExamTestStartActivity extends BaseActivity {
         else
             Toast.makeText(this, R.string.msg_test_isnt_existed, Toast.LENGTH_SHORT).show();
     }
+
+    /**
+     * Существует ли тест.
+     */
+    private boolean isExistedTest() {
+        return mIsExistedTest && (examTest.getAllQuestions().size() > 0);
+    }
+
 
     private void startTestQuestionActivity() {
         Intent examTestQuestionIntent;
@@ -326,6 +334,7 @@ public class ExamTestStartActivity extends BaseActivity {
             packExamTest();
             new XmlLoaderInternal().save(this, examTest.getFileName(), examTest);
             displayDescription(examTest.getDescription());
+            mIsExistedTest = true;
             Toast.makeText(this, R.string.msg_success_saving, Toast.LENGTH_SHORT).show();
         } catch (IOException ioex) {
             Log.e(TAG, ioex.getMessage());
