@@ -1,12 +1,17 @@
 package com.blackteam.testbox.ui;
 
+import android.annotation.TargetApi;
+import android.app.Activity;
+import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -54,13 +59,13 @@ public class EditAnswerDialogFragment extends DialogFragment {
      */
     public static EditAnswerDialogFragment newInstance() {
 
-        EditAnswerDialogFragment dialog = new EditAnswerDialogFragment();
+        EditAnswerDialogFragment dialogFragment = new EditAnswerDialogFragment();
 
         Bundle args = new Bundle();
         args.putBoolean(ARG_IS_NEW_ANSWER, true);
-        dialog.setArguments(args);
+        dialogFragment.setArguments(args);
 
-        return dialog;
+        return dialogFragment;
     }
 
     /**
@@ -83,10 +88,53 @@ public class EditAnswerDialogFragment extends DialogFragment {
         return dialog;
     }
 
+    // Проблема заключалась в том, что onAttach(Context context) в версиях API < 23,
+    // не вызывается. А вызывается onAttach(Activity activity), который является Deprecated,
+    // но используется внутри super.onAttach(context);
+    // Issue android framework track: https://code.google.com/p/android/issues/detail?id=183358
+
+    @TargetApi(23)
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        mListener = (NoticeDialogListener) context;
+        // не убраем вызов onAttachToContext() здесь для наглядности и понимания, а также если
+        // в случае когда данный метод вызвал НЕ activity.
+        // хотя по идеи super.onAttach(Activity activity) вызывает внутри super.onAttach(context).
+        onAttachToContext(context);
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        // Для версий > 23(marshmallow) вызывается onAttach(Context context),
+        // внутри которого вызывается onAttach(Activity activity), поэтому
+        // здесь проверяем версию, чтобы не было двойного вызова onAttachToContext().
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            onAttachToContext(activity);
+        }
+    }
+
+    protected void onAttachToContext(Context context) {
+        try {
+            mListener = (NoticeDialogListener) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString()
+                    + " must implement NoticeDialogListener");
+        }
+    }
+
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        Dialog dialog = super.onCreateDialog(savedInstanceState);
+
+        // По умолчанию в ранних версиях Android, DialogFragment выводится с заголовком.
+
+        // Запрос window без заголовка.
+        if (dialog.getWindow() != null)
+            dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+
+        return dialog;
     }
 
     @Nullable
