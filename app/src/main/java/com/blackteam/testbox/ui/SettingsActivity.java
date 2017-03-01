@@ -193,9 +193,16 @@ public class SettingsActivity extends Activity {
 
             if (examTheme.getData().containsTest()) {
                 ExamTest examTest = new ExamTest(examTheme.getData().getId());
-                mXmlLoaderInternal.load(this, examTest.getFileName(), examTest);
-                success =  mXmlLoaderExternal.save(this, examTest.getFileName(), examTest);
-                if (!success) return false;
+                try {
+                    success = mXmlLoaderInternal.load(this, examTest.getFileName(), examTest);
+                    if (!success) return false;
+                    success =  mXmlLoaderExternal.save(this, examTest.getFileName(), examTest);
+                    if (!success) return false;
+                }
+                catch (FileNotFoundException fnfex) {
+                    /** Значит файл с данными для теста еще не был создан,
+                     * поэтому просто не делаем его backup (игнорируем данное исключение). */
+                }
             }
         }
         return success;
@@ -217,11 +224,16 @@ public class SettingsActivity extends Activity {
 
             if (examTheme.getData().containsTest()) {
                 ExamTest examTest = new ExamTest(examTheme.getData().getId());
-                success = mXmlLoaderExternal.load(this, examTest.getFileName(), examTest);
-                if (success) {
+                try {
+                    success = mXmlLoaderExternal.load(this, examTest.getFileName(), examTest);
+                    if (!success) return false;
                     mXmlLoaderInternal.save(this, examTest.getFileName(), examTest);
+                    if (!success) return false;
                 }
-                return success;
+                catch (FileNotFoundException fnfex) {
+                    /** Значит файл с данными для теста не существовал во время последнего backup,
+                     * поэтому просто не делаем его востановление (игнорируем данное исключение). */
+                }
             }
         }
         return success;
