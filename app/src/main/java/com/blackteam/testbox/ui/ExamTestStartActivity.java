@@ -57,7 +57,7 @@ public class ExamTestStartActivity extends BaseActivity {
     @BindView(R.id.et_test_time_minutes) EditText mTestTimeMinutesEditText;
     @BindView(R.id.et_test_time_seconds) EditText mTestTimeSecondsEditText;
 
-    private ExamTest examTest;
+    private ExamTest mExamTest;
     /** Существует ли тест вообще (Был ли он создан ранее). */
     private boolean mIsExistedTest = false;
 
@@ -81,10 +81,10 @@ public class ExamTestStartActivity extends BaseActivity {
         mTestNameTextView.setText(examTheme.getData().getName());
 
         // Загружаем данные о тесте.
-        examTest = new ExamTest(examTheme.getData().getId());
+        mExamTest = new ExamTest(examTheme.getData().getId());
         try {
-            new XmlLoaderInternal().load(this, examTest.getFileName(), examTest);
-            displayDescription(examTest.getDescription());
+            new XmlLoaderInternal().load(this, mExamTest.getFileName(), mExamTest);
+            displayDescription(mExamTest.getDescription());
             mIsExistedTest = true;
 
         } catch (FileNotFoundException fnfex) {
@@ -175,7 +175,7 @@ public class ExamTestStartActivity extends BaseActivity {
         if (requestCode == REQUEST_CODE_EXAM_TEST) {
             if (resultCode == RESULT_OK) {
                 if (data != null) {
-                    examTest = (ExamTest) data.getSerializableExtra(EditQuestionActivity.EXTRA_EXAM_TEST);
+                    mExamTest = (ExamTest) data.getSerializableExtra(EditQuestionActivity.EXTRA_EXAM_TEST);
                     displayNumTestQuestions();
                     displayNumTrainingQuestionsView();
                 }
@@ -184,7 +184,7 @@ public class ExamTestStartActivity extends BaseActivity {
     }
 
     private void startTest() {
-        if (isExistedTest() && examTest.getNumTestQuestions() > 0)
+        if (isExistedTest() && mExamTest.getNumTestQuestions() > 0)
             startTestQuestionActivity();
         else
             Toast.makeText(this, R.string.msg_test_isnt_existed, Toast.LENGTH_SHORT).show();
@@ -192,10 +192,10 @@ public class ExamTestStartActivity extends BaseActivity {
 
     private void startTraining() {
         if (isExistedTest()) {
-            examTest.setActualNumQuestions(mNumTrainingQuestionsSeekBar.getValue());
+            mExamTest.setActualNumQuestions(mNumTrainingQuestionsSeekBar.getValue());
             Intent trainingIntent =
                     new Intent(this, TrainingQuestionActivity.class);
-            trainingIntent.putExtra(TrainingQuestionActivity.EXTRA_EXAM_TEST, examTest);
+            trainingIntent.putExtra(TrainingQuestionActivity.EXTRA_EXAM_TEST, mExamTest);
             startActivity(trainingIntent);
         }
         else
@@ -206,7 +206,7 @@ public class ExamTestStartActivity extends BaseActivity {
      * Существует ли тест.
      */
     private boolean isExistedTest() {
-        return mIsExistedTest && (examTest.getAllQuestions().size() > 0);
+        return mIsExistedTest && (mExamTest.getAllQuestions().size() > 0);
     }
 
 
@@ -216,13 +216,13 @@ public class ExamTestStartActivity extends BaseActivity {
             case USER:
                 examTestQuestionIntent =
                         new Intent(getApplicationContext(), TestQuestionActivity.class);
-                examTestQuestionIntent.putExtra(TestQuestionActivity.EXTRA_EXAM_TEST, examTest);
+                examTestQuestionIntent.putExtra(TestQuestionActivity.EXTRA_EXAM_TEST, mExamTest);
                 startActivity(examTestQuestionIntent);
                 break;
             case EDITOR:
                 examTestQuestionIntent =
                         new Intent(getApplicationContext(), EditQuestionActivity.class);
-                examTestQuestionIntent.putExtra(EditQuestionActivity.EXTRA_EXAM_TEST, examTest);
+                examTestQuestionIntent.putExtra(EditQuestionActivity.EXTRA_EXAM_TEST, mExamTest);
                 startActivityForResult(examTestQuestionIntent, REQUEST_CODE_EXAM_TEST);
                 break;
         }
@@ -241,16 +241,16 @@ public class ExamTestStartActivity extends BaseActivity {
      * Отображение настройки количества вопросов для теста.
      */
     private void displayNumTestQuestions() {
-        mNumQuestionsSeekBar.setRange(0, examTest.getAllQuestions().size());
-        mNumQuestionsSeekBar.setValue(examTest.getNumTestQuestions());
+        mNumQuestionsSeekBar.setRange(0, mExamTest.getAllQuestions().size());
+        mNumQuestionsSeekBar.setValue(mExamTest.getNumTestQuestions());
     }
 
     private void displayTestTime() {
 
-        int minutes = (examTest.getTimeLimit() / 60);
-        mTestTimeHoursEditText.setText(String.format("%02d", examTest.getTimeLimit() / 3600));
+        int minutes = (mExamTest.getTimeLimit() / 60);
+        mTestTimeHoursEditText.setText(String.format("%02d", mExamTest.getTimeLimit() / 3600));
         mTestTimeMinutesEditText.setText(String.format("%02d", minutes % 60));
-        mTestTimeSecondsEditText.setText(String.format("%02d", examTest.getTimeLimit() % 60));
+        mTestTimeSecondsEditText.setText(String.format("%02d", mExamTest.getTimeLimit() % 60));
 
         mTestTimeHoursEditText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -325,15 +325,15 @@ public class ExamTestStartActivity extends BaseActivity {
      * Обновляем отображение настройки количества вопросов в тренировки.
      */
     private void displayNumTrainingQuestionsView() {
-        mNumTrainingQuestionsSeekBar.setRange(0, examTest.getAllQuestions().size());
-        mNumTrainingQuestionsSeekBar.setValue(examTest.getAllQuestions().size());
+        mNumTrainingQuestionsSeekBar.setRange(0, mExamTest.getAllQuestions().size());
+        mNumTrainingQuestionsSeekBar.setValue(mExamTest.getAllQuestions().size());
     }
 
     private void saveExamTest() {
         try {
             packExamTest();
-            new XmlLoaderInternal().save(this, examTest.getFileName(), examTest);
-            displayDescription(examTest.getDescription());
+            new XmlLoaderInternal().save(this, mExamTest.getFileName(), mExamTest);
+            displayDescription(mExamTest.getDescription());
             mIsExistedTest = true;
             Toast.makeText(this, R.string.msg_success_saving, Toast.LENGTH_SHORT).show();
         } catch (IOException ioex) {
@@ -347,9 +347,9 @@ public class ExamTestStartActivity extends BaseActivity {
      * Собрать введенные данные для теста.
      */
     private void packExamTest() {
-        examTest.setDescription(mTestDescriptionEditText.getText().toString());
-        examTest.setNumTestQuestions(mNumQuestionsSeekBar.getValue());
-        examTest.setTimeLimit(getTestTimeSeconds());
+        mExamTest.setDescription(mTestDescriptionEditText.getText().toString());
+        mExamTest.setNumTestQuestions(mNumQuestionsSeekBar.getValue());
+        mExamTest.setTimeLimit(getTestTimeSeconds());
     }
 
     /**
@@ -360,10 +360,10 @@ public class ExamTestStartActivity extends BaseActivity {
         String newDescription = mTestDescriptionEditText.getText().toString();
         int newNumTestQuestions = mNumQuestionsSeekBar.getValue();
         int newTestTimeLimit = getTestTimeSeconds();
-        if (examTest.getDescription() != null) {
-            return (!newDescription.equals(examTest.getDescription())) ||
-                    (newNumTestQuestions != examTest.getNumTestQuestions()) ||
-                    (newTestTimeLimit != examTest.getTimeLimit());
+        if (mExamTest.getDescription() != null) {
+            return (!newDescription.equals(mExamTest.getDescription())) ||
+                    (newNumTestQuestions != mExamTest.getNumTestQuestions()) ||
+                    (newTestTimeLimit != mExamTest.getTimeLimit());
         }
         else {
             // Если описание экзамена равно null, а новое описание не пустое, то было изменение.
