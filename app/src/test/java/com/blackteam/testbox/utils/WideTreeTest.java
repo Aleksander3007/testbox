@@ -130,10 +130,8 @@ public class WideTreeTest {
             Assert.assertNotNull(readWideTree.getRootElement());
             Assert.assertNotNull(readWideTree.getRootElement().getChild("node1.1"));
         }
-        catch (java.io.IOException ex) {
+        catch (java.io.IOException | ClassNotFoundException ex) {
             ex.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
         }
     }
 

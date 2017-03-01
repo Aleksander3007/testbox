@@ -101,7 +101,7 @@ public class ListCursorTest {
 
         int addedElem = 100;
         listCursor.add(addedElem);
-        int currentElem = listCursor.getCurrent().intValue(); // текущий элемент.
+        int currentElem = listCursor.getCurrent(); // текущий элемент.
         int nextElem = listCursor.next(); // добавленный элемент.
         int nextNextElem = listCursor.next(); // ... и смотрим следующий за ним.
 
